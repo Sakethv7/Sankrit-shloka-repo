@@ -138,6 +138,7 @@ def generate_weekly(start: dt.date | None = None) -> str:
     days, observances = get_week_data(start)
     verse, meta = pair_verse(observances, days)
     digest = WeeklyDigest(week_start=start, week_end=end, panchang_days=days, observances=observances, verse=verse)
+    digest_text = format_digest(digest)
     log_notification(
         week=str(start),
         observance_count=len(observances),
@@ -146,8 +147,9 @@ def generate_weekly(start: dt.date | None = None) -> str:
         verse_source=meta["verse_source"],
         search_query=meta["query"],
         search_latency_ms=meta["latency_ms"],
+        digest_text=digest_text,
     )
-    return format_digest(digest)
+    return digest_text
 
 
 if __name__ == "__main__":

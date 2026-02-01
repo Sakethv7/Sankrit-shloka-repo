@@ -8,6 +8,7 @@ mlruns/
 dist/
 build/
 .DS_Store
+*.pem
 skills/sanskrit-wisdom/data/gita/
 skills/sanskrit-wisdom/data/qdrant_store/
 skills/sanskrit-wisdom/data/gita_normalized.json

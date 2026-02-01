@@ -8,6 +8,7 @@ from __future__ import annotations
 import os
 from contextlib import contextmanager
 from dataclasses import dataclass
+import tempfile
 
 import mlflow
 
@@ -57,6 +58,7 @@ def log_notification(
     search_query: str = "",
     search_latency_ms: float = 0.0,
     corpus_size: int = 0,
+    digest_text: str = "",
 ) -> None:
     """Log a weekly notification generation event with full context."""
     _ensure_experiment()
@@ -75,6 +77,14 @@ def log_notification(
             "search_latency_ms": search_latency_ms,
             "corpus_size": corpus_size,
         })
+        if digest_text:
+            try:
+                mlflow.log_text(digest_text, "weekly_digest.txt")
+            except AttributeError:
+                with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False) as f:
+                    f.write(digest_text)
+                    tmp_path = f.name
+                mlflow.log_artifact(tmp_path, artifact_path=".")
 
 
 if __name__ == "__main__":
