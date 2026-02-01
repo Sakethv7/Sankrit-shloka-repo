@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.env
+mlflow.db
+mlruns/
+.venv/
+*.egg-info/
+dist/
+build/
+.DS_Store
+skills/sanskrit-wisdom/data/gita/
+skills/sanskrit-wisdom/data/qdrant_store/
+skills/sanskrit-wisdom/data/gita_normalized.json

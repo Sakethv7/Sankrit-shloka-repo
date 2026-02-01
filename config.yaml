@@ -1,0 +1,57 @@
+# Vedic Wisdom Weekly — User Preferences
+# Golconda Vyapari Niyogi Brahmin (Smarta tradition)
+
+user:
+  name: Saketh
+  tradition: Smarta
+  community: Golconda Vyapari Niyogi Brahmin
+  sutra: Apastamba Dharmasutra
+
+# Telugu Panchangam settings
+calendar:
+  system: Amanta
+  era: Salivahana Saka
+  location: New Jersey
+  timezone: America/New_York
+
+# Observances to track
+observances:
+  - name: Ekadashi
+    deity: Vishnu
+    priority: high
+  - name: Pradosham
+    deity: Shiva
+    priority: high
+  - name: Amavasya
+    deity: Pitrus
+    priority: high
+  - name: Purnima
+    deity: All
+    priority: medium
+  - name: Sankashti Chaturthi
+    deity: Ganesha
+    priority: medium
+
+# Panchayatana worship order
+panchayatana:
+  - Shiva
+  - Vishnu
+  - Devi
+  - Ganesha
+  - Surya
+
+# Primary mantra
+mantra: Om Namo Bhagavate Vasudevaya
+
+# Notification preferences
+notifications:
+  day: Sunday          # day of the week to send
+  format: text         # text | html | markdown
+  include_verse: true
+  include_panchang: true
+
+# Feature flags
+features:
+  supermemory_sync: false   # enable when API key is set
+  qdrant_rag: true          # RAG pipeline active (724 verses in Qdrant)
+  mlflow_tracking: true

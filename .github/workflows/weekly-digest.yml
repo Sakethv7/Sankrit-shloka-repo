@@ -1,0 +1,43 @@
+name: Weekly Vedic Digest
+
+on:
+  schedule:
+    - cron: '0 13 * * 0'  # Every Sunday 8am EST (13:00 UTC)
+  workflow_dispatch:        # Manual trigger via GitHub UI
+
+env:
+  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  MLFLOW_TRACKING_URI: sqlite:///mlflow.db
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Cache verse data
+        uses: actions/cache@v4
+        with:
+          path: skills/sanskrit-wisdom/data
+          key: verse-data-v1
+
+      - name: Ingest verses (first run only)
+        if: ${{ !hashFiles('skills/sanskrit-wisdom/data/qdrant_store/meta.json') }}
+        run: python skills/sanskrit-wisdom/scripts/ingest.py
+
+      - name: Generate weekly digest
+        run: python scripts/weekly_notification.py
+
+      - name: Send to Slack
+        run: python scripts/slack_notify.py
