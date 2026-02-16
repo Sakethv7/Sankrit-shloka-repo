@@ -1,0 +1,112 @@
+[
+  {
+    "run_id": "bb245baf694a4ef8ae9a105acff72aba",
+    "week": "2026-02-16",
+    "verse_id": "bg-1.1",
+    "verse_source": "Bhagavad Gita 1.1",
+    "observances": "Amavasya",
+    "observance_count": 1,
+    "search_latency_ms": 7530.2,
+    "start_time": "1771278326239"
+  },
+  {
+    "run_id": "dff90a17fdb04f46b168c1b32b3858df",
+    "week": "2026-02-16",
+    "verse_id": "bg-1.1",
+    "verse_source": "Bhagavad Gita 1.1",
+    "observances": "Amavasya",
+    "observance_count": 1,
+    "search_latency_ms": 10866.1,
+    "start_time": "1771278313313"
+  },
+  {
+    "run_id": "c80fc5d708a0401db64abf8987c4ba51",
+    "week": "2026-02-16",
+    "verse_id": "pitru-mantra",
+    "verse_source": "Pitru Stotram",
+    "observances": "Amavasya",
+    "observance_count": 1,
+    "search_latency_ms": 26.3,
+    "start_time": "1771276801457"
+  },
+  {
+    "run_id": "a166ae6790c24089a514a52b8c76a176",
+    "week": "2026-02-15",
+    "verse_id": "bg-1.1",
+    "verse_source": "Bhagavad Gita 1.1",
+    "observances": "Amavasya",
+    "observance_count": 1,
+    "search_latency_ms": 8448.1,
+    "start_time": "1771162969209"
+  },
+  {
+    "run_id": "4ed6ebde3813419aa602b72d95ebf1a0",
+    "week": "2026-02-15",
+    "verse_id": "bg-1.1",
+    "verse_source": "Bhagavad Gita 1.1",
+    "observances": "Amavasya",
+    "observance_count": 1,
+    "search_latency_ms": 11394.4,
+    "start_time": "1771162882198"
+  },
+  {
+    "run_id": "f3bf7786acf94cdca49fb88a78ebe7e7",
+    "week": "2026-02-15",
+    "verse_id": "pitru-mantra",
+    "verse_source": "Pitru Stotram",
+    "observances": "Amavasya",
+    "observance_count": 1,
+    "search_latency_ms": 264.1,
+    "start_time": "1771160018975"
+  },
+  {
+    "run_id": "7090be8b741a44f29697cdb24d1dcb37",
+    "week": "2026-02-08",
+    "verse_id": "bg-15.19",
+    "verse_source": "Bhagavad Gita 15.19",
+    "observances": "Ekadashi, Pradosham",
+    "observance_count": 2,
+    "search_latency_ms": 7452.1,
+    "start_time": "1770558104581"
+  },
+  {
+    "run_id": "637d02fc34404c538bb9c020bc59000f",
+    "week": "2026-02-08",
+    "verse_id": "bg-15.19",
+    "verse_source": "Bhagavad Gita 15.19",
+    "observances": "Ekadashi, Pradosham",
+    "observance_count": 2,
+    "search_latency_ms": 9908.4,
+    "start_time": "1770558037103"
+  },
+  {
+    "run_id": "0f4f8c2735994d3e9dda181872d5d34c",
+    "week": "2026-02-08",
+    "verse_id": "vs-1",
+    "verse_source": "Vishnu Sahasranama 1",
+    "observances": "Ekadashi, Pradosham",
+    "observance_count": 2,
+    "search_latency_ms": 0.6,
+    "start_time": "1770555159144"
+  },
+  {
+    "run_id": "5aa1c465f4544ffe9555e33c695a7aa0",
+    "week": "2026-02-01",
+    "verse_id": "ganesha-shloka",
+    "verse_source": "Ganesha Shloka",
+    "observances": "Purnima, Sankashti Chaturthi",
+    "observance_count": 2,
+    "search_latency_ms": 0.5,
+    "start_time": "1769976850918"
+  },
+  {
+    "run_id": "816c3822eb1549858a78baea635c979d",
+    "week": "2026-02-01",
+    "verse_id": "ganesha-shloka",
+    "verse_source": "Ganesha Shloka",
+    "observances": "Purnima, Sankashti Chaturthi",
+    "observance_count": 2,
+    "search_latency_ms": 0.5,
+    "start_time": "1769975921514"
+  }
+]
