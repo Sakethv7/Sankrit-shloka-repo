@@ -75,6 +75,11 @@
     <h1>Vedic Wisdom Weekly</h1>
     <p class="subtitle">Recommendations & insights (tithi-based shlokas, EST)</p>
 
+    <section id="panchang">
+      <h2>This week's panchang (EST)</h2>
+      <div id="panchang-content"></div>
+    </section>
+
     <section id="janam-patri">
       <h2>Janam Patri — Birth chart shlokas</h2>
       <div id="janam-content"></div>
@@ -94,6 +99,7 @@
   <script>
     const RECOMMENDATIONS_URL = 'data/recommendations.json';
     const JANAM_PATRI_URL = 'data/janam_patri.json';
+    const CURRENT_DIGEST_URL = 'data/current_digest.json';
 
     async function loadJson(url) {
       const res = await fetch(url);
@@ -102,12 +108,56 @@
     }
 
     async function loadData() {
-      const [runs, janam] = await Promise.all([
+      const [runs, janam, digest] = await Promise.all([
         loadJson(RECOMMENDATIONS_URL).then(r => r || []),
         loadJson(JANAM_PATRI_URL),
+        loadJson(CURRENT_DIGEST_URL),
       ]);
       if (!Array.isArray(runs)) throw new Error('Could not load recommendations.json. Run: python scripts/export_mlflow_runs.py');
-      return { runs, janam };
+      return { runs, janam, digest };
+    }
+
+    function renderPanchang(digest) {
+      const el = document.getElementById('panchang-content');
+      if (!digest) {
+        el.innerHTML = '<p class="loading">No panchang data. Run <code>python scripts/export_mlflow_runs.py</code> to export this week\'s digest.</p>';
+        return;
+      }
+      let html = `<div class="card"><div class="week">${digest.week_start} → ${digest.week_end}</div></div>`;
+      if (digest.panchang_days && digest.panchang_days.length) {
+        html += '<div class="card"><div class="meta" style="margin-bottom: 0.5rem;">Daily Panchangam</div>';
+        digest.panchang_days.forEach(p => {
+          html += `<div class="meta">${p.date} (${p.vaara}) · ${p.paksha} ${p.tithi} · ${p.nakshatra} · Sunrise ${p.sunrise}</div>`;
+        });
+        html += '</div>';
+      }
+      if (digest.observances && digest.observances.length) {
+        html += '<div class="card"><div class="meta" style="margin-bottom: 0.5rem;">Observances this week</div>';
+        digest.observances.forEach(o => {
+          html += `<div class="meta">${o.date} — ${o.name} (${o.deity}): ${o.description}</div>`;
+        });
+        html += '</div>';
+      }
+      if (digest.daily_verses && digest.daily_verses.length) {
+        digest.daily_verses.forEach(dv => {
+          html += '<div class="card">';
+          html += `<div class="week">${dv.date} — ${dv.paksha} ${dv.tithi}</div>`;
+          if (dv.verse) {
+            html += `<div class="devanagari">${dv.verse.devanagari}</div>`;
+            html += `<div style="font-size: 0.95rem; margin-top: 0.35rem;">${dv.verse.transliteration}</div>`;
+            html += `<div class="meta">— ${dv.verse.meaning} [${dv.verse.source || ''}]</div>`;
+          }
+          html += '</div>';
+        });
+      }
+      if (digest.verse_of_week) {
+        const v = digest.verse_of_week;
+        html += '<div class="card"><div class="week">Verse of the week</div>';
+        html += `<div class="devanagari">${v.devanagari}</div>`;
+        html += `<div style="font-size: 0.95rem; margin-top: 0.35rem;">${v.transliteration}</div>`;
+        html += `<div class="meta">— ${v.meaning} [${v.source || ''}]</div></div>';
+      }
+      el.innerHTML = html;
     }
 
     function renderJanamPatri(janam) {
@@ -175,13 +225,15 @@
     }
 
     loadData()
-      .then(({ runs, janam }) => {
+      .then(({ runs, janam, digest }) => {
+        renderPanchang(digest);
         renderJanamPatri(janam);
         renderInsights(runs);
         renderHistory(runs);
       })
       .catch(e => {
         document.getElementById('history-content').innerHTML = `<p class="error">${e.message}</p>`;
+        document.getElementById('panchang-content').innerHTML = '';
         document.getElementById('janam-content').innerHTML = '';
         document.getElementById('insights-content').innerHTML = '';
       });

@@ -59,12 +59,25 @@ def export_janam_patri() -> bool:
     return True
 
 
+def export_current_digest() -> bool:
+    """Export this week's panchang digest to dashboard/data/current_digest.json."""
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from weekly_notification import build_digest, digest_to_dict
+
+    digest, _ = build_digest()
+    DASHBOARD_DATA.mkdir(parents=True, exist_ok=True)
+    (DASHBOARD_DATA / "current_digest.json").write_text(json.dumps(digest_to_dict(digest), indent=2))
+    return True
+
+
 def main() -> None:
     n = export_runs()
     jp = export_janam_patri()
+    export_current_digest()
     print(f"Exported {n} runs to {DASHBOARD_DATA / 'recommendations.json'}")
     if jp:
         print(f"Exported janam patri to {DASHBOARD_DATA / 'janam_patri.json'}")
+    print(f"Exported current week panchang to {DASHBOARD_DATA / 'current_digest.json'}")
 
 
 if __name__ == "__main__":

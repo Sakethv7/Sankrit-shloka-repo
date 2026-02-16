@@ -186,8 +186,8 @@ def format_digest(digest: WeeklyDigest) -> str:
     return "\n".join(lines)
 
 
-def generate_weekly(start: dt.date | None = None) -> str:
-    """Entry point — generate this week's notification and log to MLflow."""
+def build_digest(start: dt.date | None = None) -> tuple[WeeklyDigest, dict]:
+    """Build the weekly digest (no MLflow log). Returns (digest, search_meta)."""
     start = start or dt.date.today()
     end = start + dt.timedelta(days=6)
     dates = [start + dt.timedelta(days=i) for i in range(7)]
@@ -198,15 +198,38 @@ def generate_weekly(start: dt.date | None = None) -> str:
         week_start=start, week_end=end, panchang_days=days, observances=observances,
         verse=verse, daily_verses=daily_verses,
     )
+    return digest, meta
+
+
+def digest_to_dict(digest: WeeklyDigest) -> dict:
+    """Serialize digest to JSON-serializable dict for dashboard."""
+    def day_dict(p: DailyPanchang) -> dict:
+        return {"date": str(p.date), "vaara": p.vaara, "tithi": p.tithi, "paksha": p.paksha, "nakshatra": p.nakshatra, "sunrise": p.sunrise}
+
+    obs_list = [{"date": str(o.date), "name": o.name, "deity": o.deity, "description": o.description} for o in digest.observances]
+    daily = [{"date": str(dv.date), "tithi": dv.tithi, "paksha": dv.paksha, "verse": dv.verse} for dv in digest.daily_verses]
+    return {
+        "week_start": str(digest.week_start),
+        "week_end": str(digest.week_end),
+        "panchang_days": [day_dict(p) for p in digest.panchang_days],
+        "observances": obs_list,
+        "daily_verses": daily,
+        "verse_of_week": digest.verse,
+    }
+
+
+def generate_weekly(start: dt.date | None = None) -> str:
+    """Entry point — generate this week's notification and log to MLflow."""
+    digest, meta = build_digest(start)
     digest_text = format_digest(digest)
     log_notification(
-        week=str(start),
-        observance_count=len(observances),
-        verse_id=meta["verse_id"],
-        observance_names=", ".join(o.name for o in observances),
-        verse_source=meta["verse_source"],
-        search_query=meta["query"],
-        search_latency_ms=meta["latency_ms"],
+        week=str(digest.week_start),
+        observance_count=len(digest.observances),
+        verse_id=meta.get("verse_id", "none"),
+        observance_names=", ".join(o.name for o in digest.observances),
+        verse_source=meta.get("verse_source", ""),
+        search_query=meta.get("query", ""),
+        search_latency_ms=meta.get("latency_ms", 0),
         digest_text=digest_text,
     )
     return digest_text
