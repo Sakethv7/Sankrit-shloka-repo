@@ -1,5 +1,15 @@
 [
   {
+    "run_id": "3a594525bffd492a9c04011f2eb3bef1",
+    "week": "2026-02-16",
+    "verse_id": "bg-1.1",
+    "verse_source": "Bhagavad Gita 1.1",
+    "observances": "Amavasya",
+    "observance_count": 1,
+    "search_latency_ms": 10706.2,
+    "start_time": "1771280952796"
+  },
+  {
     "run_id": "36bf9b988fcf48d88eadf7b75ee16b6d",
     "week": "2026-02-16",
     "verse_id": "bg-1.1",
