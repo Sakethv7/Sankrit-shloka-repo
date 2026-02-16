@@ -6,12 +6,29 @@ Gracefully skips when SLACK_WEBHOOK_URL is not set (local dev).
 from __future__ import annotations
 
 import os
+import re
+import unicodedata
 from pathlib import Path
 
 import httpx
 
 SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL", "")
 SLACK_MEMBER_ID = os.getenv("SLACK_MEMBER_ID", "")
+
+
+def _strip_diacritics(text: str) -> str:
+    """Convert transliteration with diacritics to plain ASCII-style text."""
+    if not text:
+        return ""
+    normalized = unicodedata.normalize("NFKD", text)
+    without_marks = "".join(ch for ch in normalized if not unicodedata.combining(ch))
+    return re.sub(r"\s+", " ", without_marks.replace("\n", " ")).strip()
+
+
+def _clean_meaning(text: str) -> str:
+    """Normalize spacing and drop duplicated verse prefixes like '7.3 '."""
+    clean = re.sub(r"^\s*\d+\.\d+\s*", "", text or "")
+    return re.sub(r"\s+", " ", clean).strip()
 
 
 def _janam_patri_block() -> str:
@@ -23,17 +40,23 @@ def _janam_patri_block() -> str:
     jp = run_to_dict(root / "config.yaml")
     if not jp:
         return ""
+
     lines = [
         "",
-        "═══ Janam Patri — Birth chart shlokas ═══",
+        "Janam Patri",
         f"Birth: {jp['birth_date']} {jp['birth_time']} ({jp.get('birth_place', '')})",
-        f"Janma Nakshatra: {jp['janma_nakshatra']} · Rashi: {jp['rashi']}",
-        "",
+        f"Janma Nakshatra: {jp['janma_nakshatra']} | Rashi: {jp['rashi']}",
         "Recommended verses:",
     ]
-    for v in jp.get("verses", [])[:3]:
-        lines += [v["devanagari"], v["transliteration"], f"— {v['meaning']} [{v['source']}]", ""]
-    return "\n".join(lines)
+
+    for idx, v in enumerate(jp.get("verses", [])[:3], start=1):
+        lines += [
+            f"{idx}. {v['source']}",
+            f"   Transliteration: {_strip_diacritics(v.get('transliteration', ''))}",
+            f"   Meaning: {_clean_meaning(v.get('meaning', ''))}",
+            "",
+        ]
+    return "\n".join(lines).rstrip()
 
 
 def send_digest(digest_text: str) -> dict:
@@ -41,7 +64,7 @@ def send_digest(digest_text: str) -> dict:
     if not SLACK_WEBHOOK_URL:
         return {"status": "skipped", "reason": "SLACK_WEBHOOK_URL not set"}
 
-    digest_text = digest_text + _janam_patri_block()
+    digest_text = digest_text + "\n" + _janam_patri_block()
     if SLACK_MEMBER_ID:
         digest_text = f"<@{SLACK_MEMBER_ID}>\n{digest_text}"
 

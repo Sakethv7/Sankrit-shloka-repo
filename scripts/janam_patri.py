@@ -6,7 +6,9 @@ recommended Sanskrit verses.
 """
 from __future__ import annotations
 
+import re
 import sys
+import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -151,6 +153,21 @@ def run_to_dict(config_path: Path | None = None) -> dict | None:
     }
 
 
+def _strip_diacritics(text: str) -> str:
+    """Convert transliteration with diacritics to plain ASCII-style text."""
+    if not text:
+        return ""
+    normalized = unicodedata.normalize("NFKD", text)
+    without_marks = "".join(ch for ch in normalized if not unicodedata.combining(ch))
+    return re.sub(r"\s+", " ", without_marks.replace("\n", " ")).strip()
+
+
+def _clean_meaning(text: str) -> str:
+    """Normalize spacing and drop duplicated verse prefixes like '7.3 '."""
+    clean = re.sub(r"^\s*\d+\.\d+\s*", "", text or "")
+    return re.sub(r"\s+", " ", clean).strip()
+
+
 def run(config_path: Path | None = None) -> str:
     """Load config, compute birth chart, recommend verses. Returns formatted text."""
     data = run_to_dict(config_path)
@@ -158,16 +175,18 @@ def run(config_path: Path | None = None) -> str:
         return "Janam patri is disabled or missing in config. Set janam_patri.enabled: true and birth details."
 
     lines = [
-        "═══ Janam Patri — Shloka Recommendations ═══",
+        "Janam Patri",
         f"Birth: {data['birth_date']} {data['birth_time']} ({data['birth_place']})",
-        f"Janma Nakshatra: {data['janma_nakshatra']}",
-        f"Rashi (Moon): {data['rashi']}",
-        f"Theme: {data['theme']}",
-        "",
-        "Recommended verses (Hindu tradition):",
+        f"Janma Nakshatra: {data['janma_nakshatra']} | Rashi: {data['rashi']}",
+        "Recommended verses:",
     ]
-    for v in data["verses"]:
-        lines += [f"  {v['devanagari']}", f"  {v['transliteration']}", f"  — {v['meaning']}", f"  [{v['source']}]", ""]
+    for idx, v in enumerate(data["verses"], start=1):
+        lines += [
+            f"{idx}. {v['source']}",
+            f"   Transliteration: {_strip_diacritics(v['transliteration'])}",
+            f"   Meaning: {_clean_meaning(v['meaning'])}",
+            "",
+        ]
     return "\n".join(lines)
 
 

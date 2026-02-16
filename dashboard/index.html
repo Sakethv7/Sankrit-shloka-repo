@@ -117,6 +117,23 @@
       return { runs, janam, digest };
     }
 
+    function stripDiacritics(text) {
+      if (!text) return '';
+      return text
+        .normalize('NFKD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function cleanMeaning(text) {
+      if (!text) return '';
+      return text
+        .replace(/^\s*\d+\.\d+\s*/, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
     function renderPanchang(digest) {
       const el = document.getElementById('panchang-content');
       if (!digest) {
@@ -143,9 +160,9 @@
           html += '<div class="card">';
           html += `<div class="week">${dv.date} — ${dv.paksha} ${dv.tithi}</div>`;
           if (dv.verse) {
-            html += `<div class="devanagari">${dv.verse.devanagari}</div>`;
-            html += `<div style="font-size: 0.95rem; margin-top: 0.35rem;">${dv.verse.transliteration}</div>`;
-            html += `<div class="meta">— ${dv.verse.meaning} [${dv.verse.source || ''}]</div>`;
+            html += `<div style="font-size: 0.95rem; margin-top: 0.35rem;">Transliteration: ${stripDiacritics(dv.verse.transliteration)}</div>`;
+            html += `<div class="meta">Meaning: ${cleanMeaning(dv.verse.meaning)}</div>`;
+            html += `<div class="meta">Source: ${dv.verse.source || ''}</div>`;
           }
           html += '</div>';
         });
@@ -153,9 +170,9 @@
       if (digest.verse_of_week) {
         const v = digest.verse_of_week;
         html += '<div class="card"><div class="week">Verse of the week</div>';
-        html += `<div class="devanagari">${v.devanagari}</div>`;
-        html += `<div style="font-size: 0.95rem; margin-top: 0.35rem;">${v.transliteration}</div>`;
-        html += `<div class="meta">— ${v.meaning} [${v.source || ''}]</div></div>';
+        html += `<div style="font-size: 0.95rem; margin-top: 0.35rem;">Transliteration: ${stripDiacritics(v.transliteration)}</div>`;
+        html += `<div class="meta">Meaning: ${cleanMeaning(v.meaning)}</div>`;
+        html += `<div class="meta">Source: ${v.source || ''}</div></div>';
       }
       el.innerHTML = html;
     }
@@ -169,15 +186,13 @@
       el.innerHTML = `
         <div class="card">
           <div class="week">${janam.birth_place} · ${janam.birth_date} ${janam.birth_time}</div>
-          <div class="meta">Janma Nakshatra: <strong>${janam.janma_nakshatra}</strong> · Rashi (Moon): <strong>${janam.rashi}</strong></div>
-          <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; color: var(--muted);">Theme: ${janam.theme}</p>
+          <div class="meta">Janma Nakshatra: <strong>${janam.janma_nakshatra}</strong> | Rashi: <strong>${janam.rashi}</strong></div>
         </div>
-        ${(janam.verses || []).map(v => `
+        ${(janam.verses || []).map((v, idx) => `
           <div class="card">
-            <div class="devanagari">${v.devanagari}</div>
-            <div style="font-size: 0.95rem; margin-top: 0.35rem;">${v.transliteration}</div>
-            <div class="meta">— ${v.meaning}</div>
-            <div class="meta">[${v.source}]</div>
+            <div class="week">${idx + 1}. ${v.source || 'Verse'}</div>
+            <div style="font-size: 0.95rem; margin-top: 0.35rem;">Transliteration: ${stripDiacritics(v.transliteration)}</div>
+            <div class="meta">Meaning: ${cleanMeaning(v.meaning)}</div>
           </div>
         `).join('')}
       `;
