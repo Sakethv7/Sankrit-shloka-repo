@@ -1,28 +1,15 @@
-"""Slack notification — send weekly digest + janam patri via Incoming Webhook.
-
-Uses httpx to POST the formatted digest to a Slack channel.
-Gracefully skips when SLACK_WEBHOOK_URL is not set (local dev).
-"""
+"""Slack notification — send compact weekly digest + janam patri via webhook."""
 from __future__ import annotations
 
 import os
 import re
-import unicodedata
 from pathlib import Path
 
 import httpx
 
 SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL", "")
 SLACK_MEMBER_ID = os.getenv("SLACK_MEMBER_ID", "")
-
-
-def _strip_diacritics(text: str) -> str:
-    """Convert transliteration with diacritics to plain ASCII-style text."""
-    if not text:
-        return ""
-    normalized = unicodedata.normalize("NFKD", text)
-    without_marks = "".join(ch for ch in normalized if not unicodedata.combining(ch))
-    return re.sub(r"\s+", " ", without_marks.replace("\n", " ")).strip()
+SLACK_MENTION = os.getenv("SLACK_MENTION", "")
 
 
 def _clean_meaning(text: str) -> str:
@@ -31,8 +18,39 @@ def _clean_meaning(text: str) -> str:
     return re.sub(r"\s+", " ", clean).strip()
 
 
+def _compact_verse_line(v: dict | None) -> str:
+    """Compact one-line verse summary for Slack."""
+    if not v:
+        return "No verse matched."
+    source = v.get("source", "Verse")
+    meaning = _clean_meaning(v.get("meaning", ""))
+    return f"{source}: {meaning}"
+
+
+def _weekly_block() -> str:
+    """Compact weekly block: panchang + verse of week."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from weekly_notification import build_digest
+
+    digest, _ = build_digest()
+    lines = [
+        "Weekly Panchang",
+        f"Week: {digest.week_start} -> {digest.week_end}",
+    ]
+    for p in digest.panchang_days:
+        lines.append(f"- {p.date} ({p.vaara}) | {p.paksha} {p.tithi} | {p.nakshatra} | Sunrise {p.sunrise}")
+
+    lines += [
+        "",
+        "Shloka of the Week",
+        _compact_verse_line(digest.verse),
+    ]
+    return "\n".join(lines)
+
+
 def _janam_patri_block() -> str:
-    """Format janam patri as text block for Slack; empty if disabled."""
+    """Format janam patri recommendations in compact Slack style."""
     root = Path(__file__).resolve().parent.parent
     import sys
     sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -41,21 +59,21 @@ def _janam_patri_block() -> str:
     if not jp:
         return ""
 
+    verses = jp.get("verses", [])
+    influenced = verses[0] if verses else None
+    others = verses[1:4] if len(verses) > 1 else []
+
     lines = [
         "",
         "Janam Patri",
-        f"Birth: {jp['birth_date']} {jp['birth_time']} ({jp.get('birth_place', '')})",
         f"Janma Nakshatra: {jp['janma_nakshatra']} | Rashi: {jp['rashi']}",
-        "Recommended verses:",
+        "Janam-Patri Influenced Shloka of the Week",
+        _compact_verse_line(influenced),
     ]
-
-    for idx, v in enumerate(jp.get("verses", [])[:3], start=1):
-        lines += [
-            f"{idx}. {v['source']}",
-            f"   Transliteration: {_strip_diacritics(v.get('transliteration', ''))}",
-            f"   Meaning: {_clean_meaning(v.get('meaning', ''))}",
-            "",
-        ]
+    if others:
+        lines.append("Other Recommendations")
+        for idx, v in enumerate(others, start=1):
+            lines.append(f"{idx}. {_compact_verse_line(v)}")
     return "\n".join(lines).rstrip()
 
 
@@ -67,6 +85,8 @@ def send_digest(digest_text: str) -> dict:
     digest_text = digest_text + "\n" + _janam_patri_block()
     if SLACK_MEMBER_ID:
         digest_text = f"<@{SLACK_MEMBER_ID}>\n{digest_text}"
+    elif SLACK_MENTION:
+        digest_text = f"{SLACK_MENTION}\n{digest_text}"
 
     resp = httpx.post(SLACK_WEBHOOK_URL, json={"text": digest_text}, timeout=30)
     resp.raise_for_status()
@@ -74,10 +94,8 @@ def send_digest(digest_text: str) -> dict:
 
 
 if __name__ == "__main__":
-    from weekly_notification import generate_weekly
-
-    digest = generate_weekly()
-    print(digest)
+    digest = _weekly_block()
+    print(digest + "\n" + _janam_patri_block())
     print("\n--- Sending to Slack ---")
     result = send_digest(digest)
     print(result)
