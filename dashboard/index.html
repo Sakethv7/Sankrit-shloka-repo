@@ -155,24 +155,20 @@
         });
         html += '</div>';
       }
-      if (digest.daily_verses && digest.daily_verses.length) {
-        digest.daily_verses.forEach(dv => {
-          html += '<div class="card">';
-          html += `<div class="week">${dv.date} — ${dv.paksha} ${dv.tithi}</div>`;
-          if (dv.verse) {
-            html += `<div style="font-size: 0.95rem; margin-top: 0.35rem;">Transliteration: ${stripDiacritics(dv.verse.transliteration)}</div>`;
-            html += `<div class="meta">Meaning: ${cleanMeaning(dv.verse.meaning)}</div>`;
-            html += `<div class="meta">Source: ${dv.verse.source || ''}</div>`;
-          }
-          html += '</div>';
-        });
-      }
       if (digest.verse_of_week) {
         const v = digest.verse_of_week;
         html += '<div class="card"><div class="week">Verse of the week</div>';
+        html += `<div class="devanagari">${v.devanagari || ''}</div>`;
         html += `<div style="font-size: 0.95rem; margin-top: 0.35rem;">Transliteration: ${stripDiacritics(v.transliteration)}</div>`;
         html += `<div class="meta">Meaning: ${cleanMeaning(v.meaning)}</div>`;
         html += `<div class="meta">Source: ${v.source || ''}</div></div>';
+      }
+      if (digest.lifestyle_recommendations && digest.lifestyle_recommendations.length) {
+        html += '<div class="card"><div class="week">Lifestyle recommendations</div>';
+        digest.lifestyle_recommendations.forEach(r => {
+          html += `<div class="meta">• ${r}</div>`;
+        });
+        html += '</div>';
       }
       el.innerHTML = html;
     }
@@ -183,18 +179,40 @@
         el.innerHTML = '<p class="loading">Janam patri not exported. Enable it in config.yaml and run <code>python scripts/export_mlflow_runs.py</code>.</p>';
         return;
       }
+      const verses = janam.verses || [];
+      const influenced = verses.length ? verses[0] : null;
+      const others = verses.slice(1, 4);
       el.innerHTML = `
         <div class="card">
           <div class="week">${janam.birth_place} · ${janam.birth_date} ${janam.birth_time}</div>
           <div class="meta">Janma Nakshatra: <strong>${janam.janma_nakshatra}</strong> | Rashi: <strong>${janam.rashi}</strong></div>
         </div>
-        ${(janam.verses || []).map((v, idx) => `
+        ${influenced ? `
           <div class="card">
-            <div class="week">${idx + 1}. ${v.source || 'Verse'}</div>
-            <div style="font-size: 0.95rem; margin-top: 0.35rem;">Transliteration: ${stripDiacritics(v.transliteration)}</div>
-            <div class="meta">Meaning: ${cleanMeaning(v.meaning)}</div>
+            <div class="week">Janam-Patri Influenced Shloka of the Week</div>
+            <div class="devanagari">${influenced.devanagari || ''}</div>
+            <div style="font-size: 0.95rem; margin-top: 0.35rem;">Transliteration: ${stripDiacritics(influenced.transliteration)}</div>
+            <div class="meta">Meaning: ${cleanMeaning(influenced.meaning)}</div>
+            <div class="meta">Source: ${influenced.source || ''}</div>
           </div>
-        `).join('')}
+        ` : ''}
+        ${others.length ? `
+          <div class="card">
+            <div class="week">Other recommendations</div>
+            ${others.map((v, idx) => `
+              <div class="meta"><strong>${idx + 1}. ${v.source || 'Verse'}</strong></div>
+              <div class="devanagari">${v.devanagari || ''}</div>
+              <div style="font-size: 0.95rem; margin-top: 0.2rem;">${stripDiacritics(v.transliteration)}</div>
+              <div class="meta">Meaning: ${cleanMeaning(v.meaning)}</div>
+            `).join('')}
+          </div>
+        ` : ''}
+        ${(janam.lifestyle_recommendations && janam.lifestyle_recommendations.length) ? `
+          <div class="card">
+            <div class="week">Janam-Patri lifestyle guidance</div>
+            ${janam.lifestyle_recommendations.map(r => `<div class="meta">• ${r}</div>`).join('')}
+          </div>
+        ` : ''}
       `;
     }
 

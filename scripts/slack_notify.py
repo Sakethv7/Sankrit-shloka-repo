@@ -19,12 +19,15 @@ def _clean_meaning(text: str) -> str:
 
 
 def _compact_verse_line(v: dict | None) -> str:
-    """Compact one-line verse summary for Slack."""
+    """Compact multi-line verse summary for Slack including Sanskrit."""
     if not v:
         return "No verse matched."
+    devanagari = (v.get("devanagari") or "").strip()
+    transliteration = (v.get("transliteration") or "").strip()
     source = v.get("source", "Verse")
     meaning = _clean_meaning(v.get("meaning", ""))
-    return f"{source}: {meaning}"
+    parts = [p for p in [devanagari, transliteration, f"{meaning} [{source}]"] if p]
+    return "\n".join(parts)
 
 
 def _weekly_block() -> str:
@@ -46,6 +49,9 @@ def _weekly_block() -> str:
         "Shloka of the Week",
         _compact_verse_line(digest.verse),
     ]
+    if digest.lifestyle_recommendations:
+        lines += ["", "Lifestyle Recommendations"]
+        lines += [f"- {r}" for r in digest.lifestyle_recommendations]
     return "\n".join(lines)
 
 
@@ -73,7 +79,11 @@ def _janam_patri_block() -> str:
     if others:
         lines.append("Other Recommendations")
         for idx, v in enumerate(others, start=1):
-            lines.append(f"{idx}. {_compact_verse_line(v)}")
+            lines.append(f"{idx}.\n{_compact_verse_line(v)}")
+    lifestyle = jp.get("lifestyle_recommendations", [])
+    if lifestyle:
+        lines.append("Janam-Patri Lifestyle Guidance")
+        lines += [f"- {r}" for r in lifestyle]
     return "\n".join(lines).rstrip()
 
 

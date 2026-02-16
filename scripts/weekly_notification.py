@@ -61,6 +61,7 @@ class WeeklyDigest:
     observances: list[Observance] = field(default_factory=list)
     verse: dict | None = None
     daily_verses: list[DailyVerse] = field(default_factory=list)
+    lifestyle_recommendations: list[str] = field(default_factory=list)
 
 
 # ── Observance Detection ─────────────────────────────────────────────
@@ -143,6 +144,30 @@ def get_daily_verses(panchang_days: list[DailyPanchang], dates: list[dt.date], o
     return out
 
 
+def build_lifestyle_recommendations(
+    panchang_days: list[DailyPanchang],
+    observances: list[Observance],
+) -> list[str]:
+    """Generate concise, practical weekly lifestyle recommendations."""
+    recs: list[str] = []
+    obs_names = {o.name for o in observances}
+    tithis = {p.tithi for p in panchang_days}
+
+    if "Amavasya" in obs_names:
+        recs.append("Amavasya week: spend time in quiet reflection and gratitude for ancestors.")
+    if "Ekadashi" in obs_names:
+        recs.append("Ekadashi: keep meals light and sattvic, with extra hydration and simple japa.")
+    if "Sankashti Chaturthi" in obs_names or "Chaturthi" in tithis:
+        recs.append("Chaturthi energy: clear one pending task and remove one source of clutter.")
+    if any(p.vaara == "Somavara" for p in panchang_days):
+        recs.append("Somavara: start the week with a short sankalpa and 10 minutes of silence.")
+    if any(p.vaara == "Guruvara" for p in panchang_days):
+        recs.append("Guruvara: reserve time for study, guidance, or one act of teaching.")
+
+    recs.append("Daily anchor: avoid digital overload for one focused hour after sunrise.")
+    return recs[:5]
+
+
 # ── Output ───────────────────────────────────────────────────────────
 
 def format_digest(digest: WeeklyDigest) -> str:
@@ -183,6 +208,10 @@ def format_digest(digest: WeeklyDigest) -> str:
             f"  — {digest.verse['meaning']}",
             f"  [{digest.verse.get('source', '')}]",
         ]
+
+    if digest.lifestyle_recommendations:
+        lines += ["", "🌿 Lifestyle recommendations:"]
+        lines += [f"  • {r}" for r in digest.lifestyle_recommendations]
     return "\n".join(lines)
 
 
@@ -194,9 +223,10 @@ def build_digest(start: dt.date | None = None) -> tuple[WeeklyDigest, dict]:
     days, observances = get_week_data(start)
     verse, meta = pair_verse(observances, days)
     daily_verses = get_daily_verses(days, dates, observances)
+    lifestyle_recs = build_lifestyle_recommendations(days, observances)
     digest = WeeklyDigest(
         week_start=start, week_end=end, panchang_days=days, observances=observances,
-        verse=verse, daily_verses=daily_verses,
+        verse=verse, daily_verses=daily_verses, lifestyle_recommendations=lifestyle_recs,
     )
     return digest, meta
 
@@ -215,6 +245,7 @@ def digest_to_dict(digest: WeeklyDigest) -> dict:
         "observances": obs_list,
         "daily_verses": daily,
         "verse_of_week": digest.verse,
+        "lifestyle_recommendations": digest.lifestyle_recommendations,
     }
 
 

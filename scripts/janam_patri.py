@@ -61,6 +61,14 @@ NAKSHATRA_THEME = {
     "Revati": "Pushan nourishment",
 }
 
+NAKSHATRA_LIFESTYLE = {
+    "Punarvasu": [
+        "Keep mornings uncluttered; begin with a short prayer and fresh air.",
+        "Nurture home energy: one small act of care in your living space daily.",
+        "Prefer steady routines over sudden lifestyle swings this week.",
+    ],
+}
+
 
 @dataclass
 class BirthChart:
@@ -138,6 +146,14 @@ def run_to_dict(config_path: Path | None = None) -> dict | None:
     rashi = jp.get("rashi") or chart.rashi
     theme = NAKSHATRA_THEME.get(janma_nakshatra, f"{janma_nakshatra} devotion dharma")
     verses = recommend_verses(theme, top_k=5)
+    lifestyle = NAKSHATRA_LIFESTYLE.get(
+        janma_nakshatra,
+        [
+            "Maintain a steady wake-sleep cycle and keep one daily reflection practice.",
+            "Choose sattvic food and avoid over-stimulation in late evenings.",
+            "Do one intentional act of service each week.",
+        ],
+    )
 
     return {
         "birth_date": birth_date,
@@ -146,6 +162,7 @@ def run_to_dict(config_path: Path | None = None) -> dict | None:
         "janma_nakshatra": janma_nakshatra,
         "rashi": rashi,
         "theme": theme,
+        "lifestyle_recommendations": lifestyle,
         "verses": [
             {"devanagari": v.devanagari, "transliteration": v.transliteration, "meaning": v.meaning, "source": v.source}
             for v in verses
