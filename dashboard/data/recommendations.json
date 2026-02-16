@@ -1,5 +1,25 @@
 [
   {
+    "run_id": "36bf9b988fcf48d88eadf7b75ee16b6d",
+    "week": "2026-02-16",
+    "verse_id": "bg-1.1",
+    "verse_source": "Bhagavad Gita 1.1",
+    "observances": "Amavasya",
+    "observance_count": 1,
+    "search_latency_ms": 8131.3,
+    "start_time": "1771279984269"
+  },
+  {
+    "run_id": "c5f03c003a05495fa77372f6c06abef2",
+    "week": "2026-02-16",
+    "verse_id": "bg-1.1",
+    "verse_source": "Bhagavad Gita 1.1",
+    "observances": "Amavasya",
+    "observance_count": 1,
+    "search_latency_ms": 10973.8,
+    "start_time": "1771279889061"
+  },
+  {
     "run_id": "bb245baf694a4ef8ae9a105acff72aba",
     "week": "2026-02-16",
     "verse_id": "bg-1.1",
