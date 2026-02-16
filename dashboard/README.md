@@ -2,7 +2,62 @@
 
 View your **tithi-based weekly shlokas**, **janam patri recommendations**, and **insights** from past digests.
 
-## What it shows
+## Two ways to view
+
+| Option | Data source | Run |
+|--------|-------------|-----|
+| **Static HTML** | JSON files | `export_mlflow_runs.py` → `serve_dashboard.py` or `python -m http.server` |
+| **Streamlit (modern)** | SQLite | `export_to_sqlite.py` → `streamlit run dashboard/streamlit_app.py` |
+
+The **Streamlit** app reads from a single SQLite DB (metadata/tables). Use it for a modern, interactive report with tables and charts. The **static HTML** dashboard reads from JSON and needs no extra deps beyond a browser.
+
+---
+
+## Modern dashboard (Streamlit + SQLite)
+
+All data is written into **one SQLite database** (`dashboard/data/vedic_wisdom.db`) so you can query it, plug in other tools (Metabase, Superset, Evidence), or use the built-in Streamlit UI.
+
+### 1. Export to SQLite (metadata/tables)
+
+From the **project root**:
+
+```bash
+python scripts/export_to_sqlite.py
+```
+
+This builds (or updates) `dashboard/data/vedic_wisdom.db` with tables:
+
+- **runs** — MLflow notification runs (week, verse, observances, latency).
+- **weeks** — Exported week range.
+- **panchang_days** — Daily tithi, nakshatra, sunrise per week.
+- **observances** — Observances per week.
+- **daily_verses** — Shloka per day (tithi-based).
+- **verse_of_week** — Single verse of the week.
+- **janam_patri** — Birth chart (nakshatra, rashi, theme).
+- **janam_patri_verses** — Recommended verses for janam patri.
+
+Run again after generating a new weekly digest or changing janam patri.
+
+### 2. Run the Streamlit dashboard
+
+From the **project root**:
+
+```bash
+streamlit run dashboard/streamlit_app.py
+```
+
+Opens a local tab with:
+
+- **This week** — Panchang table, observances, shloka-by-tithi (expandable), verse of the week.
+- **Janam patri** — Nakshatra, rashi, birth, recommended verses.
+- **History** — Table of past runs.
+- **Insights** — Metrics and a simple bar chart (observance count by week).
+
+You can point **Metabase**, **Apache Superset**, or **Evidence** at `dashboard/data/vedic_wisdom.db` to build your own reports.
+
+---
+
+## What the static HTML dashboard shows
 
 - **Janam Patri** — Birth place, janma nakshatra, rashi, and recommended shlokas (from your birth chart).
 - **Insights** — Weeks tracked, total observances, most recommended verse, most frequent observance.

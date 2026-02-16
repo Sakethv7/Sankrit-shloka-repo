@@ -31,8 +31,12 @@ Edit **`config.yaml`** for:
 
 ## Dashboard
 
-1. Export data: `python scripts/export_mlflow_runs.py`
-2. Serve: `python scripts/serve_dashboard.py` → open http://localhost:8080
+**Option A — Static HTML:**  
+`python scripts/export_mlflow_runs.py` then `python scripts/serve_dashboard.py` → http://localhost:8080
+
+**Option B — Modern (Streamlit + SQLite):**  
+`python scripts/export_to_sqlite.py` then `streamlit run dashboard/streamlit_app.py`  
+Data goes into one SQLite DB (metadata/tables); you can also plug Metabase, Superset, or Evidence into that DB.
 
 See **`dashboard/README.md`** for details.
 
