@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vedic Wisdom — Recommendations & Insights</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,600&family=Noto+Sans+Devanagari:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --border: #2d2d2d;
+      --text: #e8e4df;
+      --muted: #8a8580;
+      --accent: #c4a35a;
+      --accent-dim: #9a8242;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "DM Sans", system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+    h1 {
+      font-family: Literata, serif;
+      font-weight: 600;
+      font-size: 1.75rem;
+      margin-bottom: 0.25rem;
+      color: var(--accent);
+    }
+    .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 2rem; }
+    section { margin-bottom: 2.5rem; }
+    section h2 {
+      font-family: Literata, serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+    .card .week { font-weight: 600; color: var(--accent-dim); }
+    .card .meta { font-size: 0.9rem; color: var(--muted); margin-top: 0.35rem; }
+    .devanagari { font-family: "Noto Sans Devanagari", sans-serif; font-size: 1.1rem; }
+    .insight-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+    .insight-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .insight-box .value { font-size: 1.5rem; font-weight: 600; color: var(--accent); }
+    .insight-box .label { font-size: 0.85rem; color: var(--muted); margin-top: 0.25rem; }
+    .loading { color: var(--muted); }
+    .error { color: #c75c5c; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Vedic Wisdom Weekly</h1>
+    <p class="subtitle">Recommendations & insights (tithi-based shlokas, EST)</p>
+
+    <section id="janam-patri">
+      <h2>Janam Patri — Birth chart shlokas</h2>
+      <div id="janam-content"></div>
+    </section>
+
+    <section id="insights">
+      <h2>Insights</h2>
+      <div id="insights-content" class="insight-grid"></div>
+    </section>
+
+    <section id="history">
+      <h2>Weekly recommendation history</h2>
+      <div id="history-content"></div>
+    </section>
+  </div>
+
+  <script>
+    const RECOMMENDATIONS_URL = 'data/recommendations.json';
+    const JANAM_PATRI_URL = 'data/janam_patri.json';
+
+    async function loadJson(url) {
+      const res = await fetch(url);
+      if (!res.ok) return null;
+      return res.json();
+    }
+
+    async function loadData() {
+      const [runs, janam] = await Promise.all([
+        loadJson(RECOMMENDATIONS_URL).then(r => r || []),
+        loadJson(JANAM_PATRI_URL),
+      ]);
+      if (!Array.isArray(runs)) throw new Error('Could not load recommendations.json. Run: python scripts/export_mlflow_runs.py');
+      return { runs, janam };
+    }
+
+    function renderJanamPatri(janam) {
+      const el = document.getElementById('janam-content');
+      if (!janam) {
+        el.innerHTML = '<p class="loading">Janam patri not exported. Enable it in config.yaml and run <code>python scripts/export_mlflow_runs.py</code>.</p>';
+        return;
+      }
+      el.innerHTML = `
+        <div class="card">
+          <div class="week">${janam.birth_place} · ${janam.birth_date} ${janam.birth_time}</div>
+          <div class="meta">Janma Nakshatra: <strong>${janam.janma_nakshatra}</strong> · Rashi (Moon): <strong>${janam.rashi}</strong></div>
+          <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; color: var(--muted);">Theme: ${janam.theme}</p>
+        </div>
+        ${(janam.verses || []).map(v => `
+          <div class="card">
+            <div class="devanagari">${v.devanagari}</div>
+            <div style="font-size: 0.95rem; margin-top: 0.35rem;">${v.transliteration}</div>
+            <div class="meta">— ${v.meaning}</div>
+            <div class="meta">[${v.source}]</div>
+          </div>
+        `).join('')}
+      `;
+    }
+
+    function renderInsights(runs) {
+      if (!runs.length) {
+        document.getElementById('insights-content').innerHTML = '<p class="loading">No runs yet. Generate a weekly digest first.</p>';
+        return;
+      }
+      const verseCounts = {};
+      const observanceCounts = {};
+      runs.forEach(r => {
+        const v = r.verse_id || 'none';
+        verseCounts[v] = (verseCounts[v] || 0) + 1;
+        const obs = (r.observances || '').split(',').map(s => s.trim()).filter(Boolean);
+        obs.forEach(o => { observanceCounts[o] = (observanceCounts[o] || 0) + 1; });
+      });
+      const topVerse = Object.entries(verseCounts).sort((a, b) => b[1] - a[1])[0];
+      const topObs = Object.entries(observanceCounts).sort((a, b) => b[1] - a[1])[0];
+      const totalObs = runs.reduce((s, r) => s + (r.observance_count || 0), 0);
+      document.getElementById('insights-content').innerHTML = [
+        { value: runs.length, label: 'Weeks tracked' },
+        { value: totalObs, label: 'Total observances' },
+        { value: topVerse ? topVerse[0] : '—', label: 'Most recommended verse' },
+        { value: topObs ? topObs[0] : '—', label: 'Most frequent observance' },
+      ].map(({ value, label }) =>
+        `<div class="insight-box"><div class="value">${value}</div><div class="label">${label}</div></div>`
+      ).join('');
+    }
+
+    function renderHistory(runs) {
+      const el = document.getElementById('history-content');
+      if (!runs.length) {
+        el.innerHTML = '<p class="loading">No recommendations yet. Run <code>python scripts/weekly_notification.py</code> then <code>python scripts/export_mlflow_runs.py</code>.</p>';
+        return;
+      }
+      el.innerHTML = runs.map(r =>
+        `<div class="card">
+          <div class="week">Week ${r.week || '—'}</div>
+          <div>Verse: ${r.verse_source || r.verse_id || '—'}</div>
+          <div class="meta">Observances: ${r.observances || '—'} (${r.observance_count || 0}) · ${r.search_latency_ms ? r.search_latency_ms + ' ms' : ''}</div>
+        </div>`
+      ).join('');
+    }
+
+    loadData()
+      .then(({ runs, janam }) => {
+        renderJanamPatri(janam);
+        renderInsights(runs);
+        renderHistory(runs);
+      })
+      .catch(e => {
+        document.getElementById('history-content').innerHTML = `<p class="error">${e.message}</p>`;
+        document.getElementById('janam-content').innerHTML = '';
+        document.getElementById('insights-content').innerHTML = '';
+      });
+  </script>
+</body>
+</html>

@@ -11,7 +11,10 @@ Python 3.11+ | httpx | MLflow | Qdrant (optional) | Supermemory (optional)
 
 ## Commands
 ```bash
-python scripts/weekly_notification.py                              # Generate weekly digest
+python scripts/weekly_notification.py                              # Tithi-aware weekly digest (EST) + shlokas
+python scripts/janam_patri.py                                      # Birth chart shloka recommendations
+python scripts/export_mlflow_runs.py                               # Export data for dashboard
+python scripts/serve_dashboard.py                                  # Serve dashboard at http://localhost:8080
 python skills/sanskrit-wisdom/scripts/verse_search.py "karma yoga" # Search verses
 python skills/karpathy-code-quality/guardrails.py .                # Lint project
 mlflow ui --port 5000                                              # Tracking UI
@@ -48,8 +51,15 @@ return False
 ## Structure
 ```
 scripts/
-  weekly_notification.py          # Main generator (panchangam + verse pairing)
+  weekly_notification.py          # Tithi-aware digest (panchangam + verse per day)
+  janam_patri.py                  # Birth nakshatra/rashi + shloka recommendations
+  export_mlflow_runs.py           # Export MLflow + janam patri to dashboard data
+  serve_dashboard.py              # Local server for dashboard
   supermemory_sync.py             # Long-term memory push to Supermemory API
+dashboard/
+  index.html                      # Dashboard UI (janam patri, insights, history)
+  data/                           # recommendations.json, janam_patri.json (generated)
+  README.md                       # How to run the dashboard
 skills/
   sanskrit-wisdom/
     scripts/verse_search.py       # Keyword search over verse corpus (Qdrant-ready)
@@ -78,7 +88,7 @@ config.yaml                       # User preferences & tradition settings
 - [ ] Qdrant embeddings for full Gita (replace keyword search in verse_search.py)
 - [ ] Supermemory MCP for Claude Desktop
 - [ ] Email/push notifications
-- [ ] React dashboard
+- [x] Dashboard (static HTML; see dashboard/README.md)
 
 ## Env Vars
 ```bash

@@ -34,6 +34,25 @@ class Observance:
     description: str = ""
 
 
+# Tithi → search theme for shloka (Hindu calendar; EST already in panchang)
+TITHI_QUERY_MAP = {
+    "Pratipada": "Ganesha beginning auspicious",
+    "Chaturthi": "Ganesha chaturthi obstacles",
+    "Ekadashi": "Vishnu ekadashi devotion",
+    "Trayodashi": "Shiva pradosham",
+    "Amavasya": "pitru ancestors amavasya tarpanam",
+    "Purnima": "full moon devotion",
+    "Dwadashi": "Vishnu devotion",
+}
+
+@dataclass
+class DailyVerse:
+    date: dt.date
+    tithi: str
+    paksha: str
+    verse: dict | None
+
+
 @dataclass
 class WeeklyDigest:
     week_start: dt.date
@@ -41,6 +60,7 @@ class WeeklyDigest:
     panchang_days: list[DailyPanchang] = field(default_factory=list)
     observances: list[Observance] = field(default_factory=list)
     verse: dict | None = None
+    daily_verses: list[DailyVerse] = field(default_factory=list)
 
 
 # ── Observance Detection ─────────────────────────────────────────────
@@ -101,6 +121,28 @@ def pair_verse(observances: list[Observance], panchang_days: list[DailyPanchang]
     return _verse_to_dict(results[0]), meta
 
 
+def _query_for_tithi(p: DailyPanchang, observance_for_day: list[Observance]) -> str:
+    """Build search query for this day from tithi and any observance (EST day already in p)."""
+    if observance_for_day:
+        return " ".join([f"{o.name} {o.deity} {o.description}" for o in observance_for_day])
+    return TITHI_QUERY_MAP.get(p.tithi, f"{p.tithi} {p.nakshatra} dharma")
+
+
+def get_daily_verses(panchang_days: list[DailyPanchang], dates: list[dt.date], observances: list[Observance]) -> list[DailyVerse]:
+    """One shloka per day by tithi (and observance) for the week — EST dates."""
+    obs_by_date: dict[dt.date, list[Observance]] = {}
+    for o in observances:
+        obs_by_date.setdefault(o.date, []).append(o)
+    out = []
+    for p, day in zip(panchang_days, dates):
+        obs = obs_by_date.get(day, [])
+        query = _query_for_tithi(p, obs)
+        results = semantic_search(query, top_k=1) or keyword_search(query, top_k=1)
+        verse = _verse_to_dict(results[0]) if results else None
+        out.append(DailyVerse(date=p.date, tithi=p.tithi, paksha=p.paksha, verse=verse))
+    return out
+
+
 # ── Output ───────────────────────────────────────────────────────────
 
 def format_digest(digest: WeeklyDigest) -> str:
@@ -119,6 +161,19 @@ def format_digest(digest: WeeklyDigest) -> str:
     else:
         lines.append("No major observances this week.")
 
+    if digest.daily_verses:
+        lines.append("")
+        lines.append("📿 Shloka by Tithi (this week, EST):")
+        for dv in digest.daily_verses:
+            tithi_line = f"  {dv.date} ({dv.paksha} {dv.tithi})"
+            if dv.verse:
+                lines.append(tithi_line)
+                lines.append(f"    {dv.verse['devanagari']}")
+                lines.append(f"    {dv.verse['transliteration']}")
+                lines.append(f"    — {dv.verse['meaning']} [{dv.verse.get('source', '')}]")
+            else:
+                lines.append(f"{tithi_line} — (no verse matched)")
+
     if digest.verse:
         lines += [
             "",
@@ -135,9 +190,14 @@ def generate_weekly(start: dt.date | None = None) -> str:
     """Entry point — generate this week's notification and log to MLflow."""
     start = start or dt.date.today()
     end = start + dt.timedelta(days=6)
+    dates = [start + dt.timedelta(days=i) for i in range(7)]
     days, observances = get_week_data(start)
     verse, meta = pair_verse(observances, days)
-    digest = WeeklyDigest(week_start=start, week_end=end, panchang_days=days, observances=observances, verse=verse)
+    daily_verses = get_daily_verses(days, dates, observances)
+    digest = WeeklyDigest(
+        week_start=start, week_end=end, panchang_days=days, observances=observances,
+        verse=verse, daily_verses=daily_verses,
+    )
     digest_text = format_digest(digest)
     log_notification(
         week=str(start),

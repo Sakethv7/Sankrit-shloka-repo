@@ -34,5 +34,6 @@ jobs:
       - name: Send weekly digest to Slack
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_MEMBER_ID: ${{ secrets.SLACK_MEMBER_ID }}
         run: |
           python scripts/slack_notify.py

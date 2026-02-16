@@ -43,6 +43,21 @@ panchayatana:
 # Primary mantra
 mantra: Om Namo Bhagavate Vasudevaya
 
+# Janam patri (birth chart) — for nakshatra/rashi-based shloka recommendations
+# Optional: set for personalized verse suggestions by birth nakshatra
+janam_patri:
+  enabled: true
+  birth_date: "2000-04-11"   # YYYY-MM-DD (April 11, 2000)
+  birth_time: "10:30"        # HH:MM local (10:30 AM at birth place)
+  birth_place:
+    city: New Delhi
+    lat: 28.6139
+    lon: 77.2090
+    tz_offset: 5.5            # IST (UTC+5:30)
+  # Your known janam patri (used for recommendations when set)
+  rashi: Mithuna
+  janma_nakshatra: Punarvasu
+
 # Notification preferences
 notifications:
   day: Sunday          # day of the week to send
