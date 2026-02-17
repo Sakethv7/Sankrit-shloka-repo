@@ -84,11 +84,11 @@ config.yaml                       # User preferences & tradition settings
 - System: Amanta | Era: Salivahana Saka | New Year: Ugadi
 
 ## TODOs
-- [ ] DrikPanchang API integration (replace stub in weekly_notification.py)
-- [ ] Qdrant embeddings for full Gita (replace keyword search in verse_search.py)
+- [ ] Optional: DrikPanchang API integration (current panchang uses Swiss Ephemeris)
+- [ ] Optional: Qdrant embeddings for full Gita (ingest exists; ensure it runs in CI cache)
 - [ ] Supermemory MCP for Claude Desktop
 - [ ] Email/push notifications
-- [x] Dashboard (static HTML; see dashboard/README.md)
+- [x] Dashboard (static HTML; see dashboard/README.md) + GitHub Pages deploy
 
 ## Env Vars
 ```bash
@@ -97,4 +97,4 @@ MLFLOW_TRACKING_URI=sqlite:///mlflow.db
 ```
 
 ## Sanskrit Output Format
-Always include all three: **Devanagari** + **Transliteration** + **Meaning**
+Prefer all three when context allows: **Devanagari** + **Transliteration** + **Meaning**
