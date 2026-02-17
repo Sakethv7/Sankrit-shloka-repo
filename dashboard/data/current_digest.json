@@ -1,15 +1,7 @@
 {
-  "week_start": "2026-02-16",
-  "week_end": "2026-02-22",
+  "week_start": "2026-02-17",
+  "week_end": "2026-02-23",
   "panchang_days": [
-    {
-      "date": "2026-02-16",
-      "vaara": "Somavara",
-      "tithi": "Chaturdashi",
-      "paksha": "Krishna",
-      "nakshatra": "Shravana",
-      "sunrise": "06:49"
-    },
     {
       "date": "2026-02-17",
       "vaara": "Mangalavara",
@@ -57,6 +49,14 @@
       "paksha": "Shukla",
       "nakshatra": "Ashwini",
       "sunrise": "06:40"
+    },
+    {
+      "date": "2026-02-23",
+      "vaara": "Somavara",
+      "tithi": "Saptami",
+      "paksha": "Shukla",
+      "nakshatra": "Bharani",
+      "sunrise": "06:39"
     }
   ],
   "observances": [
@@ -68,17 +68,6 @@
     }
   ],
   "daily_verses": [
-    {
-      "date": "2026-02-16",
-      "tithi": "Chaturdashi",
-      "paksha": "Krishna",
-      "verse": {
-        "devanagari": "\u0950 \u0924\u0924\u094d\u0938\u0926\u093f\u0924\u093f \u0936\u094d\u0930\u0940\u092e\u0926\u094d\u092d\u0917\u0935\u0926\u094d\u0917\u0940\u0924\u093e\u0938\u0942\u092a\u0928\u093f\u0937\u0924\u094d\u0938\u0941\n\u092c\u094d\u0930\u0939\u094d\u092e\u0935\u093f\u0926\u094d\u092f\u093e\u092f\u093e\u0902 \u092f\u094b\u0917\u0936\u093e\u0938\u094d\u0924\u094d\u0930\u0947 \u0936\u094d\u0930\u0940\u0915\u0943\u0937\u094d\u0923\u093e\u0930\u094d\u091c\u0941\u0928\u0938\u0902\u0935\u093e\u0926\u0947\n\u091c\u094d\u091e\u093e\u0928\u0915\u0930\u094d\u092e\u0938\u0902\u0928\u094d\u092f\u093e\u0938\u092f\u094b\u0917\u094b \u0928\u093e\u092e \u091a\u0924\u0941\u0930\u094d\u0925\u094b\u093d\u0927\u094d\u092f\u093e\u092f\u0903 ||\u096a||",
-        "transliteration": "OM tatsaditi \u015br\u012bmadbhagavadg\u012bt\u0101s\u016bpani\u1e63atsu brahmavidy\u0101y\u0101\u1e43 yoga\u015b\u0101stre \u015br\u012bk\u1e5b\u1e63\u1e47\u0101rjunasa\u1e43v\u0101de j\u00f1\u0101nakarmasa\u1e43ny\u0101sayogo n\u0101ma caturtho.adhy\u0101ya\u1e25 ||4-43||",
-        "meaning": "Swami Sivananda did not comment on this sloka",
-        "source": "Bhagavad Gita 4.43"
-      }
-    },
     {
       "date": "2026-02-17",
       "tithi": "Amavasya",
@@ -144,13 +133,24 @@
         "meaning": "18.74 Sanjaya said  Thus I have heard this wonderful dialogue between Krishna and the high-souled Arjuna, which causes the hair to stand on end.",
         "source": "Bhagavad Gita 18.74"
       }
+    },
+    {
+      "date": "2026-02-23",
+      "tithi": "Saptami",
+      "paksha": "Shukla",
+      "verse": {
+        "devanagari": "\u0905\u0930\u094d\u091c\u0941\u0928 \u0909\u0935\u093e\u091a |\n\u0915\u0925\u0902 \u092d\u0940\u0937\u094d\u092e\u092e\u0939\u0902 \u0938\u0919\u094d\u0916\u094d\u092f\u0947 \u0926\u094d\u0930\u094b\u0923\u0902 \u091a \u092e\u0927\u0941\u0938\u0942\u0926\u0928 |\n\u0907\u0937\u0941\u092d\u093f\u0903 \u092a\u094d\u0930\u0924\u093f\u092f\u094b\u0924\u094d\u0938\u094d\u092f\u093e\u092e\u093f \u092a\u0942\u091c\u093e\u0930\u094d\u0939\u093e\u0935\u0930\u093f\u0938\u0942\u0926\u0928 ||\u0968-\u096a||",
+        "transliteration": "arjuna uv\u0101ca .\nkatha\u1e43 bh\u012b\u1e63mamaha\u1e43 sa\u1e45khye dro\u1e47a\u1e43 ca madhus\u016bdana .\ni\u1e63ubhi\u1e25 pratiyotsy\u0101mi p\u016bj\u0101rh\u0101varis\u016bdana ||2-4||",
+        "meaning": "2.4 Arjuna said  How, O Madhusudana, shall I fight in battle with arrows against Bhishma and Drona, who are fit to be worshipped, O destroyer of enemies?",
+        "source": "Bhagavad Gita 2.4"
+      }
     }
   ],
   "verse_of_week": {
-    "devanagari": "\u0927\u0943\u0924\u0930\u093e\u0937\u094d\u091f\u094d\u0930 \u0909\u0935\u093e\u091a |\n\u0927\u0930\u094d\u092e\u0915\u094d\u0937\u0947\u0924\u094d\u0930\u0947 \u0915\u0941\u0930\u0941\u0915\u094d\u0937\u0947\u0924\u094d\u0930\u0947 \u0938\u092e\u0935\u0947\u0924\u093e \u092f\u0941\u092f\u0941\u0924\u094d\u0938\u0935\u0903 |\n\u092e\u093e\u092e\u0915\u093e\u0903 \u092a\u093e\u0923\u094d\u0921\u0935\u093e\u0936\u094d\u091a\u0948\u0935 \u0915\u093f\u092e\u0915\u0941\u0930\u094d\u0935\u0924 \u0938\u091e\u094d\u091c\u092f ||\u0967-\u0967||",
-    "transliteration": "dh\u1e5btar\u0101\u1e63\u1e6dra uv\u0101ca .\ndharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 .\nm\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya ||1-1||",
-    "meaning": "1.1 Dhritarashtra said  What did my people and the sons of Pandu do when they had assembled\ntogether eager for battle on the holy plain of Kurukshetra, O Sanjaya.",
-    "source": "Bhagavad Gita 1.1"
+    "devanagari": "\u0905\u0928\u0928\u094d\u0924\u0935\u093f\u091c\u092f\u0902 \u0930\u093e\u091c\u093e \u0915\u0941\u0928\u094d\u0924\u0940\u092a\u0941\u0924\u094d\u0930\u094b \u092f\u0941\u0927\u093f\u0937\u094d\u0920\u093f\u0930\u0903 |\n\u0928\u0915\u0941\u0932\u0903 \u0938\u0939\u0926\u0947\u0935\u0936\u094d\u091a \u0938\u0941\u0918\u094b\u0937\u092e\u0923\u093f\u092a\u0941\u0937\u094d\u092a\u0915\u094c ||\u0967-\u0967\u096c||",
+    "transliteration": "anantavijaya\u1e43 r\u0101j\u0101 kunt\u012bputro yudhi\u1e63\u1e6dhira\u1e25 .\nnakula\u1e25 sahadeva\u015bca sugho\u1e63ama\u1e47ipu\u1e63pakau ||1-16||",
+    "meaning": "1.16. The king Yodhishthira, the son of Kunti, blew the Anantavijaya;\nNakula and Sahadeva blew the Sughosha and the Manipushpaka.",
+    "source": "Bhagavad Gita 1.16"
   },
   "lifestyle_recommendations": [
     "Amavasya week: spend time in quiet reflection and gratitude for ancestors.",
