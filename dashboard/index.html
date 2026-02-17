@@ -66,6 +66,9 @@
     }
     .insight-box .value { font-size: 1.5rem; font-weight: 600; color: var(--accent); }
     .insight-box .label { font-size: 0.85rem; color: var(--muted); margin-top: 0.25rem; }
+    .kpi-title { font-size: 0.9rem; font-weight: 600; color: var(--accent-dim); margin-bottom: 0.35rem; }
+    .trend-list { margin-top: 0.35rem; }
+    .trend-row { display: flex; justify-content: space-between; gap: 1rem; margin: 0.2rem 0; color: var(--muted); font-size: 0.9rem; }
     .loading { color: var(--muted); }
     .error { color: #c75c5c; }
   </style>
@@ -186,6 +189,7 @@
         <div class="card">
           <div class="week">${janam.birth_place} · ${janam.birth_date} ${janam.birth_time}</div>
           <div class="meta">Janma Nakshatra: <strong>${janam.janma_nakshatra}</strong> | Rashi: <strong>${janam.rashi}</strong></div>
+          <div class="meta">Theme: ${janam.theme || '—'}</div>
         </div>
         ${influenced ? `
           <div class="card">
@@ -216,30 +220,80 @@
       `;
     }
 
-    function renderInsights(runs) {
+    function classifySampradaya(source) {
+      const s = (source || '').toLowerCase();
+      if (s.includes('vishnu')) return 'Vaishnava';
+      if (s.includes('ganesha')) return 'Ganapatya';
+      if (s.includes('shiva')) return 'Shaiva';
+      if (s.includes('pitru')) return 'Smarta/Pitru';
+      if (s.includes('bhagavad gita')) return 'Vedanta/Gita';
+      return 'General Hindu';
+    }
+
+    function detectScript(text) {
+      if (!text) return 'Unknown';
+      if (/[\u0900-\u097F]/.test(text)) return 'Devanagari';
+      if (/[A-Za-z]/.test(text)) return 'Latin';
+      return 'Other';
+    }
+
+    function renderInsights(runs, janam, digest) {
       if (!runs.length) {
         document.getElementById('insights-content').innerHTML = '<p class="loading">No runs yet. Generate a weekly digest first.</p>';
         return;
       }
       const verseCounts = {};
       const observanceCounts = {};
+      const sampradayaCounts = {};
+      const weeklyRows = [];
       runs.forEach(r => {
         const v = r.verse_id || 'none';
         verseCounts[v] = (verseCounts[v] || 0) + 1;
+        const source = r.verse_source || 'Unknown';
+        const sam = classifySampradaya(source);
+        sampradayaCounts[sam] = (sampradayaCounts[sam] || 0) + 1;
+        weeklyRows.push({ week: r.week || '—', source, sampradaya: sam });
         const obs = (r.observances || '').split(',').map(s => s.trim()).filter(Boolean);
         obs.forEach(o => { observanceCounts[o] = (observanceCounts[o] || 0) + 1; });
       });
       const topVerse = Object.entries(verseCounts).sort((a, b) => b[1] - a[1])[0];
       const topObs = Object.entries(observanceCounts).sort((a, b) => b[1] - a[1])[0];
+      const topSam = Object.entries(sampradayaCounts).sort((a, b) => b[1] - a[1])[0];
       const totalObs = runs.reduce((s, r) => s + (r.observance_count || 0), 0);
+      const sources = [...new Set(weeklyRows.map(w => w.source))].length;
+
+      const scriptSamples = [];
+      if (digest?.verse_of_week?.devanagari) scriptSamples.push(digest.verse_of_week.devanagari);
+      (digest?.daily_verses || []).forEach(d => { if (d?.verse?.devanagari) scriptSamples.push(d.verse.devanagari); });
+      (janam?.verses || []).forEach(v => { if (v?.devanagari) scriptSamples.push(v.devanagari); });
+      const scriptCounts = {};
+      scriptSamples.forEach(t => {
+        const k = detectScript(t);
+        scriptCounts[k] = (scriptCounts[k] || 0) + 1;
+      });
+      const topScript = Object.entries(scriptCounts).sort((a, b) => b[1] - a[1])[0];
+
+      const recent = weeklyRows
+        .sort((a, b) => (a.week < b.week ? 1 : -1))
+        .slice(0, 8)
+        .map(r => `<div class="trend-row"><span>${r.week}</span><span>${r.source} · ${r.sampradaya}</span></div>`)
+        .join('');
+
       document.getElementById('insights-content').innerHTML = [
         { value: runs.length, label: 'Weeks tracked' },
         { value: totalObs, label: 'Total observances' },
-        { value: topVerse ? topVerse[0] : '—', label: 'Most recommended verse' },
+        { value: sources, label: 'Distinct source texts' },
         { value: topObs ? topObs[0] : '—', label: 'Most frequent observance' },
+        { value: topSam ? topSam[0] : '—', label: 'Top sampradaya' },
+        { value: topScript ? topScript[0] : '—', label: 'Primary script' },
       ].map(({ value, label }) =>
         `<div class="insight-box"><div class="value">${value}</div><div class="label">${label}</div></div>`
-      ).join('');
+      ).join('') + `
+        <div class="card" style="grid-column: 1 / -1; text-align: left;">
+          <div class="kpi-title">Shloka Source Trend (Recent Weeks)</div>
+          <div class="trend-list">${recent || '<div class="meta">No trend data.</div>'}</div>
+          <div class="meta" style="margin-top:0.5rem;">Most quoted verse id: ${topVerse ? topVerse[0] : '—'}</div>
+        </div>`;
     }
 
     function renderHistory(runs) {
@@ -261,7 +315,7 @@
       .then(({ runs, janam, digest }) => {
         renderPanchang(digest);
         renderJanamPatri(janam);
-        renderInsights(runs);
+        renderInsights(runs, janam, digest);
         renderHistory(runs);
       })
       .catch(e => {
