@@ -1,5 +1,15 @@
 [
   {
+    "run_id": "f7c4d5a5f6074830a36fe70967602969",
+    "week": "2026-02-18",
+    "verse_id": "none",
+    "verse_source": "none",
+    "observances": "none",
+    "observance_count": 0,
+    "search_latency_ms": 0.0,
+    "start_time": "1771393549857"
+  },
+  {
     "run_id": "612c3a3107194cf0a0ca8046d59bf570",
     "week": "2026-02-17",
     "verse_id": "bg-1.16",
