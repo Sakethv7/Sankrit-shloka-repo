@@ -164,7 +164,16 @@ def run_to_dict(config_path: Path | None = None) -> dict | None:
         "theme": theme,
         "lifestyle_recommendations": lifestyle,
         "verses": [
-            {"devanagari": v.devanagari, "transliteration": v.transliteration, "meaning": v.meaning, "source": v.source}
+            {
+                "devanagari": v.devanagari,
+                "transliteration": v.transliteration,
+                "meaning": v.meaning,
+                "source": v.source,
+                "sampradaya": v.sampradaya,
+                "deity": v.deity,
+                "script": v.script,
+                "category": v.category,
+            }
             for v in verses
         ],
     }

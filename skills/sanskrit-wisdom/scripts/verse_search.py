@@ -26,6 +26,10 @@ class Verse:
     meaning: str
     source: str
     tags: list[str]
+    sampradaya: str | None = None
+    deity: str | None = None
+    script: str | None = None
+    category: str | None = None
 
 
 def load_verses() -> list[Verse]:

@@ -99,7 +99,16 @@ def _build_verse_query(observances: list[Observance], panchang_days: list[DailyP
 
 def _verse_to_dict(v: Verse) -> dict:
     """Convert a Verse dataclass to the digest-compatible dict format."""
-    return {"devanagari": v.devanagari, "transliteration": v.transliteration, "meaning": v.meaning, "source": v.source}
+    return {
+        "devanagari": v.devanagari,
+        "transliteration": v.transliteration,
+        "meaning": v.meaning,
+        "source": v.source,
+        "sampradaya": v.sampradaya,
+        "deity": v.deity,
+        "script": v.script,
+        "category": v.category,
+    }
 
 
 def pair_verse(observances: list[Observance], panchang_days: list[DailyPanchang]) -> tuple[dict | None, dict]:

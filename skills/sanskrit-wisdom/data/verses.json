@@ -5,7 +5,11 @@
     "transliteration": "karmaṇy evādhikāras te mā phaleṣu kadācana | mā karmaphalaheturbhūr mā te saṅgo'stvakarmaṇi ||",
     "meaning": "You have a right to perform your prescribed duty, but you are not entitled to the fruits of action. Never consider yourself the cause of the results, and never be attached to inaction.",
     "source": "Bhagavad Gita 2.47",
-    "tags": ["karma", "yoga", "duty", "action", "detachment", "vishnu"]
+    "tags": ["karma", "yoga", "duty", "action", "detachment", "vishnu"],
+    "sampradaya": "Vedanta/Gita",
+    "deity": "Krishna",
+    "script": "Devanagari",
+    "category": "Karma Yoga"
   },
   {
     "id": "bg-4.7",
@@ -13,7 +17,11 @@
     "transliteration": "yadā yadā hi dharmasya glānir bhavati bhārata | abhyutthānam adharmasya tadātmānaṃ sṛjāmy aham ||",
     "meaning": "Whenever there is a decline in righteousness and an increase in unrighteousness, O Arjuna, at that time I manifest Myself.",
     "source": "Bhagavad Gita 4.7",
-    "tags": ["dharma", "avatar", "righteousness", "vishnu", "protection"]
+    "tags": ["dharma", "avatar", "righteousness", "vishnu", "protection"],
+    "sampradaya": "Vedanta/Gita",
+    "deity": "Krishna",
+    "script": "Devanagari",
+    "category": "Dharma"
   },
   {
     "id": "bg-9.22",
@@ -21,7 +29,11 @@
     "transliteration": "ananyāś cintayanto māṃ ye janāḥ paryupāsate | teṣāṃ nityābhiyuktānāṃ yogakṣemaṃ vahāmy aham ||",
     "meaning": "To those who worship Me alone, thinking of no other, to those ever-united in thought, I secure what they lack and preserve what they have.",
     "source": "Bhagavad Gita 9.22",
-    "tags": ["devotion", "bhakti", "surrender", "vishnu", "protection"]
+    "tags": ["devotion", "bhakti", "surrender", "vishnu", "protection"],
+    "sampradaya": "Vedanta/Gita",
+    "deity": "Krishna",
+    "script": "Devanagari",
+    "category": "Bhakti Yoga"
   },
   {
     "id": "bg-2.14",
@@ -29,7 +41,11 @@
     "transliteration": "mātrā-sparśās tu kaunteya śītoṣṇa-sukha-duḥkha-dāḥ | āgamāpāyino 'nityās tāṃs titikṣasva bhārata ||",
     "meaning": "The contact of the senses with their objects, O son of Kunti, gives rise to cold and heat, pleasure and pain. They are transient — endure them bravely.",
     "source": "Bhagavad Gita 2.14",
-    "tags": ["endurance", "equanimity", "senses", "detachment", "stoicism"]
+    "tags": ["endurance", "equanimity", "senses", "detachment", "stoicism"],
+    "sampradaya": "Vedanta/Gita",
+    "deity": "Krishna",
+    "script": "Devanagari",
+    "category": "Equanimity"
   },
   {
     "id": "bg-6.5",
@@ -37,7 +53,11 @@
     "transliteration": "uddhared ātmanātmānaṃ nātmānam avasādayet | ātmaiva hy ātmano bandhur ātmaiva ripur ātmanaḥ ||",
     "meaning": "Elevate yourself through the power of your own mind, and do not degrade yourself. The mind is the friend of the self, and the mind is the enemy of the self.",
     "source": "Bhagavad Gita 6.5",
-    "tags": ["self", "mind", "discipline", "yoga", "meditation"]
+    "tags": ["self", "mind", "discipline", "yoga", "meditation"],
+    "sampradaya": "Vedanta/Gita",
+    "deity": "Krishna",
+    "script": "Devanagari",
+    "category": "Dhyana Yoga"
   },
   {
     "id": "vs-1",
@@ -45,7 +65,11 @@
     "transliteration": "viśvaṃ viṣṇur vaṣaṭkāro bhūtabhavyabhavatprabhuḥ | bhūtakṛd bhūtabhṛd bhāvo bhūtātmā bhūtabhāvanaḥ ||",
     "meaning": "He who is the universe, who is all-pervading, the Lord of the past, present and future, the creator and sustainer of all beings.",
     "source": "Vishnu Sahasranama 1",
-    "tags": ["vishnu", "sahasranama", "creation", "omnipresence", "ekadashi"]
+    "tags": ["vishnu", "sahasranama", "creation", "omnipresence", "ekadashi"],
+    "sampradaya": "Vaishnava",
+    "deity": "Vishnu",
+    "script": "Devanagari",
+    "category": "Stotra"
   },
   {
     "id": "shiva-panchakshari",
@@ -53,7 +77,11 @@
     "transliteration": "nāgendrahārāya trilocanāya bhasmāṅgarāgāya maheśvarāya | nityāya śuddhāya digambarāya tasmai nakārāya namaḥ śivāya ||",
     "meaning": "Salutations to Shiva, who wears the king of serpents as a garland, who has three eyes, whose body is smeared with sacred ash, who is eternal, pure, and the great lord.",
     "source": "Shiva Panchakshari Stotram",
-    "tags": ["shiva", "pradosham", "panchakshari", "devotion", "mantra"]
+    "tags": ["shiva", "pradosham", "panchakshari", "devotion", "mantra"],
+    "sampradaya": "Shaiva",
+    "deity": "Shiva",
+    "script": "Devanagari",
+    "category": "Mantra"
   },
   {
     "id": "ganesha-shloka",
@@ -61,7 +89,11 @@
     "transliteration": "vakratuṇḍa mahākāya sūryakoṭi samaprabha | nirvighnaṃ kuru me deva sarvakāryeṣu sarvadā ||",
     "meaning": "O Lord with a curved trunk and massive form, whose brilliance equals a billion suns — make all my endeavors free of obstacles, always.",
     "source": "Ganesha Shloka",
-    "tags": ["ganesha", "chaturthi", "obstacles", "auspicious", "beginning"]
+    "tags": ["ganesha", "chaturthi", "obstacles", "auspicious", "beginning"],
+    "sampradaya": "Ganapatya",
+    "deity": "Ganesha",
+    "script": "Devanagari",
+    "category": "Stotra"
   },
   {
     "id": "gayatri",
@@ -69,7 +101,11 @@
     "transliteration": "oṃ bhūr bhuvaḥ svaḥ tat savitur vareṇyaṃ bhargo devasya dhīmahi | dhiyo yo naḥ pracodayāt ||",
     "meaning": "We meditate on the glorious splendor of the divine Sun (Savitri). May that supreme light illuminate our intellect.",
     "source": "Rig Veda 3.62.10 (Gayatri Mantra)",
-    "tags": ["surya", "gayatri", "mantra", "sandhyavandana", "daily", "brahmin"]
+    "tags": ["surya", "gayatri", "mantra", "sandhyavandana", "daily", "brahmin"],
+    "sampradaya": "Smarta",
+    "deity": "Surya",
+    "script": "Devanagari",
+    "category": "Mantra"
   },
   {
     "id": "pitru-mantra",
@@ -77,6 +113,10 @@
     "transliteration": "devatābhyaḥ pitṛbhyaś ca mahāyogibhya eva ca | namaḥ svadhāyai svāhāyai nityam eva namo namaḥ ||",
     "meaning": "Salutations to the gods, to the ancestors, and to the great yogis. Obeisance to Svadha and Svaha, eternal salutations again and again.",
     "source": "Pitru Stotram",
-    "tags": ["pitru", "ancestors", "amavasya", "tarpanam", "shraddha"]
+    "tags": ["pitru", "ancestors", "amavasya", "tarpanam", "shraddha"],
+    "sampradaya": "Smarta/Pitru",
+    "deity": "Pitrus",
+    "script": "Devanagari",
+    "category": "Stotra"
   }
 ]

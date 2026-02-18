@@ -237,6 +237,11 @@
       return 'Other';
     }
 
+    function preferMeta(v, field, fallback) {
+      if (v && v[field]) return v[field];
+      return fallback || 'Unknown';
+    }
+
     function renderInsights(runs, janam, digest) {
       if (!runs.length) {
         document.getElementById('insights-content').innerHTML = '<p class="loading">No runs yet. Generate a weekly digest first.</p>';
@@ -245,6 +250,8 @@
       const verseCounts = {};
       const observanceCounts = {};
       const sampradayaCounts = {};
+      const deityCounts = {};
+      const categoryCounts = {};
       const weeklyRows = [];
       runs.forEach(r => {
         const v = r.verse_id || 'none';
@@ -256,9 +263,38 @@
         const obs = (r.observances || '').split(',').map(s => s.trim()).filter(Boolean);
         obs.forEach(o => { observanceCounts[o] = (observanceCounts[o] || 0) + 1; });
       });
+      if (digest?.verse_of_week) {
+        const v = digest.verse_of_week;
+        const sam = preferMeta(v, 'sampradaya', classifySampradaya(v.source));
+        sampradayaCounts[sam] = (sampradayaCounts[sam] || 0) + 1;
+        const deity = preferMeta(v, 'deity');
+        deityCounts[deity] = (deityCounts[deity] || 0) + 1;
+        const cat = preferMeta(v, 'category');
+        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+      }
+      (digest?.daily_verses || []).forEach(d => {
+        const v = d?.verse;
+        if (!v) return;
+        const sam = preferMeta(v, 'sampradaya', classifySampradaya(v.source));
+        sampradayaCounts[sam] = (sampradayaCounts[sam] || 0) + 1;
+        const deity = preferMeta(v, 'deity');
+        deityCounts[deity] = (deityCounts[deity] || 0) + 1;
+        const cat = preferMeta(v, 'category');
+        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+      });
+      (janam?.verses || []).forEach(v => {
+        const sam = preferMeta(v, 'sampradaya', classifySampradaya(v.source));
+        sampradayaCounts[sam] = (sampradayaCounts[sam] || 0) + 1;
+        const deity = preferMeta(v, 'deity');
+        deityCounts[deity] = (deityCounts[deity] || 0) + 1;
+        const cat = preferMeta(v, 'category');
+        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+      });
       const topVerse = Object.entries(verseCounts).sort((a, b) => b[1] - a[1])[0];
       const topObs = Object.entries(observanceCounts).sort((a, b) => b[1] - a[1])[0];
       const topSam = Object.entries(sampradayaCounts).sort((a, b) => b[1] - a[1])[0];
+      const topDeity = Object.entries(deityCounts).sort((a, b) => b[1] - a[1])[0];
+      const topCategory = Object.entries(categoryCounts).sort((a, b) => b[1] - a[1])[0];
       const totalObs = runs.reduce((s, r) => s + (r.observance_count || 0), 0);
       const sources = [...new Set(weeklyRows.map(w => w.source))].length;
 
@@ -285,6 +321,8 @@
         { value: sources, label: 'Distinct source texts' },
         { value: topObs ? topObs[0] : '—', label: 'Most frequent observance' },
         { value: topSam ? topSam[0] : '—', label: 'Top sampradaya' },
+        { value: topDeity ? topDeity[0] : '—', label: 'Top deity' },
+        { value: topCategory ? topCategory[0] : '—', label: 'Top category' },
         { value: topScript ? topScript[0] : '—', label: 'Primary script' },
       ].map(({ value, label }) =>
         `<div class="insight-box"><div class="value">${value}</div><div class="label">${label}</div></div>`
