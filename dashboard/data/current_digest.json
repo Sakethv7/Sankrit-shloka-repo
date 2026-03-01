@@ -1,77 +1,134 @@
 {
-  "week_start": "2026-02-22",
-  "week_end": "2026-02-28",
+  "week_start": "2026-03-01",
+  "week_end": "2026-03-07",
   "panchang_days": [
     {
-      "date": "2026-02-22",
+      "date": "2026-03-01",
       "vaara": "Ravivara",
-      "tithi": "Shashthi",
+      "tithi": "Trayodashi",
       "paksha": "Shukla",
-      "nakshatra": "Ashwini",
-      "sunrise": "06:40"
+      "nakshatra": "Ashlesha",
+      "sunrise": "06:30"
     },
     {
-      "date": "2026-02-23",
+      "date": "2026-03-02",
       "vaara": "Somavara",
-      "tithi": "Saptami",
+      "tithi": "Chaturdashi",
       "paksha": "Shukla",
-      "nakshatra": "Bharani",
-      "sunrise": "06:39"
+      "nakshatra": "Magha",
+      "sunrise": "06:28"
     },
     {
-      "date": "2026-02-24",
+      "date": "2026-03-03",
       "vaara": "Mangalavara",
-      "tithi": "Ashtami",
+      "tithi": "Purnima",
       "paksha": "Shukla",
-      "nakshatra": "Rohini",
-      "sunrise": "06:37"
+      "nakshatra": "Purva Phalguni",
+      "sunrise": "06:27"
     },
     {
-      "date": "2026-02-25",
+      "date": "2026-03-04",
       "vaara": "Budhavara",
-      "tithi": "Navami",
-      "paksha": "Shukla",
-      "nakshatra": "Mrigashira",
-      "sunrise": "06:36"
+      "tithi": "Dwitiya",
+      "paksha": "Krishna",
+      "nakshatra": "Uttara Phalguni",
+      "sunrise": "06:25"
     },
     {
-      "date": "2026-02-26",
+      "date": "2026-03-05",
       "vaara": "Guruvara",
-      "tithi": "Dashami",
-      "paksha": "Shukla",
-      "nakshatra": "Ardra",
-      "sunrise": "06:34"
+      "tithi": "Dwitiya",
+      "paksha": "Krishna",
+      "nakshatra": "Hasta",
+      "sunrise": "06:24"
     },
     {
-      "date": "2026-02-27",
+      "date": "2026-03-06",
       "vaara": "Shukravara",
-      "tithi": "Ekadashi",
-      "paksha": "Shukla",
-      "nakshatra": "Punarvasu",
-      "sunrise": "06:33"
+      "tithi": "Tritiya",
+      "paksha": "Krishna",
+      "nakshatra": "Chitra",
+      "sunrise": "06:22"
     },
     {
-      "date": "2026-02-28",
+      "date": "2026-03-07",
       "vaara": "Shanivara",
-      "tithi": "Dwadashi",
-      "paksha": "Shukla",
-      "nakshatra": "Pushya",
-      "sunrise": "06:31"
+      "tithi": "Chaturthi",
+      "paksha": "Krishna",
+      "nakshatra": "Swati",
+      "sunrise": "06:21"
     }
   ],
   "observances": [
     {
-      "date": "2026-02-27",
-      "name": "Ekadashi",
-      "deity": "Vishnu",
-      "description": "Fast and Vishnu worship"
+      "date": "2026-03-01",
+      "name": "Pradosham",
+      "deity": "Shiva",
+      "description": "Shiva puja during twilight"
+    },
+    {
+      "date": "2026-03-03",
+      "name": "Purnima",
+      "deity": "All",
+      "description": "Full moon observance"
+    },
+    {
+      "date": "2026-03-07",
+      "name": "Sankashti Chaturthi",
+      "deity": "Ganesha",
+      "description": "Ganesha vrata"
     }
   ],
   "daily_verses": [
     {
-      "date": "2026-02-22",
-      "tithi": "Shashthi",
+      "date": "2026-03-01",
+      "tithi": "Trayodashi",
       "paksha": "Shukla",
+      "verse": {
+        "devanagari": "\u0928\u093e\u0917\u0947\u0928\u094d\u0926\u094d\u0930\u0939\u093e\u0930\u093e\u092f \u0924\u094d\u0930\u093f\u0932\u094b\u091a\u0928\u093e\u092f \u092d\u0938\u094d\u092e\u093e\u0919\u094d\u0917\u0930\u093e\u0917\u093e\u092f \u092e\u0939\u0947\u0936\u094d\u0935\u0930\u093e\u092f\u0964 \u0928\u093f\u0924\u094d\u092f\u093e\u092f \u0936\u0941\u0926\u094d\u0927\u093e\u092f \u0926\u093f\u0917\u092e\u094d\u092c\u0930\u093e\u092f \u0924\u0938\u094d\u092e\u0948 \u0928\u0915\u093e\u0930\u093e\u092f \u0928\u092e\u0903 \u0936\u093f\u0935\u093e\u092f\u0965",
+        "transliteration": "n\u0101gendrah\u0101r\u0101ya trilocan\u0101ya bhasm\u0101\u1e45gar\u0101g\u0101ya mahe\u015bvar\u0101ya | nity\u0101ya \u015buddh\u0101ya digambar\u0101ya tasmai nak\u0101r\u0101ya nama\u1e25 \u015biv\u0101ya ||",
+        "meaning": "Salutations to Shiva, who wears the king of serpents as a garland, who has three eyes, whose body is smeared with sacred ash, who is eternal, pure, and the great lord.",
+        "source": "Shiva Panchakshari Stotram",
+        "sampradaya": null,
+        "deity": null,
+        "script": null,
+        "category": null
+      }
+    },
+    {
+      "date": "2026-03-02",
+      "tithi": "Chaturdashi",
+      "paksha": "Shukla",
+      "verse": {
+        "devanagari": "\u092c\u094d\u0930\u0939\u094d\u092e\u0923\u094b \u0939\u093f \u092a\u094d\u0930\u0924\u093f\u0937\u094d\u0920\u093e\u0939\u092e\u092e\u0943\u0924\u0938\u094d\u092f\u093e\u0935\u094d\u092f\u092f\u0938\u094d\u092f \u091a |\n\u0936\u093e\u0936\u094d\u0935\u0924\u0938\u094d\u092f \u091a \u0927\u0930\u094d\u092e\u0938\u094d\u092f \u0938\u0941\u0916\u0938\u094d\u092f\u0948\u0915\u093e\u0928\u094d\u0924\u093f\u0915\u0938\u094d\u092f \u091a ||\u0967\u096a-\u0968\u096d||",
+        "transliteration": "brahma\u1e47o hi prati\u1e63\u1e6dh\u0101hamam\u1e5btasy\u0101vyayasya ca .\n\u015b\u0101\u015bvatasya ca dharmasya sukhasyaik\u0101ntikasya ca ||14-27||",
+        "meaning": "14.27 For I am the abode of Brahman, the immortal and the immutable, of everlasting Dharma and of absolute bliss.",
+        "source": "Bhagavad Gita 14.27",
+        "sampradaya": null,
+        "deity": null,
+        "script": null,
+        "category": null
+      }
+    },
+    {
+      "date": "2026-03-03",
+      "tithi": "Purnima",
+      "paksha": "Shukla",
+      "verse": {
+        "devanagari": "\u0917\u093e\u092e\u093e\u0935\u093f\u0936\u094d\u092f \u091a \u092d\u0942\u0924\u093e\u0928\u093f \u0927\u093e\u0930\u092f\u093e\u092e\u094d\u092f\u0939\u092e\u094b\u091c\u0938\u093e |\n\u092a\u0941\u0937\u094d\u0923\u093e\u092e\u093f \u091a\u094c\u0937\u0927\u0940\u0903 \u0938\u0930\u094d\u0935\u093e\u0903 \u0938\u094b\u092e\u094b \u092d\u0942\u0924\u094d\u0935\u093e \u0930\u0938\u093e\u0924\u094d\u092e\u0915\u0903 ||\u0967\u096b-\u0967\u0969||",
+        "transliteration": "g\u0101m\u0101vi\u015bya ca bh\u016bt\u0101ni dh\u0101ray\u0101myahamojas\u0101 .\npu\u1e63\u1e47\u0101mi cau\u1e63adh\u012b\u1e25 sarv\u0101\u1e25 somo bh\u016btv\u0101 ras\u0101tmaka\u1e25 ||15-13||",
+        "meaning": "15.13 Permeating the earth I support all beings by (My) energy; and having become the watery moon I nourish all herbs.",
+        "source": "Bhagavad Gita 15.13",
+        "sampradaya": null,
+        "deity": null,
+        "script": null,
+        "category": null
+      }
+    },
+    {
+      "date": "2026-03-04",
+      "tithi": "Dwitiya",
+      "paksha": "Krishna",
       "verse": {
         "devanagari": "\u0938\u091e\u094d\u091c\u092f \u0909\u0935\u093e\u091a |\n\u0907\u0924\u094d\u092f\u0939\u0902 \u0935\u093e\u0938\u0941\u0926\u0947\u0935\u0938\u094d\u092f \u092a\u093e\u0930\u094d\u0925\u0938\u094d\u092f \u091a \u092e\u0939\u093e\u0924\u094d\u092e\u0928\u0903 |\n\u0938\u0902\u0935\u093e\u0926\u092e\u093f\u092e\u092e\u0936\u094d\u0930\u094c\u0937\u092e\u0926\u094d\u092d\u0941\u0924\u0902 \u0930\u094b\u092e\u0939\u0930\u094d\u0937\u0923\u092e\u094d ||\u0967\u096e-\u096d\u096a||",
         "transliteration": "sa\u00f1jaya uv\u0101ca .\nityaha\u1e43 v\u0101sudevasya p\u0101rthasya ca mah\u0101tmana\u1e25 .\nsa\u1e43v\u0101damimama\u015brau\u1e63amadbhuta\u1e43 romahar\u1e63a\u1e47am ||18-74||",
@@ -84,14 +141,14 @@
       }
     },
     {
-      "date": "2026-02-23",
-      "tithi": "Saptami",
-      "paksha": "Shukla",
+      "date": "2026-03-05",
+      "tithi": "Dwitiya",
+      "paksha": "Krishna",
       "verse": {
-        "devanagari": "\u0905\u0930\u094d\u091c\u0941\u0928 \u0909\u0935\u093e\u091a |\n\u0915\u0925\u0902 \u092d\u0940\u0937\u094d\u092e\u092e\u0939\u0902 \u0938\u0919\u094d\u0916\u094d\u092f\u0947 \u0926\u094d\u0930\u094b\u0923\u0902 \u091a \u092e\u0927\u0941\u0938\u0942\u0926\u0928 |\n\u0907\u0937\u0941\u092d\u093f\u0903 \u092a\u094d\u0930\u0924\u093f\u092f\u094b\u0924\u094d\u0938\u094d\u092f\u093e\u092e\u093f \u092a\u0942\u091c\u093e\u0930\u094d\u0939\u093e\u0935\u0930\u093f\u0938\u0942\u0926\u0928 ||\u0968-\u096a||",
-        "transliteration": "arjuna uv\u0101ca .\nkatha\u1e43 bh\u012b\u1e63mamaha\u1e43 sa\u1e45khye dro\u1e47a\u1e43 ca madhus\u016bdana .\ni\u1e63ubhi\u1e25 pratiyotsy\u0101mi p\u016bj\u0101rh\u0101varis\u016bdana ||2-4||",
-        "meaning": "2.4 Arjuna said  How, O Madhusudana, shall I fight in battle with arrows against Bhishma and Drona, who are fit to be worshipped, O destroyer of enemies?",
-        "source": "Bhagavad Gita 2.4",
+        "devanagari": "\u090f\u0924\u0948\u0930\u094d\u0935\u093f\u092e\u0941\u0915\u094d\u0924\u0903 \u0915\u094c\u0928\u094d\u0924\u0947\u092f \u0924\u092e\u094b\u0926\u094d\u0935\u093e\u0930\u0948\u0938\u094d\u0924\u094d\u0930\u093f\u092d\u093f\u0930\u094d\u0928\u0930\u0903 |\n\u0906\u091a\u0930\u0924\u094d\u092f\u093e\u0924\u094d\u092e\u0928\u0903 \u0936\u094d\u0930\u0947\u092f\u0938\u094d\u0924\u0924\u094b \u092f\u093e\u0924\u093f \u092a\u0930\u093e\u0902 \u0917\u0924\u093f\u092e\u094d ||\u0967\u096c-\u0968\u0968||",
+        "transliteration": "etairvimukta\u1e25 kaunteya tamodv\u0101raistribhirnara\u1e25 .\n\u0101caraty\u0101tmana\u1e25 \u015breyastato y\u0101ti par\u0101\u1e43 gatim ||16-22||",
+        "meaning": "16.22 A man who is liberated from these three gates to darkness, O Arjuna, practises what is good for him and thus goes to the Supreme Goal.",
+        "source": "Bhagavad Gita 16.22",
         "sampradaya": null,
         "deity": null,
         "script": null,
@@ -99,14 +156,14 @@
       }
     },
     {
-      "date": "2026-02-24",
-      "tithi": "Ashtami",
-      "paksha": "Shukla",
+      "date": "2026-03-06",
+      "tithi": "Tritiya",
+      "paksha": "Krishna",
       "verse": {
-        "devanagari": "\u0938\u091e\u094d\u091c\u092f \u0909\u0935\u093e\u091a |\n\u0907\u0924\u094d\u092f\u0939\u0902 \u0935\u093e\u0938\u0941\u0926\u0947\u0935\u0938\u094d\u092f \u092a\u093e\u0930\u094d\u0925\u0938\u094d\u092f \u091a \u092e\u0939\u093e\u0924\u094d\u092e\u0928\u0903 |\n\u0938\u0902\u0935\u093e\u0926\u092e\u093f\u092e\u092e\u0936\u094d\u0930\u094c\u0937\u092e\u0926\u094d\u092d\u0941\u0924\u0902 \u0930\u094b\u092e\u0939\u0930\u094d\u0937\u0923\u092e\u094d ||\u0967\u096e-\u096d\u096a||",
-        "transliteration": "sa\u00f1jaya uv\u0101ca .\nityaha\u1e43 v\u0101sudevasya p\u0101rthasya ca mah\u0101tmana\u1e25 .\nsa\u1e43v\u0101damimama\u015brau\u1e63amadbhuta\u1e43 romahar\u1e63a\u1e47am ||18-74||",
-        "meaning": "18.74 Sanjaya said  Thus I have heard this wonderful dialogue between Krishna and the high-souled Arjuna, which causes the hair to stand on end.",
-        "source": "Bhagavad Gita 18.74",
+        "devanagari": "\u092c\u094d\u0930\u0939\u094d\u092e\u0923\u094b \u0939\u093f \u092a\u094d\u0930\u0924\u093f\u0937\u094d\u0920\u093e\u0939\u092e\u092e\u0943\u0924\u0938\u094d\u092f\u093e\u0935\u094d\u092f\u092f\u0938\u094d\u092f \u091a |\n\u0936\u093e\u0936\u094d\u0935\u0924\u0938\u094d\u092f \u091a \u0927\u0930\u094d\u092e\u0938\u094d\u092f \u0938\u0941\u0916\u0938\u094d\u092f\u0948\u0915\u093e\u0928\u094d\u0924\u093f\u0915\u0938\u094d\u092f \u091a ||\u0967\u096a-\u0968\u096d||",
+        "transliteration": "brahma\u1e47o hi prati\u1e63\u1e6dh\u0101hamam\u1e5btasy\u0101vyayasya ca .\n\u015b\u0101\u015bvatasya ca dharmasya sukhasyaik\u0101ntikasya ca ||14-27||",
+        "meaning": "14.27 For I am the abode of Brahman, the immortal and the immutable, of everlasting Dharma and of absolute bliss.",
+        "source": "Bhagavad Gita 14.27",
         "sampradaya": null,
         "deity": null,
         "script": null,
@@ -114,59 +171,14 @@
       }
     },
     {
-      "date": "2026-02-25",
-      "tithi": "Navami",
-      "paksha": "Shukla",
+      "date": "2026-03-07",
+      "tithi": "Chaturthi",
+      "paksha": "Krishna",
       "verse": {
-        "devanagari": "\u0927\u0943\u0924\u094d\u092f\u093e \u092f\u092f\u093e \u0927\u093e\u0930\u092f\u0924\u0947 \u092e\u0928\u0903\u092a\u094d\u0930\u093e\u0923\u0947\u0928\u094d\u0926\u094d\u0930\u093f\u092f\u0915\u094d\u0930\u093f\u092f\u093e\u0903 |\n\u092f\u094b\u0917\u0947\u0928\u093e\u0935\u094d\u092f\u092d\u093f\u091a\u093e\u0930\u093f\u0923\u094d\u092f\u093e \u0927\u0943\u0924\u093f\u0903 \u0938\u093e \u092a\u093e\u0930\u094d\u0925 \u0938\u093e\u0924\u094d\u0924\u094d\u0935\u093f\u0915\u0940 ||\u0967\u096e-\u0969\u0969||",
-        "transliteration": "dh\u1e5bty\u0101 yay\u0101 dh\u0101rayate mana\u1e25pr\u0101\u1e47endriyakriy\u0101\u1e25 .\nyogen\u0101vyabhic\u0101ri\u1e47y\u0101 dh\u1e5bti\u1e25 s\u0101 p\u0101rtha s\u0101ttvik\u012b ||18-33||",
-        "meaning": "18.33 The unwavering firmness by which, through Yoga, the functions of the mind, the life-force and the senses are restrained  that firmness, O Arjuna, is Sattvic (pure).",
-        "source": "Bhagavad Gita 18.33",
-        "sampradaya": null,
-        "deity": null,
-        "script": null,
-        "category": null
-      }
-    },
-    {
-      "date": "2026-02-26",
-      "tithi": "Dashami",
-      "paksha": "Shukla",
-      "verse": {
-        "devanagari": "\u0915\u0943\u092a\u092f\u093e \u092a\u0930\u092f\u093e\u0935\u093f\u0937\u094d\u091f\u094b \u0935\u093f\u0937\u0940\u0926\u0928\u094d\u0928\u093f\u0926\u092e\u092c\u094d\u0930\u0935\u0940\u0924\u094d |\n\u0905\u0930\u094d\u091c\u0941\u0928 \u0909\u0935\u093e\u091a |\n\u0926\u0943\u0937\u094d\u091f\u094d\u0935\u0947\u092e\u0902 \u0938\u094d\u0935\u091c\u0928\u0902 \u0915\u0943\u0937\u094d\u0923 \u092f\u0941\u092f\u0941\u0924\u094d\u0938\u0941\u0902 \u0938\u092e\u0941\u092a\u0938\u094d\u0925\u093f\u0924\u092e\u094d ||\u0967-\u0968\u096e||",
-        "transliteration": "k\u1e5bpay\u0101 paray\u0101vi\u1e63\u1e6do vi\u1e63\u012bdannidamabrav\u012bt .\narjuna uv\u0101ca .\nd\u1e5b\u1e63\u1e6dvema\u1e43 svajana\u1e43 k\u1e5b\u1e63\u1e47a yuyutsu\u1e43 samupasthitam ||1-28||",
-        "meaning": "1.28. Arjuna said  Seeing these, my kinsmen, O krishna, arrayed, eager to fight.",
-        "source": "Bhagavad Gita 1.28",
-        "sampradaya": null,
-        "deity": null,
-        "script": null,
-        "category": null
-      }
-    },
-    {
-      "date": "2026-02-27",
-      "tithi": "Ekadashi",
-      "paksha": "Shukla",
-      "verse": {
-        "devanagari": "\u092a\u0941\u0930\u0941\u0937\u0903 \u0938 \u092a\u0930\u0903 \u092a\u093e\u0930\u094d\u0925 \u092d\u0915\u094d\u0924\u094d\u092f\u093e \u0932\u092d\u094d\u092f\u0938\u094d\u0924\u094d\u0935\u0928\u0928\u094d\u092f\u092f\u093e |\n\u092f\u0938\u094d\u092f\u093e\u0928\u094d\u0924\u0903\u0938\u094d\u0925\u093e\u0928\u093f \u092d\u0942\u0924\u093e\u0928\u093f \u092f\u0947\u0928 \u0938\u0930\u094d\u0935\u092e\u093f\u0926\u0902 \u0924\u0924\u092e\u094d ||\u096e-\u0968\u0968||",
-        "transliteration": "puru\u1e63a\u1e25 sa para\u1e25 p\u0101rtha bhakty\u0101 labhyastvananyay\u0101 .\nyasy\u0101nta\u1e25sth\u0101ni bh\u016bt\u0101ni yena sarvamida\u1e43 tatam ||8-22||",
-        "meaning": "8.22 That highest Purusha, O Arjuna, is attainable by unswerving devotion to Him alone within Whom all beings dwell and by Whom all this is pervaded.",
-        "source": "Bhagavad Gita 8.22",
-        "sampradaya": null,
-        "deity": null,
-        "script": null,
-        "category": null
-      }
-    },
-    {
-      "date": "2026-02-28",
-      "tithi": "Dwadashi",
-      "paksha": "Shukla",
-      "verse": {
-        "devanagari": "\u092f\u094b \u092f\u094b \u092f\u093e\u0902 \u092f\u093e\u0902 \u0924\u0928\u0941\u0902 \u092d\u0915\u094d\u0924\u0903 \u0936\u094d\u0930\u0926\u094d\u0927\u092f\u093e\u0930\u094d\u091a\u093f\u0924\u0941\u092e\u093f\u091a\u094d\u091b\u0924\u093f |\n\u0924\u0938\u094d\u092f \u0924\u0938\u094d\u092f\u093e\u091a\u0932\u093e\u0902 \u0936\u094d\u0930\u0926\u094d\u0927\u093e\u0902 \u0924\u093e\u092e\u0947\u0935 \u0935\u093f\u0926\u0927\u093e\u092e\u094d\u092f\u0939\u092e\u094d ||\u096d-\u0968\u0967||",
-        "transliteration": "yo yo y\u0101\u1e43 y\u0101\u1e43 tanu\u1e43 bhakta\u1e25 \u015braddhay\u0101rcitumicchati .\ntasya tasy\u0101cal\u0101\u1e43 \u015braddh\u0101\u1e43 t\u0101meva vidadh\u0101myaham ||7-21||",
-        "meaning": "7.21 Whatsoever form any devotee desires to worship with faith  that (same) faith of his I make firm and unflinching.",
-        "source": "Bhagavad Gita 7.21",
+        "devanagari": "\u090f\u0924\u0948\u0930\u094d\u0935\u093f\u092e\u0941\u0915\u094d\u0924\u0903 \u0915\u094c\u0928\u094d\u0924\u0947\u092f \u0924\u092e\u094b\u0926\u094d\u0935\u093e\u0930\u0948\u0938\u094d\u0924\u094d\u0930\u093f\u092d\u093f\u0930\u094d\u0928\u0930\u0903 |\n\u0906\u091a\u0930\u0924\u094d\u092f\u093e\u0924\u094d\u092e\u0928\u0903 \u0936\u094d\u0930\u0947\u092f\u0938\u094d\u0924\u0924\u094b \u092f\u093e\u0924\u093f \u092a\u0930\u093e\u0902 \u0917\u0924\u093f\u092e\u094d ||\u0967\u096c-\u0968\u0968||",
+        "transliteration": "etairvimukta\u1e25 kaunteya tamodv\u0101raistribhirnara\u1e25 .\n\u0101caraty\u0101tmana\u1e25 \u015breyastato y\u0101ti par\u0101\u1e43 gatim ||16-22||",
+        "meaning": "16.22 A man who is liberated from these three gates to darkness, O Arjuna, practises what is good for him and thus goes to the Supreme Goal.",
+        "source": "Bhagavad Gita 16.22",
         "sampradaya": null,
         "deity": null,
         "script": null,
@@ -175,17 +187,17 @@
     }
   ],
   "verse_of_week": {
-    "devanagari": "\u0905\u0930\u094d\u091c\u0941\u0928 \u0909\u0935\u093e\u091a |\n\u090f\u0935\u0902 \u0938\u0924\u0924\u092f\u0941\u0915\u094d\u0924\u093e \u092f\u0947 \u092d\u0915\u094d\u0924\u093e\u0938\u094d\u0924\u094d\u0935\u093e\u0902 \u092a\u0930\u094d\u092f\u0941\u092a\u093e\u0938\u0924\u0947 |\n\u092f\u0947 \u091a\u093e\u092a\u094d\u092f\u0915\u094d\u0937\u0930\u092e\u0935\u094d\u092f\u0915\u094d\u0924\u0902 \u0924\u0947\u0937\u093e\u0902 \u0915\u0947 \u092f\u094b\u0917\u0935\u093f\u0924\u094d\u0924\u092e\u093e\u0903 ||\u0967\u0968-\u0967||",
-    "transliteration": "arjuna uv\u0101ca .\neva\u1e43 satatayukt\u0101 ye bhakt\u0101stv\u0101\u1e43 paryup\u0101sate .\nye c\u0101pyak\u1e63aramavyakta\u1e43 te\u1e63\u0101\u1e43 ke yogavittam\u0101\u1e25 ||12-1||",
-    "meaning": "12.1 Arjuna said  Those devotees who, ever steadfast, thus worship Thee and those also who worship the imperishable and the unmanifested  which of them are better versed in Yoga?",
-    "source": "Bhagavad Gita 12.1",
+    "devanagari": "\u0927\u0942\u092e\u094b \u0930\u093e\u0924\u094d\u0930\u093f\u0938\u094d\u0924\u0925\u093e \u0915\u0943\u0937\u094d\u0923\u0903 \u0937\u0923\u094d\u092e\u093e\u0938\u093e \u0926\u0915\u094d\u0937\u093f\u0923\u093e\u092f\u0928\u092e\u094d |\n\u0924\u0924\u094d\u0930 \u091a\u093e\u0928\u094d\u0926\u094d\u0930\u092e\u0938\u0902 \u091c\u094d\u092f\u094b\u0924\u093f\u0930\u094d\u092f\u094b\u0917\u0940 \u092a\u094d\u0930\u093e\u092a\u094d\u092f \u0928\u093f\u0935\u0930\u094d\u0924\u0924\u0947 ||\u096e-\u0968\u096b||",
+    "transliteration": "dh\u016bmo r\u0101tristath\u0101 k\u1e5b\u1e63\u1e47a\u1e25 \u1e63a\u1e47m\u0101s\u0101 dak\u1e63i\u1e47\u0101yanam .\ntatra c\u0101ndramasa\u1e43 jyotiryog\u012b pr\u0101pya nivartate ||8-25||",
+    "meaning": "8.25 Attaining to the lunar light by smoke, night time, the dark fortnight also, the six months of the southern path of the sun (the southern solstice), the Yogi returns.",
+    "source": "Bhagavad Gita 8.25",
     "sampradaya": null,
     "deity": null,
     "script": null,
     "category": null
   },
   "lifestyle_recommendations": [
-    "Ekadashi: keep meals light and sattvic, with extra hydration and simple japa.",
+    "Chaturthi energy: clear one pending task and remove one source of clutter.",
     "Somavara: start the week with a short sankalpa and 10 minutes of silence.",
     "Guruvara: reserve time for study, guidance, or one act of teaching.",
     "Daily anchor: avoid digital overload for one focused hour after sunrise."

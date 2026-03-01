@@ -1,5 +1,15 @@
 [
   {
+    "run_id": "25313df27ce24be78d8dd2f750d5517a",
+    "week": "2026-03-01",
+    "verse_id": "bg-8.25",
+    "verse_source": "Bhagavad Gita 8.25",
+    "observances": "Pradosham, Purnima, Sankashti Chaturthi",
+    "observance_count": 3,
+    "search_latency_ms": 10790.3,
+    "start_time": "1772372140431"
+  },
+  {
     "run_id": "3c645685eddc4fbb848dcc1dba965185",
     "week": "2026-02-22",
     "verse_id": "bg-12.1",
