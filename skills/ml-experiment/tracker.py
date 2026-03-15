@@ -6,6 +6,7 @@ and embedding model experiments.
 from __future__ import annotations
 
 import os
+import sys
 from contextlib import contextmanager
 from dataclasses import dataclass
 import tempfile
@@ -15,12 +16,24 @@ import mlflow
 TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "sqlite:///mlflow.db")
 EXPERIMENT_NAME = "vedic-wisdom-weekly"
 
+# Track whether MLflow is available (set on first connection attempt)
+_mlflow_available: bool | None = None
 
-def _ensure_experiment() -> str:
-    """Create or get the MLflow experiment, return experiment ID."""
-    mlflow.set_tracking_uri(TRACKING_URI)
-    exp = mlflow.get_experiment_by_name(EXPERIMENT_NAME)
-    return exp.experiment_id if exp else mlflow.create_experiment(EXPERIMENT_NAME)
+
+def _ensure_experiment() -> str | None:
+    """Create or get the MLflow experiment, return experiment ID or None if unavailable."""
+    global _mlflow_available
+    if _mlflow_available is False:
+        return None
+    try:
+        mlflow.set_tracking_uri(TRACKING_URI)
+        exp = mlflow.get_experiment_by_name(EXPERIMENT_NAME)
+        _mlflow_available = True
+        return exp.experiment_id if exp else mlflow.create_experiment(EXPERIMENT_NAME)
+    except Exception as e:
+        _mlflow_available = False
+        print(f"[tracker] MLflow unavailable ({type(e).__name__}), skipping tracking", file=sys.stderr)
+        return None
 
 
 @dataclass
@@ -34,11 +47,12 @@ class SearchMetrics:
 @contextmanager
 def track_search(query: str):
     """Context manager to track a verse search run in MLflow."""
-    _ensure_experiment()
+    metrics = SearchMetrics(query=query, results_count=0, top_score=0.0, latency_ms=0.0)
+    if _ensure_experiment() is None:
+        yield metrics
+        return
     mlflow.set_experiment(EXPERIMENT_NAME)
-
     with mlflow.start_run(run_name=f"search-{query[:30]}"):
-        metrics = SearchMetrics(query=query, results_count=0, top_score=0.0, latency_ms=0.0)
         yield metrics
         mlflow.log_param("query", query)
         mlflow.log_metrics({
@@ -61,9 +75,9 @@ def log_notification(
     digest_text: str = "",
 ) -> None:
     """Log a weekly notification generation event with full context."""
-    _ensure_experiment()
+    if _ensure_experiment() is None:
+        return
     mlflow.set_experiment(EXPERIMENT_NAME)
-
     with mlflow.start_run(run_name=f"notify-{week}"):
         mlflow.log_params({
             "week": week,
