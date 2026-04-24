@@ -3,365 +3,577 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vedic Wisdom — Recommendations & Insights</title>
+  <title>Vedic Wisdom Weekly</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,600&family=Noto+Sans+Devanagari:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,600&family=Noto+Sans+Devanagari:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0f0f0f;
-      --surface: #1a1a1a;
-      --border: #2d2d2d;
-      --text: #e8e4df;
-      --muted: #8a8580;
-      --accent: #c4a35a;
-      --accent-dim: #9a8242;
+      --bg:         #0f0f0f;
+      --surface:    #181818;
+      --surface2:   #212121;
+      --border:     #2e2e2e;
+      --text:       #e8e4df;
+      --muted:      #7a7570;
+      --muted2:     #5a5550;
+      --accent:     #c4a35a;
+      --accent-dim: #8a7040;
+      --good:       #5a9e6f;
+      --warn:       #b85c40;
+      --obs:        #7b5ea7;
     }
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      margin: 0;
-      min-height: 100vh;
       background: var(--bg);
       color: var(--text);
       font-family: "DM Sans", system-ui, sans-serif;
       font-size: 15px;
-      line-height: 1.5;
+      line-height: 1.6;
+      min-height: 100vh;
     }
-    .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
-    h1 {
+    a { color: var(--accent); text-decoration: none; }
+
+    /* ── Layout ── */
+    .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+
+    /* ── Header ── */
+    .site-header { margin-bottom: 2.5rem; }
+    .site-header h1 {
       font-family: Literata, serif;
-      font-weight: 600;
-      font-size: 1.75rem;
-      margin-bottom: 0.25rem;
-      color: var(--accent);
-    }
-    .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 2rem; }
-    section { margin-bottom: 2.5rem; }
-    section h2 {
-      font-family: Literata, serif;
-      font-size: 1.15rem;
+      font-size: 1.9rem;
       font-weight: 600;
       color: var(--accent);
-      margin-bottom: 1rem;
-      padding-bottom: 0.35rem;
+      letter-spacing: -0.01em;
+    }
+    .site-header .meta { color: var(--muted); font-size: 0.9rem; margin-top: 0.2rem; }
+    .site-header .meta span { margin-right: 1.2rem; }
+
+    /* ── Section ── */
+    section { margin-bottom: 3rem; }
+    .section-title {
+      font-family: Literata, serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--accent);
       border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+      margin-bottom: 1.25rem;
     }
-    .card {
+
+    /* ── Week banner ── */
+    .week-banner {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1rem 1.25rem;
-      margin-bottom: 0.75rem;
+      border-radius: 10px;
+      padding: 1.1rem 1.4rem;
+      margin-bottom: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: flex-start;
     }
-    .card .week { font-weight: 600; color: var(--accent-dim); }
-    .card .meta { font-size: 0.9rem; color: var(--muted); margin-top: 0.35rem; }
-    .devanagari { font-family: "Noto Sans Devanagari", sans-serif; font-size: 1.1rem; }
-    .insight-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
-    .insight-box {
+    .week-banner .week-label {
+      font-family: Literata, serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--accent);
+      flex: 1 1 100%;
+    }
+    .obs-badge {
+      background: var(--obs);
+      color: #e0d8f0;
+      border-radius: 4px;
+      padding: 0.18rem 0.55rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .day-badge-good { color: var(--good); font-size: 0.85rem; font-weight: 500; }
+    .day-badge-warn { color: var(--warn); font-size: 0.85rem; font-weight: 500; }
+    .banner-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; width: 100%; }
+    .banner-label { color: var(--muted); font-size: 0.85rem; margin-right: 0.3rem; }
+
+    /* ── Day grid ── */
+    .day-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 0.85rem;
+    }
+    .day-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .day-card:hover { border-color: var(--accent-dim); }
+    .day-card.expanded { border-color: var(--accent); }
+
+    .day-card-head {
+      padding: 0.85rem 1rem 0.7rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .day-card-head .day-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .day-card-head .obs-pill {
+      background: var(--obs);
+      color: #e0d8f0;
+      border-radius: 3px;
+      padding: 0.1rem 0.4rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+    .day-card-head .tithi { color: var(--muted); font-size: 0.82rem; margin-top: 0.15rem; }
+    .day-card-head .stars { font-size: 0.85rem; margin-top: 0.2rem; }
+    .star-filled { color: var(--accent); }
+    .star-empty  { color: var(--muted2); }
+
+    .day-card-body { padding: 0.75rem 1rem; }
+    .color-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.83rem;
+      color: var(--muted);
+    }
+    .color-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .shloka-line { font-size: 0.83rem; color: var(--muted); margin-bottom: 0.2rem; }
+    .shloka-line strong { color: var(--text); font-weight: 500; }
+
+    /* ── Expanded detail ── */
+    .day-detail {
+      display: none;
+      padding: 0 1rem 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .day-card.expanded .day-detail { display: block; }
+
+    .detail-block { margin-top: 0.85rem; }
+    .detail-block .block-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.35rem;
+    }
+    .timing-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.83rem;
+      color: var(--muted);
+      padding: 0.15rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .timing-row:last-child { border-bottom: none; }
+    .timing-row .time-label { flex: 0 0 130px; }
+    .timing-row .time-value { color: var(--text); }
+    .timing-row .time-warn  { color: #c8724a; font-size: 0.75rem; margin-left: 0.3rem; }
+    .timing-row .time-good  { color: var(--good); font-size: 0.75rem; margin-left: 0.3rem; }
+
+    .shloka-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 0.75rem 0.9rem;
+      margin-top: 0.35rem;
+    }
+    .shloka-card .sc-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.4rem;
+    }
+    .shloka-card .sc-source { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.3rem; }
+    .devanagari {
+      font-family: "Noto Sans Devanagari", sans-serif;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--text);
+      margin-bottom: 0.3rem;
+    }
+    .transliteration { font-size: 0.82rem; color: var(--muted); font-style: italic; margin-bottom: 0.3rem; }
+    .meaning { font-size: 0.85rem; color: var(--text); }
+
+    .practice-block {
+      background: var(--surface2);
+      border-left: 3px solid var(--accent-dim);
+      border-radius: 0 6px 6px 0;
+      padding: 0.6rem 0.8rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.35rem;
+    }
+    .practice-block strong { color: var(--text); font-weight: 500; }
+
+    .vastu-row {
+      font-size: 0.83rem;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+
+    /* ── History ── */
+    .history-table { width: 100%; border-collapse: collapse; }
+    .history-table th {
+      text-align: left;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0 0.75rem 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .history-table td {
+      padding: 0.55rem 0.75rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .history-table td:first-child { color: var(--accent-dim); font-weight: 500; }
+    .history-table .verse-pill {
+      display: inline-block;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.1rem 0.4rem;
+      font-size: 0.78rem;
+      color: var(--text);
+      margin: 0.1rem 0.15rem 0.1rem 0;
+    }
+
+    /* ── Stats ── */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.85rem; }
+    .kpi-box {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 1rem;
       text-align: center;
     }
-    .insight-box .value { font-size: 1.5rem; font-weight: 600; color: var(--accent); }
-    .insight-box .label { font-size: 0.85rem; color: var(--muted); margin-top: 0.25rem; }
-    .kpi-title { font-size: 0.9rem; font-weight: 600; color: var(--accent-dim); margin-bottom: 0.35rem; }
-    .trend-list { margin-top: 0.35rem; }
-    .trend-row { display: flex; justify-content: space-between; gap: 1rem; margin: 0.2rem 0; color: var(--muted); font-size: 0.9rem; }
-    .loading { color: var(--muted); }
-    .error { color: #c75c5c; }
+    .kpi-box .kpi-val { font-size: 1.6rem; font-weight: 600; color: var(--accent); }
+    .kpi-box .kpi-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; }
+
+    /* ── Loading / empty ── */
+    .loading { color: var(--muted); font-size: 0.9rem; }
+    .empty-msg {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    .empty-msg code { color: var(--accent-dim); }
+
+    /* ── Score colors ── */
+    .score-5 .stars { color: var(--good); }
+    .score-2 .stars { color: var(--warn); }
+    .score-1 .stars { color: var(--warn); }
+
+    @media (max-width: 600px) {
+      .day-grid { grid-template-columns: 1fr; }
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .site-header h1 { font-size: 1.5rem; }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
+<div class="container">
+
+  <!-- Header -->
+  <header class="site-header">
     <h1>Vedic Wisdom Weekly</h1>
-    <p class="subtitle">Recommendations & insights (local tithi-based shlokas)</p>
+    <div class="meta" id="header-meta">
+      <span id="meta-location">—</span>
+      <span id="meta-profile">—</span>
+      <span id="meta-tradition">Smarta</span>
+    </div>
+  </header>
 
-    <section id="panchang">
-      <h2>This week's panchang</h2>
-      <div id="panchang-content"></div>
-    </section>
+  <!-- This Week -->
+  <section id="section-week">
+    <div class="section-title">This week</div>
+    <div id="week-banner" class="loading">Loading…</div>
+  </section>
 
-    <section id="janam-patri">
-      <h2>Janam Patri — Birth chart shlokas</h2>
-      <div id="janam-content"></div>
-    </section>
+  <!-- 7-Day Guidance -->
+  <section id="section-days">
+    <div class="section-title">7-day guidance</div>
+    <div id="day-grid" class="day-grid"></div>
+  </section>
 
-    <section id="insights">
-      <h2>Insights</h2>
-      <div id="insights-content" class="insight-grid"></div>
-    </section>
+  <!-- History -->
+  <section id="section-history">
+    <div class="section-title">Shloka history</div>
+    <div id="history-content"></div>
+  </section>
 
-    <section id="history">
-      <h2>Weekly recommendation history</h2>
-      <div id="history-content"></div>
-    </section>
-  </div>
+  <!-- Stats -->
+  <section id="section-stats">
+    <div class="section-title">Overview</div>
+    <div id="stats-content" class="kpi-grid"></div>
+  </section>
 
-  <script>
-    const RECOMMENDATIONS_URL = 'data/recommendations.json';
-    const JANAM_PATRI_URL = 'data/janam_patri.json';
-    const CURRENT_DIGEST_URL = 'data/current_digest.json';
+</div>
 
-    async function loadJson(url) {
-      const res = await fetch(url);
-      if (!res.ok) return null;
-      return res.json();
-    }
+<script>
+// ── Colour helpers ──────────────────────────────────────────────────────
 
-    async function loadData() {
-      const [runs, janam, digest] = await Promise.all([
-        loadJson(RECOMMENDATIONS_URL).then(r => r || []),
-        loadJson(JANAM_PATRI_URL),
-        loadJson(CURRENT_DIGEST_URL),
-      ]);
-      if (!Array.isArray(runs)) throw new Error('Could not load recommendations.json. Run: python scripts/export_mlflow_runs.py');
-      return { runs, janam, digest };
-    }
+const COLOR_MAP = {
+  "Red":     "#c0504d", "Saffron":  "#e07030", "White":   "#e0ddd8",
+  "Cream":   "#d8d4c0", "Coral":    "#c05848", "Green":   "#4a8a5a",
+  "Emerald": "#3a7a5a", "Yellow":   "#c8a030", "Gold":    "#c4a030",
+  "Pink":    "#c07890", "Black":    "#303030", "Navy":    "#2a3a5a",
+  "Blue":    "#3a5080", "Purple":   "#6a4a8a", "Dark":    "#404040",
+};
+function colorDot(wear) {
+  const key = (wear || "").split("/")[0].trim();
+  const bg  = COLOR_MAP[key] || "#666";
+  return `<span class="color-dot" style="background:${bg}"></span>`;
+}
 
-    function stripDiacritics(text) {
-      if (!text) return '';
-      return text
-        .normalize('NFKD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/\s+/g, ' ')
-        .trim();
-    }
+// ── Stars ───────────────────────────────────────────────────────────────
 
-    function cleanMeaning(text) {
-      if (!text) return '';
-      return text
-        .replace(/^\s*\d+\.\d+\s*/, '')
-        .replace(/\s+/g, ' ')
-        .trim();
-    }
+function stars(n) {
+  return "★".repeat(n) + "☆".repeat(5 - n);
+}
 
-    function renderPanchang(digest) {
-      const el = document.getElementById('panchang-content');
-      if (!digest) {
-        el.innerHTML = '<p class="loading">No panchang data. Run <code>python scripts/export_mlflow_runs.py</code> to export this week\'s digest.</p>';
-        return;
-      }
-      let html = `<div class="card"><div class="week">${digest.week_start} → ${digest.week_end}</div></div>`;
-      if (digest.panchang_days && digest.panchang_days.length) {
-        html += '<div class="card"><div class="meta" style="margin-bottom: 0.5rem;">Daily Panchangam</div>';
-        digest.panchang_days.forEach(p => {
-          html += `<div class="meta">${p.date} (${p.vaara}) · ${p.paksha} ${p.tithi} · ${p.nakshatra} · Sunrise ${p.sunrise}</div>`;
-        });
-        html += '</div>';
-      }
-      if (digest.observances && digest.observances.length) {
-        html += '<div class="card"><div class="meta" style="margin-bottom: 0.5rem;">Observances this week</div>';
-        digest.observances.forEach(o => {
-          html += `<div class="meta">${o.date} — ${o.name} (${o.deity}): ${o.description}</div>`;
-        });
-        html += '</div>';
-      }
-      if (digest.verse_of_week) {
-        const v = digest.verse_of_week;
-        html += '<div class="card"><div class="week">Verse of the week</div>';
-        html += `<div class="devanagari">${v.devanagari || ''}</div>`;
-        html += `<div style="font-size: 0.95rem; margin-top: 0.35rem;">Transliteration: ${stripDiacritics(v.transliteration)}</div>`;
-        html += `<div class="meta">Meaning: ${cleanMeaning(v.meaning)}</div>`;
-        html += `<div class="meta">Source: ${v.source || ''}</div></div>';
-      }
-      if (digest.lifestyle_recommendations && digest.lifestyle_recommendations.length) {
-        html += '<div class="card"><div class="week">Lifestyle recommendations</div>';
-        digest.lifestyle_recommendations.forEach(r => {
-          html += `<div class="meta">• ${r}</div>`;
-        });
-        html += '</div>';
-      }
-      el.innerHTML = html;
-    }
+// ── Verse card HTML ─────────────────────────────────────────────────────
 
-    function renderJanamPatri(janam) {
-      const el = document.getElementById('janam-content');
-      if (!janam) {
-        el.innerHTML = '<p class="loading">Janam patri not exported. Enable it in config.yaml and run <code>python scripts/export_mlflow_runs.py</code>.</p>';
-        return;
-      }
-      const verses = janam.verses || [];
-      const influenced = verses.length ? verses[0] : null;
-      const others = verses.slice(1, 4);
-      el.innerHTML = `
-        <div class="card">
-          <div class="week">${janam.birth_place} · ${janam.birth_date} ${janam.birth_time}</div>
-          <div class="meta">Janma Nakshatra: <strong>${janam.janma_nakshatra}</strong> | Rashi: <strong>${janam.rashi}</strong></div>
-          <div class="meta">Theme: ${janam.theme || '—'}</div>
+function verseCard(label, v) {
+  if (!v) return "";
+  return `
+    <div class="shloka-card">
+      <div class="sc-label">${label}</div>
+      <div class="sc-source">${v.source || ""} ${v.deity ? "· " + v.deity : ""}</div>
+      <div class="devanagari">${v.devanagari || ""}</div>
+      <div class="transliteration">${v.transliteration || ""}</div>
+      <div class="meaning">${v.meaning || ""}</div>
+    </div>`;
+}
+
+// ── Build day card ──────────────────────────────────────────────────────
+
+function buildDayCard(d, idx) {
+  const hasObs   = Boolean(d.observance);
+  const obsPill  = hasObs ? `<span class="obs-pill">${d.observance}</span>` : "";
+  const scoreClass = d.day_score >= 5 ? "score-5" : d.day_score <= 2 ? "score-2" : "";
+
+  const timings = [
+    ["Sunrise / Sunset", `${d.sunrise} &nbsp;·&nbsp; ${d.sunset}`, ""],
+    ["Rahu Kalam",    d.rahu,       "⚠ avoid"],
+    ["Yamagandam",    d.yamagandam, "⚠ avoid"],
+    ["Gulika Kalam",  d.gulika,     ""],
+    ["Abhijit Muhurta", d.abhijit,  "✓ auspicious"],
+  ].map(([label, val, note]) => `
+    <div class="timing-row">
+      <span class="time-label">${label}</span>
+      <span class="time-value">${val}
+        ${note.startsWith("⚠") ? `<span class="time-warn">${note}</span>` : ""}
+        ${note.startsWith("✓") ? `<span class="time-good">${note}</span>` : ""}
+      </span>
+    </div>`).join("");
+
+  return `
+  <div class="day-card ${scoreClass}" id="day-${idx}" onclick="toggleDay(${idx})">
+    <div class="day-card-head">
+      <div class="day-name">${d.date_label} ${obsPill}</div>
+      <div class="tithi">${d.tithi} · ${d.nakshatra} · ${d.yoga}</div>
+      <div class="stars">${stars(d.day_score)} <span style="font-size:0.8rem;color:var(--muted);margin-left:0.3rem;">${d.day_quality.split(" — ")[0]}</span></div>
+    </div>
+    <div class="day-card-body">
+      <div class="color-row">${colorDot(d.color_wear)} Wear ${d.color_wear} &nbsp;·&nbsp; Avoid ${d.color_avoid}</div>
+      <div class="shloka-line">🕉 <strong>${d.devata_shloka ? d.devata_shloka.source : "—"}</strong></div>
+      <div class="shloka-line">✦ <strong>${d.personal_shloka ? d.personal_shloka.source : "—"}</strong></div>
+    </div>
+    <div class="day-detail">
+      <div class="detail-block">
+        <div class="block-label">Timings</div>
+        ${timings}
+      </div>
+      <div class="detail-block">
+        <div class="block-label">Day quality</div>
+        <div style="font-size:0.85rem;color:var(--muted);margin-bottom:0.25rem;">${d.day_quality}</div>
+        <div style="font-size:0.82rem;color:var(--muted);">Nakshatra ${d.nakshatra} compatibility: ${stars(d.nak_compat)}</div>
+      </div>
+      <div class="detail-block">
+        <div class="block-label">Color &amp; Vastu</div>
+        <div style="font-size:0.83rem;color:var(--muted);">
+          Wear: <strong style="color:var(--text)">${d.color_wear}</strong> &nbsp;·&nbsp;
+          Avoid: <strong style="color:var(--text)">${d.color_avoid}</strong><br>
+          Planet: ${d.planet} &nbsp;·&nbsp; Gem: ${d.gem}
         </div>
-        ${influenced ? `
-          <div class="card">
-            <div class="week">Janam-Patri Influenced Shloka of the Week</div>
-            <div class="devanagari">${influenced.devanagari || ''}</div>
-            <div style="font-size: 0.95rem; margin-top: 0.35rem;">Transliteration: ${stripDiacritics(influenced.transliteration)}</div>
-            <div class="meta">Meaning: ${cleanMeaning(influenced.meaning)}</div>
-            <div class="meta">Source: ${influenced.source || ''}</div>
-          </div>
-        ` : ''}
-        ${others.length ? `
-          <div class="card">
-            <div class="week">Other recommendations</div>
-            ${others.map((v, idx) => `
-              <div class="meta"><strong>${idx + 1}. ${v.source || 'Verse'}</strong></div>
-              <div class="devanagari">${v.devanagari || ''}</div>
-              <div style="font-size: 0.95rem; margin-top: 0.2rem;">${stripDiacritics(v.transliteration)}</div>
-              <div class="meta">Meaning: ${cleanMeaning(v.meaning)}</div>
-            `).join('')}
-          </div>
-        ` : ''}
-        ${(janam.lifestyle_recommendations && janam.lifestyle_recommendations.length) ? `
-          <div class="card">
-            <div class="week">Janam-Patri lifestyle guidance</div>
-            ${janam.lifestyle_recommendations.map(r => `<div class="meta">• ${r}</div>`).join('')}
-          </div>
-        ` : ''}
-      `;
-    }
+        <div class="vastu-row">${d.vastu_tip}</div>
+      </div>
+      <div class="detail-block">
+        <div class="block-label">Devata shloka — ${d.deity_of_day}</div>
+        ${verseCard("", d.devata_shloka)}
+      </div>
+      <div class="detail-block">
+        <div class="block-label">Personal shloka</div>
+        ${verseCard("", d.personal_shloka)}
+      </div>
+      <div class="detail-block">
+        <div class="block-label">Practice${d.observance ? " — " + d.observance : ""}</div>
+        <div class="practice-block">${d.practice}</div>
+      </div>
+    </div>
+  </div>`;
+}
 
-    function classifySampradaya(source) {
-      const s = (source || '').toLowerCase();
-      if (s.includes('vishnu')) return 'Vaishnava';
-      if (s.includes('ganesha')) return 'Ganapatya';
-      if (s.includes('shiva')) return 'Shaiva';
-      if (s.includes('pitru')) return 'Smarta/Pitru';
-      if (s.includes('bhagavad gita')) return 'Vedanta/Gita';
-      return 'General Hindu';
-    }
+function toggleDay(idx) {
+  const card = document.getElementById("day-" + idx);
+  card.classList.toggle("expanded");
+}
 
-    function detectScript(text) {
-      if (!text) return 'Unknown';
-      if (/[\u0900-\u097F]/.test(text)) return 'Devanagari';
-      if (/[A-Za-z]/.test(text)) return 'Latin';
-      return 'Other';
-    }
+// ── Verse lookup (for history section) ─────────────────────────────────
 
-    function preferMeta(v, field, fallback) {
-      if (v && v[field]) return v[field];
-      return fallback || 'Unknown';
-    }
+const VERSE_SOURCES = {
+  "bg-2.47":              "BG 2.47",
+  "bg-4.7":               "BG 4.7",
+  "bg-9.22":              "BG 9.22",
+  "bg-2.14":              "BG 2.14",
+  "bg-6.5":               "BG 6.5",
+  "bg-18.66":             "BG 18.66",
+  "vs-1":                 "Vishnu Sahasranama 1",
+  "shiva-panchakshari":   "Shiva Panchakshari",
+  "shiva-mahamrityunjaya":"Mahamrityunjaya",
+  "ganesha-shloka":       "Ganesha Shloka",
+  "gayatri":              "Gayatri Mantra",
+  "surya-aditya":         "Aditya Hridayam",
+  "devi-stuti":           "Devi Stuti",
+  "saraswati-vandana":    "Saraswati Vandana",
+  "pitru-mantra":         "Pitru Stotram",
+};
+function versePill(id) {
+  const label = VERSE_SOURCES[id] || id;
+  return `<span class="verse-pill">${label}</span>`;
+}
 
-    function renderInsights(runs, janam, digest) {
-      if (!runs.length) {
-        document.getElementById('insights-content').innerHTML = '<p class="loading">No runs yet. Generate a weekly digest first.</p>';
-        return;
-      }
-      const verseCounts = {};
-      const observanceCounts = {};
-      const sampradayaCounts = {};
-      const deityCounts = {};
-      const categoryCounts = {};
-      const weeklyRows = [];
-      runs.forEach(r => {
-        const v = r.verse_id || 'none';
-        verseCounts[v] = (verseCounts[v] || 0) + 1;
-        const source = r.verse_source || 'Unknown';
-        const sam = classifySampradaya(source);
-        sampradayaCounts[sam] = (sampradayaCounts[sam] || 0) + 1;
-        weeklyRows.push({ week: r.week || '—', source, sampradaya: sam });
-        const obs = (r.observances || '').split(',').map(s => s.trim()).filter(Boolean);
-        obs.forEach(o => { observanceCounts[o] = (observanceCounts[o] || 0) + 1; });
-      });
-      if (digest?.verse_of_week) {
-        const v = digest.verse_of_week;
-        const sam = preferMeta(v, 'sampradaya', classifySampradaya(v.source));
-        sampradayaCounts[sam] = (sampradayaCounts[sam] || 0) + 1;
-        const deity = preferMeta(v, 'deity');
-        deityCounts[deity] = (deityCounts[deity] || 0) + 1;
-        const cat = preferMeta(v, 'category');
-        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
-      }
-      (digest?.daily_verses || []).forEach(d => {
-        const v = d?.verse;
-        if (!v) return;
-        const sam = preferMeta(v, 'sampradaya', classifySampradaya(v.source));
-        sampradayaCounts[sam] = (sampradayaCounts[sam] || 0) + 1;
-        const deity = preferMeta(v, 'deity');
-        deityCounts[deity] = (deityCounts[deity] || 0) + 1;
-        const cat = preferMeta(v, 'category');
-        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
-      });
-      (janam?.verses || []).forEach(v => {
-        const sam = preferMeta(v, 'sampradaya', classifySampradaya(v.source));
-        sampradayaCounts[sam] = (sampradayaCounts[sam] || 0) + 1;
-        const deity = preferMeta(v, 'deity');
-        deityCounts[deity] = (deityCounts[deity] || 0) + 1;
-        const cat = preferMeta(v, 'category');
-        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
-      });
-      const topVerse = Object.entries(verseCounts).sort((a, b) => b[1] - a[1])[0];
-      const topObs = Object.entries(observanceCounts).sort((a, b) => b[1] - a[1])[0];
-      const topSam = Object.entries(sampradayaCounts).sort((a, b) => b[1] - a[1])[0];
-      const topDeity = Object.entries(deityCounts).sort((a, b) => b[1] - a[1])[0];
-      const topCategory = Object.entries(categoryCounts).sort((a, b) => b[1] - a[1])[0];
-      const totalObs = runs.reduce((s, r) => s + (r.observance_count || 0), 0);
-      const sources = [...new Set(weeklyRows.map(w => w.source))].length;
+// ── Render functions ────────────────────────────────────────────────────
 
-      const scriptSamples = [];
-      if (digest?.verse_of_week?.devanagari) scriptSamples.push(digest.verse_of_week.devanagari);
-      (digest?.daily_verses || []).forEach(d => { if (d?.verse?.devanagari) scriptSamples.push(d.verse.devanagari); });
-      (janam?.verses || []).forEach(v => { if (v?.devanagari) scriptSamples.push(v.devanagari); });
-      const scriptCounts = {};
-      scriptSamples.forEach(t => {
-        const k = detectScript(t);
-        scriptCounts[k] = (scriptCounts[k] || 0) + 1;
-      });
-      const topScript = Object.entries(scriptCounts).sort((a, b) => b[1] - a[1])[0];
+function renderWeekBanner(week) {
+  const obs = (week.observances || []).map(o =>
+    `<span class="obs-badge">${o.name} — ${o.date}</span>`).join(" ");
+  const best = (week.best_days || []).map(d =>
+    `<span class="day-badge-good">★ ${d}</span>`).join(" &nbsp; ");
+  const caution = (week.caution_days || []).map(d =>
+    `<span class="day-badge-warn">△ ${d}</span>`).join(" &nbsp; ");
 
-      const recent = weeklyRows
-        .sort((a, b) => (a.week < b.week ? 1 : -1))
-        .slice(0, 8)
-        .map(r => `<div class="trend-row"><span>${r.week}</span><span>${r.source} · ${r.sampradaya}</span></div>`)
-        .join('');
+  document.getElementById("week-banner").innerHTML = `
+    <div class="week-banner">
+      <div class="week-label">Week of ${week.week_label}</div>
+      ${obs ? `<div class="banner-row"><span class="banner-label">Observances</span>${obs}</div>` : ""}
+      ${best ? `<div class="banner-row"><span class="banner-label">Best days</span>${best}</div>` : ""}
+      ${caution ? `<div class="banner-row"><span class="banner-label">Use care</span>${caution}</div>` : ""}
+    </div>`;
+}
 
-      document.getElementById('insights-content').innerHTML = [
-        { value: runs.length, label: 'Weeks tracked' },
-        { value: totalObs, label: 'Total observances' },
-        { value: sources, label: 'Distinct source texts' },
-        { value: topObs ? topObs[0] : '—', label: 'Most frequent observance' },
-        { value: topSam ? topSam[0] : '—', label: 'Top sampradaya' },
-        { value: topDeity ? topDeity[0] : '—', label: 'Top deity' },
-        { value: topCategory ? topCategory[0] : '—', label: 'Top category' },
-        { value: topScript ? topScript[0] : '—', label: 'Primary script' },
-      ].map(({ value, label }) =>
-        `<div class="insight-box"><div class="value">${value}</div><div class="label">${label}</div></div>`
-      ).join('') + `
-        <div class="card" style="grid-column: 1 / -1; text-align: left;">
-          <div class="kpi-title">Shloka Source Trend (Recent Weeks)</div>
-          <div class="trend-list">${recent || '<div class="meta">No trend data.</div>'}</div>
-          <div class="meta" style="margin-top:0.5rem;">Most quoted verse id: ${topVerse ? topVerse[0] : '—'}</div>
-        </div>`;
-    }
+function renderDays(week) {
+  document.getElementById("day-grid").innerHTML =
+    (week.days || []).map((d, i) => buildDayCard(d, i)).join("");
+}
 
-    function renderHistory(runs) {
-      const el = document.getElementById('history-content');
-      if (!runs.length) {
-        el.innerHTML = '<p class="loading">No recommendations yet. Run <code>python scripts/weekly_guidance.py</code> then <code>python scripts/export_mlflow_runs.py</code>.</p>';
-        return;
-      }
-      el.innerHTML = runs.map(r =>
-        `<div class="card">
-          <div class="week">Week ${r.week || '—'}</div>
-          <div>Verse: ${r.verse_source || r.verse_id || '—'}</div>
-          <div class="meta">Observances: ${r.observances || '—'} (${r.observance_count || 0}) · ${r.search_latency_ms ? r.search_latency_ms + ' ms' : ''}</div>
-        </div>`
-      ).join('');
-    }
+function renderHistory(history) {
+  const el = document.getElementById("history-content");
+  const weekly = history.weekly || {};
+  const keys   = Object.keys(weekly).sort().reverse();
+  if (!keys.length) {
+    el.innerHTML = `<div class="empty-msg">No history yet. Runs accumulate here each week.</div>`;
+    return;
+  }
+  const rows = keys.map(k => {
+    const ids = (weekly[k].ids || []).map(versePill).join("");
+    return `<tr><td>${k}</td><td>${ids}</td></tr>`;
+  }).join("");
+  el.innerHTML = `
+    <table class="history-table">
+      <thead><tr><th>Week</th><th>Shlokas used</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
 
-    loadData()
-      .then(({ runs, janam, digest }) => {
-        renderPanchang(digest);
-        renderJanamPatri(janam);
-        renderInsights(runs, janam, digest);
-        renderHistory(runs);
-      })
-      .catch(e => {
-        document.getElementById('history-content').innerHTML = `<p class="error">${e.message}</p>`;
-        document.getElementById('panchang-content').innerHTML = '';
-        document.getElementById('janam-content').innerHTML = '';
-        document.getElementById('insights-content').innerHTML = '';
-      });
-  </script>
+function renderStats(week, history) {
+  const weekly     = history.weekly || {};
+  const weeksCount = Object.keys(weekly).length;
+  const allIds     = Object.values(weekly).flatMap(w => w.ids || []);
+  const uniqueIds  = new Set(allIds).size;
+  const totalIds   = allIds.length;
+  const coverage   = Math.round(uniqueIds / 15 * 100);
+
+  const topId      = allIds.reduce((acc, id) => { acc[id] = (acc[id]||0)+1; return acc; }, {});
+  const topVerse   = Object.entries(topId).sort((a,b)=>b[1]-a[1])[0];
+  const bestDay    = (week.best_days || [])[0] || "—";
+  const obsCount   = (week.observances || []).length;
+
+  document.getElementById("stats-content").innerHTML = [
+    { val: weeksCount,   label: "Weeks tracked"      },
+    { val: uniqueIds,    label: "Distinct verses used"},
+    { val: coverage+"%", label: "Corpus coverage"    },
+    { val: obsCount,     label: "Observances this week"},
+    { val: (week.days||[]).filter(d=>d.day_score>=5).length, label: "★★★★★ days this week"},
+    { val: topVerse ? VERSE_SOURCES[topVerse[0]] || topVerse[0] : "—", label: "Most used shloka"},
+  ].map(({val, label}) =>
+    `<div class="kpi-box"><div class="kpi-val">${val}</div><div class="kpi-label">${label}</div></div>`
+  ).join("");
+}
+
+function renderHeader(week) {
+  document.getElementById("meta-location").textContent = week.location || "—";
+  document.getElementById("meta-profile").textContent  =
+    `${week.nakshatra} · ${week.rashi}`;
+}
+
+// ── Load & render ───────────────────────────────────────────────────────
+
+async function loadJson(url) {
+  try {
+    const r = await fetch(url);
+    return r.ok ? r.json() : null;
+  } catch { return null; }
+}
+
+async function init() {
+  const [week, history] = await Promise.all([
+    loadJson("data/current_week.json"),
+    loadJson("data/shloka_history.json"),
+  ]);
+
+  if (!week) {
+    document.getElementById("week-banner").innerHTML =
+      `<div class="empty-msg">No data yet.<br>Run <code>python scripts/weekly_guidance.py</code> locally, or trigger the GitHub Actions workflow.</div>`;
+    document.getElementById("day-grid").innerHTML = "";
+    document.getElementById("history-content").innerHTML =
+      `<div class="empty-msg">No history yet.</div>`;
+    document.getElementById("stats-content").innerHTML = "";
+    return;
+  }
+
+  const hist = history || { weekly: {}, daily_devata: {} };
+  renderHeader(week);
+  renderWeekBanner(week);
+  renderDays(week);
+  renderHistory(hist);
+  renderStats(week, hist);
+}
+
+init();
+</script>
 </body>
 </html>

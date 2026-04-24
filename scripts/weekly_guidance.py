@@ -531,6 +531,7 @@ def format_week(days: list[DayResult], chart: BirthChart, loc: PracticeLocation,
 
 
 def week_to_dict(days: list[DayResult], chart: BirthChart, loc: PracticeLocation) -> dict:
+    """Legacy export format (used by weekly_notification path)."""
     def verse(v: dict | None) -> dict | None:
         return {k: v.get(k) for k in ("devanagari", "transliteration", "meaning", "source")} if v else None
     return {
@@ -560,6 +561,81 @@ def week_to_dict(days: list[DayResult], chart: BirthChart, loc: PracticeLocation
     }
 
 
+def build_dashboard_payload(days: list[DayResult], chart: BirthChart,
+                             loc: PracticeLocation) -> dict:
+    """Rich JSON payload for dashboard/data/current_week.json."""
+    def full_verse(v: dict | None) -> dict | None:
+        if not v:
+            return None
+        return {k: v.get(k, "") for k in
+                ("id", "source", "deity", "devanagari", "transliteration", "meaning", "category")}
+
+    en_day = {"Ravivara":"Sunday","Somavara":"Monday","Mangalavara":"Tuesday",
+              "Budhavara":"Wednesday","Guruvara":"Thursday","Shukravara":"Friday","Shanivara":"Saturday"}
+    start, end = days[0].date, days[-1].date
+    obs = [{"name": d.observance, "date": d.date.strftime("%b %d"), "deity": d.deity_of_day}
+           for d in days if d.observance]
+    best    = [f"{en_day[d.panchang.vaara]} {d.date.strftime('%b %d')}" for d in days if d.day_score == 5]
+    caution = [f"{en_day[d.panchang.vaara]} {d.date.strftime('%b %d')}" for d in days if d.day_score <= 2]
+
+    day_payloads = []
+    for d in days:
+        c = d.color
+        day_payloads.append({
+            "date":        str(d.date),
+            "date_label":  f"{en_day.get(d.panchang.vaara, d.panchang.vaara)} {d.date.strftime('%b %d')}",
+            "vaara_en":    en_day.get(d.panchang.vaara, d.panchang.vaara),
+            "vaara":       d.panchang.vaara,
+            "tithi":       f"{d.panchang.paksha} {d.panchang.tithi}",
+            "nakshatra":   d.panchang.nakshatra,
+            "yoga":        d.panchang.yoga,
+            "karana":      d.panchang.karana,
+            "observance":  d.observance,
+            "day_score":   d.day_score,
+            "day_quality": d.day_quality,
+            "nak_compat":  d.nak_compat,
+            "sunrise":     d.sunrise,
+            "sunset":      d.sunset,
+            "rahu":        d.rahu,
+            "yamagandam":  d.yamagandam,
+            "gulika":      d.gulika,
+            "abhijit":     d.abhijit,
+            "color_wear":  c["wear"],
+            "color_avoid": c["avoid"],
+            "planet":      c["planet"],
+            "gem":         c["gem"],
+            "vastu_tip":   d.vastu_tip,
+            "deity_of_day":  d.deity_of_day,
+            "devata_shloka": full_verse(d.devata_shloka),
+            "personal_shloka": full_verse(d.personal_shloka),
+            "practice":    d.practice,
+        })
+
+    return {
+        "generated":    str(dt.date.today()),
+        "week_label":   f"{start.strftime('%b %d')} – {end.strftime('%b %d, %Y')}",
+        "week_key":     start.strftime("%Y-W%W"),
+        "nakshatra":    chart.janma_nakshatra,
+        "rashi":        chart.rashi,
+        "location":     loc.city,
+        "timezone":     loc.timezone,
+        "observances":  obs,
+        "best_days":    best,
+        "caution_days": caution,
+        "days":         day_payloads,
+    }
+
+
+CURRENT_WEEK_PATH = ROOT / "dashboard" / "data" / "current_week.json"
+
+
+def write_dashboard_json(days: list[DayResult], chart: BirthChart,
+                          loc: PracticeLocation) -> None:
+    CURRENT_WEEK_PATH.parent.mkdir(parents=True, exist_ok=True)
+    payload = build_dashboard_payload(days, chart, loc)
+    CURRENT_WEEK_PATH.write_text(json.dumps(payload, indent=2, ensure_ascii=False))
+
+
 # ── Main ──────────────────────────────────────────────────────────────
 
 def main() -> None:
@@ -576,8 +652,12 @@ def main() -> None:
 
     days, chart, loc = build_week(start, write_history=write_history)
     print(format_week(days, chart, loc, debug=args.debug))
-    status = "updated" if write_history else "not updated"
-    print(f"\n[Memory {status}: {HISTORY_PATH}]")
+    if write_history:
+        write_dashboard_json(days, chart, loc)
+        print(f"[Memory updated: {HISTORY_PATH}]")
+        print(f"[Dashboard JSON: {CURRENT_WEEK_PATH}]")
+    else:
+        print("[Memory not updated (backtest mode)]")
 
 
 if __name__ == "__main__":
