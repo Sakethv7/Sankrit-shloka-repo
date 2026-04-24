@@ -22,7 +22,7 @@ This document describes the technical design of the system: data flow, component
           ▼
    ┌─────────────────────────────────┐
    │        panchang.py              │  ─── Swiss Ephemeris (pyswisseph)
-   │  tithi · nakshatra · yoga       │       New Delhi coords, IST
+   │  tithi · nakshatra · yoga       │       local practice coords/timezone
    │  karana · sunrise · sunset      │
    └─────────────────────────────────┘
           │
@@ -35,7 +35,7 @@ This document describes the technical design of the system: data flow, component
 
 Legend:
   weekly_guidance.py  = primary daily driver
-  weekly_notification.py = legacy (runs in CI on Sundays)
+  weekly_notification.py = legacy compatibility path
   verse_search.py     = optional Qdrant semantic search layer
   tracker.py          = optional MLflow logging layer
 ```
@@ -52,39 +52,44 @@ Legend:
    → sidereal Moon longitude at birth → nakshatra + rashi
         │
         ▼
-3. For each of 7 days starting from --start-date (default: today):
+3. Resolve practice_location
+   → local latitude, longitude, and timezone for observance timing
         │
-        ├─ 3a. compute(date, lat=28.61, lon=77.21, tz=5.5)  [panchang.py]
+        ▼
+4. For each of 7 days starting from --start-date (default: today):
+        │
+        ├─ 4a. compute(date, lat=practice.lat, lon=practice.lon, tz=date_offset)  [panchang.py]
         │       tithi, nakshatra, yoga, karana, vaara, sunrise
         │
-        ├─ 3b. get_muhurtas(date, vaara)
+        ├─ 4b. get_muhurtas(date, vaara, practice_location)
         │       sunrise_jd, sunset_jd → slot_duration = (sunset-sunrise)/8
         │       Rahu/Yamagandam/Gulika = sunrise + offset*slot
         │       Abhijit = solar_noon ± 30 min
         │
-        ├─ 3c. score_day(panchang, chart)
+        ├─ 4c. score_day(panchang, chart)
         │       base = DAY_QUALITY[vaara]  (1–5)
         │       + 1 if nakshatra_compat >= 4
         │       + 1 if observance present
         │       → capped at 5
         │
-        ├─ 3d. pick_devata_shloka(panchang, verses, history)
+        ├─ 4d. pick_devata_shloka(panchang, verses, history)
         │       deity = TITHI_DEITY[tithi_num]
         │       want_tags = DEITY_TAGS[deity]
         │       score all verses → pick highest
         │
-        ├─ 3e. pick_personal_shloka(panchang, chart, verses, history, weekly_used)
+        ├─ 4e. pick_personal_shloka(panchang, chart, verses, history, weekly_used)
         │       hard_excl = weekly_used (this week) + devata_shloka_id
         │       soft_used = _recent_ids(history) - hard_excl
         │       score remaining verses → pick highest
         │
-        └─ 3f. assemble DayResult dataclass
+        └─ 4f. assemble DayResult dataclass
                 │
                 ▼
-4. format and print 7-day report to stdout
+5. format and print 7-day report to stdout
         │
         ▼
-5. update_history() → save shloka_history.json
+6. optionally update_history() → save shloka_history.json
+   live current-week runs write memory; --start-date backtests do not unless --write-history is passed
 ```
 
 ---
@@ -103,9 +108,9 @@ Computes the five limbs (pañcāṅga) of the Hindu calendar for any date and lo
 - **Vaara** — weekday from Julian Day Number: `int((jd + 1.5) % 7)`
 - **Sunrise** — `swe.rise_trans(jd, swe.SUN, rsmi=1, geopos)` → JD of sunrise; converted to local HH:MM
 
-**Reference coordinates:** New Delhi (28.6139°N, 77.2090°E), IST (UTC+5:30). This matches the standard Telugu Panchangam publication reference, giving the same tithi values as a printed calendar from Andhra Pradesh.
+**Reference coordinates:** `weekly_guidance.py` passes the configured `practice_location` into this engine. The default is New Jersey with `America/New_York`, so sunrise-based observances and muhurta windows match where the practice happens.
 
-**Why not New Jersey?** Tithis are a lunar measurement independent of the observer's longitude in traditional usage. The Telugu Panchangam — which this system follows — is computed for Indian coordinates. Using NJ coordinates would produce minute tithi differences but contradict the printed calendar Saketh would reference.
+**Why local?** The rule base is Indic / Telugu / Smarta, but the civil day, sunrise, sunset, Rahu Kalam, Pradosham, and fasting windows should be local for the person practicing.
 
 ---
 
@@ -140,9 +145,9 @@ class DayResult:
     day_score: int             # 1–5
     day_quality: str           # human-readable reason
     nak_compat: int            # 1–5, Punarvasu compatibility
-    sunrise: str               # "HH:MM IST"
+    sunrise: str               # "HH:MM TZ"
     sunset: str
-    rahu: str                  # "HH:MM – HH:MM IST"
+    rahu: str                  # "HH:MM – HH:MM TZ"
     yamagandam: str
     gulika: str
     abhijit: str
@@ -182,7 +187,7 @@ solar_noon = (sunrise_jd + sunset_jd) / 2
 abhijit    = [noon - 1/48 day, noon + 1/48 day]   # ±30 minutes
 ```
 
-All times converted to IST via `(jd_ut % 1 - 0.5) * 24 + 5.5`.
+All times are converted to the configured local timezone with `zoneinfo`, so DST is handled by date.
 
 ---
 
@@ -253,7 +258,7 @@ File: `dashboard/data/shloka_history.json`
 | **Hard exclude** | Same-week `weekly_used` list + today's devata shloka | Completely removed from candidate pool |
 | **Soft penalty** | All IDs from `weekly` history + recent `daily_devata` entries | `-4` score penalty; can still win if corpus is depleted |
 
-This guarantees 7 unique personal shlokas per run. Over multiple weeks, shlokas naturally rotate: a heavily used verse is penalized each week until the penalty can't overcome fresh alternatives.
+This guarantees 7 unique personal shlokas per run while the corpus is large enough. Over recent weeks, shlokas naturally rotate: a heavily used verse is penalized until the penalty cannot overcome fresh alternatives.
 
 ---
 
@@ -289,7 +294,7 @@ Tracked per weekly notification run:
 ## GitHub Actions CI Pipeline
 
 File: `.github/workflows/weekly-digest.yml`
-Schedule: **every Sunday 13:00 UTC (8 AM EST)**
+Schedule: **every Sunday 13:00 UTC (8 AM Eastern during standard time)**
 
 ```
 checkout
@@ -301,13 +306,7 @@ install requirements.txt
 verify MLflow reachable (warning only — never fails the run)
     │
     ▼
-cache verse data (skills/sanskrit-wisdom/data)
-    │
-    ▼
-ingest.py (first run only — populates Qdrant store)
-    │
-    ▼
-weekly_notification.py → stdout digest
+weekly_guidance.py --write-history → stdout guidance + shloka memory
     │
     ▼
 slack_notify.py → POST to Slack webhook
@@ -323,7 +322,7 @@ git commit + push dashboard/data/  (if changed)
 deploy-dashboard job: upload dashboard/ → GitHub Pages
 ```
 
-**Note:** The CI runs `weekly_notification.py` (legacy EST digest for Slack). The new `weekly_guidance.py` is currently run locally on demand. Migrating CI to `weekly_guidance.py` is a future step once the output format is confirmed stable.
+**Note:** `weekly_guidance.py` is the canonical engine. Slack and dashboard exports read from that path; `weekly_notification.py` remains as an older compatibility/MLflow-oriented path.
 
 ---
 
@@ -357,17 +356,17 @@ The four tag arrays are unioned into one set for scoring. `observance_tags` and 
 ### Deterministic scoring over LLM ranking
 Verse selection uses weighted tag matching, not a language model. The output is traceable — you can read the score formula and understand exactly why a verse was chosen. LLM ranking would produce unstable results on a 15-verse corpus and make the memory/rotation system harder to reason about.
 
-### IST / New Delhi reference
-The Telugu Panchangam is traditionally published for Indian coordinates. Using New Delhi keeps tithis and nakshatras consistent with printed calendars from Andhra Pradesh. Muhurtas are also in IST for the same reason.
+### Local Practice Timing
+The system uses Telugu / Smarta Vedic rules, then computes the actual practice day and timing for the configured local place. This keeps recommendations culturally grounded while making sunrise, sunset, Rahu Kalam, Pradosham, and fasting guidance actionable in New Jersey.
 
 ### Flat code structure (Karpathy-inspired)
 Functions stay under 30 lines. No service layer, no repository pattern, no factory classes. The full logic chain from config load to output is readable in one pass. List comprehensions over loops, type hints on signatures only.
 
 ### Memory as a JSON file, not a database
-The history is written to a simple JSON file (`shloka_history.json`) that lives in `dashboard/data/` and is committed to the repo. This makes the memory visible, diffable in git, and requires no infrastructure. It's updated at the end of every `weekly_guidance.py` run.
+The history is written to a simple JSON file (`shloka_history.json`) that lives in `dashboard/data/` and is committed to the repo. This makes the memory visible, diffable in git, and requires no infrastructure. Current-week live runs update it by default; backtests require `--write-history`.
 
 ### Graceful degradation for optional services
-Both MLflow and Qdrant use availability checks on first access. If either is absent, the respective module silently no-ops. The core CLI — birth chart + panchangam + verse scoring — works with only `pyswisseph` and `pyyaml` installed.
+Both MLflow and Qdrant use availability checks on first access. If either is absent, the respective module silently no-ops. The core CLI — birth chart + panchangam + verse scoring — works with `requirements-core.txt`; dashboard, MLflow, and RAG dependencies are split into optional requirement files.
 
 ---
 
@@ -405,7 +404,7 @@ weekly_notification.py
         └── [mlflow]  (optional)
 
 slack_notify.py
-  ├── weekly_notification.py (imports run())
+  ├── weekly_guidance.py
   └── httpx
 
 export_mlflow_runs.py / export_to_sqlite.py

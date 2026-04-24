@@ -2,13 +2,14 @@ name: Weekly Vedic Digest
 
 on:
   schedule:
-    - cron: '0 13 * * 0'  # Every Sunday 8am EST (13:00 UTC)
+    - cron: '0 13 * * 0'  # Every Sunday morning Eastern
   workflow_dispatch:        # Manual trigger via GitHub UI
 
 env:
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
   SLACK_MEMBER_ID: ${{ secrets.SLACK_MEMBER_ID }}
   SLACK_MENTION: ${{ secrets.SLACK_MENTION }}
+  DASHBOARD_URL: ${{ secrets.DASHBOARD_URL }}
   MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -38,18 +39,8 @@ jobs:
       - name: Verify MLflow is reachable
         run: curl -sf "$MLFLOW_TRACKING_URI/health" || echo "::warning::MLflow unreachable — runs will not be tracked"
 
-      - name: Cache verse data
-        uses: actions/cache@v4
-        with:
-          path: skills/sanskrit-wisdom/data
-          key: verse-data-v1
-
-      - name: Ingest verses (first run only)
-        if: ${{ !hashFiles('skills/sanskrit-wisdom/data/qdrant_store/meta.json') }}
-        run: python skills/sanskrit-wisdom/scripts/ingest.py
-
-      - name: Generate weekly digest
-        run: python scripts/weekly_notification.py
+      - name: Generate weekly guidance
+        run: python scripts/weekly_guidance.py --write-history
 
       - name: Send to Slack
         run: python scripts/slack_notify.py

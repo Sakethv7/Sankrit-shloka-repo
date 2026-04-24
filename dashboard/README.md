@@ -36,7 +36,7 @@ This builds (or updates) `dashboard/data/vedic_wisdom.db` with tables:
 - **janam_patri** — Birth chart (nakshatra, rashi, theme).
 - **janam_patri_verses** — Recommended verses for janam patri.
 
-Run again after generating a new weekly digest or changing janam patri.
+Run again after generating new weekly guidance or changing janam patri.
 
 ### 2. Run the Streamlit dashboard
 
@@ -78,7 +78,7 @@ This writes:
 - `dashboard/data/recommendations.json` — weekly digest runs from MLflow.
 - `dashboard/data/janam_patri.json` — birth chart and recommended verses (if janam patri is enabled in `config.yaml`).
 
-Run this again whenever you generate a new weekly digest or change janam patri settings.
+Run this again whenever you generate new weekly guidance or change janam patri settings.
 
 ### 2. Serve the dashboard
 
@@ -118,9 +118,9 @@ Then open the URL it prints (e.g. http://localhost:3000).
 
 ## End-to-end flow
 
-1. **Weekly digest (tithi-aware shlokas, EST)**  
-   `python scripts/weekly_notification.py`  
-   Generates the week’s panchang, observances, and one shloka per tithi; logs to MLflow.
+1. **Weekly guidance (local timings, Indic rules)**  
+   `python scripts/weekly_guidance.py`  
+   Generates the week’s panchang, observances, daily shlokas, and memory-aware recommendations.
 
 2. **Janam patri recommendations**  
    `python scripts/janam_patri.py`  

@@ -38,7 +38,7 @@ NAKSHATRA_THEME = {
     "Rohini": "moon devotion beauty",
     "Mrigashira": "Soma moon seeking",
     "Ardra": "Shiva Rudra storm",
-    "Punarvasu": "Aditi abundance home",
+    "Punarvasu": "punarvasu Aditi abundance home vishnu",
     "Pushya": "Brihaspati wisdom Jupiter",
     "Ashlesha": "serpent wisdom Naga",
     "Magha": "pitru ancestors royalty",

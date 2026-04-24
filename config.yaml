@@ -7,11 +7,17 @@ user:
   community: Golconda Vyapari Niyogi Brahmin
   sutra: Apastamba Dharmasutra
 
-# Telugu Panchangam settings
+# Calendar knowledge base: Telugu / Smarta rules, applied to local practice.
 calendar:
   system: Amanta
   era: Salivahana Saka
-  location: New Jersey
+  tradition_reference: Telugu Panchangam
+
+# Where daily observances, sunrise, Rahu Kalam, and practice timings are computed.
+practice_location:
+  city: New Jersey
+  lat: 40.7128
+  lon: -74.2060
   timezone: America/New_York
 
 # Observances to track
@@ -68,5 +74,5 @@ notifications:
 # Feature flags
 features:
   supermemory_sync: false   # enable when API key is set
-  qdrant_rag: true          # RAG pipeline active (724 verses in Qdrant)
+  qdrant_rag: false         # optional exploration path; primary guidance uses deterministic local scoring
   mlflow_tracking: true

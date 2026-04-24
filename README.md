@@ -2,7 +2,7 @@
 
 A personal weekly Sanskrit guidance system for **Saketh** — Golconda Vyapari Niyogi Brahmin, Smarta tradition (Apastamba Dharmasutra).
 
-Given a birth profile (Punarvasu nakshatra, Mithuna rashi) and the upcoming 7-day Telugu panchangam, it answers:
+Given a birth profile (Punarvasu nakshatra, Mithuna rashi) and the upcoming 7-day local panchangam, it answers:
 
 > *How does this week affect me personally? Which shlokas should I chant each day, what should I do, what should I avoid, and what are the best timings?*
 
@@ -34,10 +34,10 @@ python skills/sanskrit-wisdom/scripts/verse_search.py "karma yoga"
 
 Running `weekly_guidance.py` prints a 7-day report. For each day:
 
-**Panchangam** (IST, New Delhi reference — standard for Telugu calendars)
+**Panchangam** (local practice location, with Telugu / Smarta rules)
 - Tithi · Nakshatra · Yoga · Karana · Vaara
 
-**Muhurta Timings (IST)**
+**Muhurta Timings (local time)**
 - Sunrise / Sunset
 - Rahu Kalam — avoid starting new things
 - Yamagandam — avoid travel and decisions
@@ -60,6 +60,7 @@ Running `weekly_guidance.py` prints a 7-day report. For each day:
 ══════════════════════════════════════════════════════════════
   VEDIC WEEKLY GUIDANCE — Saketh
   Week of Apr 23 – Apr 29, 2026
+  Practice Location: New Jersey (America/New_York)
   Janma Nakshatra: Punarvasu  |  Rashi: Mithuna
   Tradition: Golconda Vyapari Niyogi Brahmin (Smarta)
 ══════════════════════════════════════════════════════════════
@@ -91,6 +92,12 @@ janam_patri:
   rashi: Mithuna        # set if known, else computed
   janma_nakshatra: Punarvasu
 
+practice_location:
+  city: New Jersey
+  lat: 40.7128
+  lon: -74.2060
+  timezone: America/New_York
+
 observances:
   - { name: Ekadashi,  deity: Vishnu,  priority: high }
   - { name: Pradosham, deity: Shiva,   priority: high }
@@ -105,9 +112,9 @@ observances:
 
 | Command | What it does |
 |---------|-------------|
-| `python scripts/weekly_guidance.py` | **Primary** — 7-day personalized guidance (IST) |
-| `python scripts/weekly_guidance.py --start-date YYYY-MM-DD` | Backtest any week |
-| `python scripts/weekly_notification.py` | Legacy weekly digest (EST, Slack-style) |
+| `python scripts/weekly_guidance.py` | **Primary** — 7-day personalized guidance; writes shloka memory |
+| `python scripts/weekly_guidance.py --start-date YYYY-MM-DD --no-write-history` | Backtest any week without mutating memory |
+| `python scripts/weekly_notification.py` | Legacy weekly digest path |
 | `python scripts/janam_patri.py` | Birth chart + nakshatra verse recommendations |
 | `python scripts/slack_notify.py` | Post weekly digest to Slack webhook |
 | `python scripts/export_mlflow_runs.py` | Export MLflow data → dashboard JSON |
@@ -124,16 +131,15 @@ observances:
 ```
 config.yaml                              # Birth profile, observances, feature flags
 scripts/
-  weekly_guidance.py                     # ★ Primary: 7-day guidance (IST + memory)
+  weekly_guidance.py                     # ★ Primary: 7-day guidance (local timings + memory)
   panchang.py                            # Swiss Ephemeris panchangam engine
   janam_patri.py                         # Birth chart + nakshatra verse recs
-  weekly_notification.py                 # Legacy EST digest (runs in CI)
+  weekly_notification.py                 # Legacy digest wrapper / older MLflow path
   slack_notify.py                        # Slack webhook post
   serve_dashboard.py                     # Local static server (port 8080)
   export_mlflow_runs.py                  # Export MLflow → dashboard/data/*.json
   export_to_sqlite.py                    # Export → dashboard/data/vedic_wisdom.db
   supermemory_sync.py                    # Sync to Supermemory API (optional)
-  panchang.py                            # Panchangam computation engine
 dashboard/
   index.html                             # Static dashboard (GitHub Pages)
   data/
@@ -160,15 +166,15 @@ docs/
 
 ## Automation (GitHub Actions)
 
-Every Sunday at 8 AM EST the CI pipeline runs automatically:
+Every Sunday at 8 AM Eastern the CI pipeline runs automatically:
 
-1. Generates weekly digest (`weekly_notification.py`)
+1. Generates weekly guidance (`weekly_guidance.py --write-history`)
 2. Posts to Slack (`slack_notify.py`)
 3. Exports dashboard data (`export_mlflow_runs.py`, `export_to_sqlite.py`)
 4. Commits updated `dashboard/data/` back to `main`
 5. Deploys dashboard to GitHub Pages
 
-Required secrets: `SLACK_WEBHOOK_URL`, `SLACK_MEMBER_ID`, `MLFLOW_TRACKING_URI`.
+Required secrets: `SLACK_WEBHOOK_URL`, `SLACK_MEMBER_ID`. The Slack dashboard link is inferred in GitHub Actions from the repo name; `DASHBOARD_URL` is only needed if you want to override it. `MLFLOW_TRACKING_URI` is optional for historical run export.
 
 ---
 
@@ -202,6 +208,8 @@ Each verse carries `use_cases`, `observance_tags`, and `birth_tags` for determin
 | `httpx` | HTTP client (Slack, Supermemory) |
 | `streamlit` | Dashboard UI (optional) |
 | `pandas` | Data export and analysis |
+
+Install only the core CLI dependencies with `pip install -r requirements-core.txt`. The top-level `requirements.txt` installs core plus dashboard, MLflow, and RAG extras.
 
 ---
 

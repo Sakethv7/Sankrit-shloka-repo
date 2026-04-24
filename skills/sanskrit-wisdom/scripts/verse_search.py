@@ -26,6 +26,9 @@ class Verse:
     meaning: str
     source: str
     tags: list[str]
+    use_cases: list[str] | None = None
+    observance_tags: list[str] | None = None
+    birth_tags: list[str] | None = None
     sampradaya: str | None = None
     deity: str | None = None
     script: str | None = None
@@ -69,8 +72,10 @@ def keyword_search(query: str, top_k: int = 3) -> list[Verse]:
     """Keyword search over verses. Returns top_k matches."""
     query_lower = query.lower()
     verses = load_verses()
+    def tags(v: Verse) -> list[str]:
+        return v.tags + (v.use_cases or []) + (v.observance_tags or []) + (v.birth_tags or [])
     scored = [
-        (v, sum(t in query_lower for t in v.tags) + (query_lower in v.meaning.lower()))
+        (v, sum(t in query_lower for t in tags(v)) + (query_lower in v.meaning.lower()))
         for v in verses
     ]
     scored.sort(key=lambda x: x[1], reverse=True)

@@ -5,9 +5,6 @@ import os
 import sys
 from pathlib import Path
 
-import mlflow
-from mlflow.tracking import MlflowClient
-
 DASHBOARD_DATA = Path(__file__).resolve().parent.parent / "dashboard" / "data"
 DB_PATH = DASHBOARD_DATA / "vedic_wisdom.db"
 TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "sqlite:///mlflow.db")
@@ -92,9 +89,15 @@ def init_schema(conn) -> None:
 
 
 def export_mlflow_runs(conn) -> int:
-    mlflow.set_tracking_uri(TRACKING_URI)
-    client = MlflowClient()
-    exp = client.get_experiment_by_name(EXPERIMENT_NAME)
+    try:
+        import mlflow
+        from mlflow.tracking import MlflowClient
+        mlflow.set_tracking_uri(TRACKING_URI)
+        client = MlflowClient()
+        exp = client.get_experiment_by_name(EXPERIMENT_NAME)
+    except Exception as e:
+        print(f"MLflow unavailable ({type(e).__name__}); skipping run history")
+        return 0
     if not exp:
         return 0
     runs = client.search_runs(experiment_ids=[exp.experiment_id], order_by=["start_time DESC"])
@@ -122,10 +125,11 @@ def export_mlflow_runs(conn) -> int:
 
 def export_current_digest(conn) -> None:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-    from weekly_notification import build_digest, digest_to_dict
+    from weekly_guidance import build_week, week_to_dict
+    import datetime as dt
 
-    digest, _ = build_digest()
-    d = digest_to_dict(digest)
+    days, chart, loc = build_week(dt.date.today(), write_history=False)
+    d = week_to_dict(days, chart, loc)
     cur = conn.cursor()
     from datetime import datetime
     now = datetime.utcnow().isoformat() + "Z"

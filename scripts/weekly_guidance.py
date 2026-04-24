@@ -1,9 +1,9 @@
 """Weekly Vedic Guidance — personalized 7-day CLI for Saketh.
 
-Panchangam computed for New Delhi (IST) — the standard reference for
-Telugu Vedic calendars. Each day gets:
+Panchangam and muhurta timings are computed for the configured local
+practice location, using Telugu / Smarta Vedic rules. Each day gets:
   - Tithi / nakshatra / yoga / karana
-  - Rahu Kalam, Yamagandam, Gulika Kalam, Abhijit Muhurta (all IST)
+  - Rahu Kalam, Yamagandam, Gulika Kalam, Abhijit Muhurta (local time)
   - Day score for Punarvasu / Mithuna birth profile
   - Jyotish color + gemstone + vastu tip
   - Devata shloka (keyed to tithi deity)
@@ -26,6 +26,7 @@ import json
 import sys
 from dataclasses import dataclass
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import swisseph as swe
 import yaml
@@ -46,9 +47,9 @@ HISTORY_PATH = ROOT / "dashboard" / "data" / "shloka_history.json"
 VERSES_PATH  = ROOT / "skills" / "sanskrit-wisdom" / "data" / "verses.json"
 CONFIG_PATH  = ROOT / "config.yaml"
 
-# ── India reference for panchangam (New Delhi) ────────────────────────
+# ── Default local practice location ───────────────────────────────────
 
-INDIA_LAT, INDIA_LON, IST = 28.6139, 77.2090, 5.5
+DEFAULT_LAT, DEFAULT_LON, DEFAULT_TZ = 40.7128, -74.2060, "America/New_York"
 
 # ── Jyotish tables ────────────────────────────────────────────────────
 
@@ -61,6 +62,9 @@ VAARA_COLOR = {
     "Shukravara":  {"wear": "White / Light Pink", "avoid": "Dark colors",  "planet": "Shukra (Venus)",      "gem": "Diamond"},
     "Shanivara":   {"wear": "Black / Dark Blue",  "avoid": "Red",          "planet": "Shani (Saturn)",      "gem": "Blue Sapphire / Iron"},
 }
+
+EN_DAY = {"Ravivara":"Sunday","Somavara":"Monday","Mangalavara":"Tuesday",
+          "Budhavara":"Wednesday","Guruvara":"Thursday","Shukravara":"Friday","Shanivara":"Saturday"}
 
 # Vastu: best direction to face / energize, keyed to day planet
 VASTU_TIP = {
@@ -125,7 +129,7 @@ DEITY_TAGS = {
 # Observance guidance
 OBS_PRACTICE = {
     "Ekadashi":  "Fast (avoid grains). Recite Vishnu Sahasranama or Om Namo Narayanaya 108×. Read a chapter of Gita. Avoid late-night activities.",
-    "Pradosham": "Twilight puja (4:30–6 PM IST). Recite Om Namah Shivaya 108×. Offer milk or bilva leaves if possible. Light a lamp facing west.",
+    "Pradosham": "Twilight puja around local sunset. Recite Om Namah Shivaya 108×. Offer milk or bilva leaves if possible. Light a lamp facing west.",
     "Amavasya":  "Perform pitru tarpana — face south and offer sesame + water remembering ancestors. Light a lamp at dusk. Donate food.",
     "Purnima":   "Light 12 lamps. Recite Vishnu Sahasranama. Donate food or clothes. Moon gazing at night is auspicious.",
     "Chaturthi": "Fast until moonrise (Sankashti Chaturthi). Recite Ganesha shloka 21×. Offer durva grass. Meditate on obstacle removal.",
@@ -154,6 +158,14 @@ class DayResult:
     practice: str
 
 
+@dataclass
+class PracticeLocation:
+    city: str
+    lat: float
+    lon: float
+    timezone: str
+
+
 # ── I/O helpers ───────────────────────────────────────────────────────
 
 def load_config() -> dict:
@@ -174,42 +186,66 @@ def save_history(h: dict) -> None:
     HISTORY_PATH.write_text(json.dumps(h, indent=2, ensure_ascii=False))
 
 
-# ── Astronomy helpers (IST / New Delhi) ───────────────────────────────
+def get_practice_location(cfg: dict) -> PracticeLocation:
+    loc = cfg.get("practice_location", {}) or {}
+    legacy = cfg.get("calendar", {}) or {}
+    return PracticeLocation(
+        city=loc.get("city") or legacy.get("location") or "Local",
+        lat=float(loc.get("lat", DEFAULT_LAT)),
+        lon=float(loc.get("lon", DEFAULT_LON)),
+        timezone=loc.get("timezone") or legacy.get("timezone") or DEFAULT_TZ,
+    )
 
-def _sunset_jd(jd: float) -> float:
-    """Julian Day of sunset at New Delhi."""
-    result = swe.rise_trans(jd, swe.SUN, 2, (INDIA_LON, INDIA_LAT, 0.0))
+
+# ── Astronomy helpers (local practice location) ───────────────────────
+
+def _tz_offset_hours(date: dt.date, tz_name: str) -> float:
+    local_noon = dt.datetime.combine(date, dt.time(12), ZoneInfo(tz_name))
+    offset = local_noon.utcoffset() or dt.timedelta()
+    return offset.total_seconds() / 3600
+
+
+def _tz_label(date: dt.date, tz_name: str) -> str:
+    local_noon = dt.datetime.combine(date, dt.time(12), ZoneInfo(tz_name))
+    return local_noon.tzname() or tz_name
+
+
+def _sunset_jd(jd: float, loc: PracticeLocation) -> float:
+    """Julian Day of sunset at the practice location."""
+    result = swe.rise_trans(jd, swe.SUN, 2, (loc.lon, loc.lat, 0.0))
     return result[1][0]
 
 
-def _jd_to_ist(jd: float) -> str:
-    """Convert a Julian Day (UT) to HH:MM IST string."""
+def _jd_to_local(jd: float, date: dt.date, loc: PracticeLocation) -> str:
+    """Convert a Julian Day (UT) to local HH:MM string."""
     ut_h = (jd % 1 - 0.5) * 24
-    local = (ut_h + IST) % 24
+    local = (ut_h + _tz_offset_hours(date, loc.timezone)) % 24
     return f"{int(local):02d}:{int((local % 1) * 60):02d}"
 
 
-def _slot_window(base_jd: float, slot: int, slot_dur: float) -> str:
-    """Return 'HH:MM – HH:MM IST' for a muhurta slot."""
-    start = _jd_to_ist(base_jd + slot * slot_dur)
-    end   = _jd_to_ist(base_jd + (slot + 1) * slot_dur)
-    return f"{start} – {end} IST"
+def _slot_window(base_jd: float, slot: int, slot_dur: float,
+                 date: dt.date, loc: PracticeLocation) -> str:
+    """Return 'HH:MM – HH:MM TZ' for a muhurta slot."""
+    start = _jd_to_local(base_jd + slot * slot_dur, date, loc)
+    end   = _jd_to_local(base_jd + (slot + 1) * slot_dur, date, loc)
+    return f"{start} – {end} {_tz_label(date, loc.timezone)}"
 
 
-def get_muhurtas(date: dt.date, vaara: str) -> dict:
-    """Compute Rahu Kalam, Yamagandam, Gulika Kalam, Abhijit in IST."""
+def get_muhurtas(date: dt.date, vaara: str, loc: PracticeLocation) -> dict:
+    """Compute Rahu Kalam, Yamagandam, Gulika Kalam, Abhijit locally."""
     jd = swe.julday(date.year, date.month, date.day, 0.0)
-    sr_jd = swe.rise_trans(jd, swe.SUN, 1, (INDIA_LON, INDIA_LAT, 0.0))[1][0]
-    ss_jd = _sunset_jd(jd)
+    sr_jd = swe.rise_trans(jd, swe.SUN, 1, (loc.lon, loc.lat, 0.0))[1][0]
+    ss_jd = _sunset_jd(jd, loc)
     slot  = (ss_jd - sr_jd) / 8          # duration of one muhurta slot in JD
     noon  = (sr_jd + ss_jd) / 2
+    label = _tz_label(date, loc.timezone)
     return {
-        "sunrise":  _jd_to_ist(sr_jd),
-        "sunset":   _jd_to_ist(ss_jd),
-        "rahu":     _slot_window(sr_jd, RAHU_SLOT[vaara],   slot),
-        "yamagandam": _slot_window(sr_jd, YAMA_SLOT[vaara], slot),
-        "gulika":   _slot_window(sr_jd, GULIKA_SLOT[vaara], slot),
-        "abhijit":  f"{_jd_to_ist(noon - 1/48)} – {_jd_to_ist(noon + 1/48)} IST",
+        "sunrise":  f"{_jd_to_local(sr_jd, date, loc)} {label}",
+        "sunset":   f"{_jd_to_local(ss_jd, date, loc)} {label}",
+        "rahu":     _slot_window(sr_jd, RAHU_SLOT[vaara], slot, date, loc),
+        "yamagandam": _slot_window(sr_jd, YAMA_SLOT[vaara], slot, date, loc),
+        "gulika":   _slot_window(sr_jd, GULIKA_SLOT[vaara], slot, date, loc),
+        "abhijit":  f"{_jd_to_local(noon - 1/48, date, loc)} – {_jd_to_local(noon + 1/48, date, loc)} {label}",
     }
 
 
@@ -238,7 +274,9 @@ def score_day(p: DailyPanchang, chart: BirthChart) -> tuple[int, str]:
 def _recent_ids(history: dict, weeks: int = 4) -> set[str]:
     """IDs used in the last `weeks` weekly cycles."""
     all_ids: set[str] = set()
-    for v in history.get("weekly", {}).values():
+    recent_weeks = sorted(history.get("weekly", {}))[-weeks:]
+    for key in recent_weeks:
+        v = history.get("weekly", {}).get(key, {})
         all_ids.update(v.get("ids", []))
     # Also include last N daily devata entries
     daily = list(history.get("daily_devata", {}).values())
@@ -285,9 +323,11 @@ def pick_personal_shloka(p: DailyPanchang, chart: BirthChart, verses: list[dict]
 # ── Day assembly ──────────────────────────────────────────────────────
 
 def build_day(date: dt.date, chart: BirthChart, verses: list[dict],
+              loc: PracticeLocation,
               history: dict, weekly_used: list[str]) -> DayResult:
-    p          = panchang_compute(date, lat=INDIA_LAT, lon=INDIA_LON, tz=IST)
-    muhurtas   = get_muhurtas(date, p.vaara)
+    offset     = _tz_offset_hours(date, loc.timezone)
+    p          = panchang_compute(date, lat=loc.lat, lon=loc.lon, tz=offset)
+    muhurtas   = get_muhurtas(date, p.vaara, loc)
     observance = detect_observance(p)
     day_score, day_quality = score_day(p, chart)
     nak_compat = NAK_COMPAT.get(p.nakshatra, 2)
@@ -342,41 +382,42 @@ def _fmt_shloka(label: str, shloka: dict | None) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _timings_text(day: DayResult) -> str:
+    return (f"  Sunrise:          {day.sunrise}  |  Sunset: {day.sunset}\n"
+            f"  Rahu Kalam:       {day.rahu}  ⚠ avoid new beginnings\n"
+            f"  Yamagandam:       {day.yamagandam}  ⚠ avoid travel/decisions\n"
+            f"  Gulika Kalam:     {day.gulika}\n"
+            f"  Abhijit Muhurta:  {day.abhijit}  ✓ auspicious for important work")
+
+
+def _quality_text(day: DayResult) -> str:
+    return (f"  {_stars(day.day_score)} ({day.day_score}/5)  {day.day_quality}\n"
+            f"  Nakshatra {day.panchang.nakshatra}: {_stars(day.nak_compat)} — {_nak_compat_label(day.nak_compat)} for Punarvasu")
+
+
+def _color_text(day: DayResult) -> str:
+    return (f"  Wear:      {day.color['wear']}\n"
+            f"  Avoid:     {day.color['avoid']}\n"
+            f"  Planet:    {day.color['planet']}  |  Gemstone: {day.color['gem']}")
+
+
 def fmt_day(day: DayResult, idx: int, debug: bool = False) -> str:
     p       = day.panchang
-    en_day  = {"Ravivara":"Sunday","Somavara":"Monday","Mangalavara":"Tuesday",
-               "Budhavara":"Wednesday","Guruvara":"Thursday","Shukravara":"Friday","Shanivara":"Saturday"}
-    vaara   = en_day.get(p.vaara, p.vaara)
+    vaara   = EN_DAY.get(p.vaara, p.vaara)
     obs_str = f" ✦ {day.observance.upper()}" if day.observance else ""
     header  = f"DAY {idx} — {vaara.upper()}, {day.date.strftime('%b %d')}{obs_str}"
     sep     = "─" * len(header)
-
     panch = (f"  Tithi:     {p.paksha} {p.tithi}  |  Nakshatra: {p.nakshatra}  |  Yoga: {p.yoga}\n"
              f"  Vaara:     {vaara} ({p.vaara})  |  Karana: {p.karana}")
-
-    timings = (f"  Sunrise:          {day.sunrise} IST  |  Sunset: {day.sunset} IST\n"
-               f"  Rahu Kalam:       {day.rahu}  ⚠ avoid new beginnings\n"
-               f"  Yamagandam:       {day.yamagandam}  ⚠ avoid travel/decisions\n"
-               f"  Gulika Kalam:     {day.gulika}\n"
-               f"  Abhijit Muhurta:  {day.abhijit}  ✓ auspicious for important work")
-
-    quality = (f"  {_stars(day.day_score)} ({day.day_score}/5)  {day.day_quality}\n"
-               f"  Nakshatra {p.nakshatra}: {_stars(day.nak_compat)} — {_nak_compat_label(day.nak_compat)} for Punarvasu")
-
-    color_s = (f"  Wear:      {day.color['wear']}\n"
-               f"  Avoid:     {day.color['avoid']}\n"
-               f"  Planet:    {day.color['planet']}  |  Gemstone: {day.color['gem']}")
-
     devata_str   = _fmt_shloka(f"Devata Shloka (Deity: {day.deity_of_day})", day.devata_shloka)
     personal_str = _fmt_shloka("Personal Shloka", day.personal_shloka)
-
     practice_label = f"Practice{' — ' + day.observance if day.observance else ''}"
     blocks = [
         sep, header, sep,
-        "Panchangam (IST, New Delhi reference)\n" + panch,
-        "Timings (IST)\n" + timings,
-        f"Day Quality\n{quality}",
-        f"Color & Vastu\n{color_s}\n  Tip: {day.vastu_tip}",
+        "Panchangam (local practice date; Indic rules)\n" + panch,
+        "Timings (local)\n" + _timings_text(day),
+        f"Day Quality\n{_quality_text(day)}",
+        f"Color & Vastu\n{_color_text(day)}\n  Tip: {day.vastu_tip}",
         devata_str.rstrip(),
         personal_str.rstrip(),
         f"{practice_label}\n  {day.practice}",
@@ -385,18 +426,17 @@ def fmt_day(day: DayResult, idx: int, debug: bool = False) -> str:
     return "\n\n".join(blocks)
 
 
-def fmt_week_header(days: list[DayResult], chart: BirthChart) -> str:
+def fmt_week_header(days: list[DayResult], chart: BirthChart, loc: PracticeLocation) -> str:
     start, end = days[0].date, days[-1].date
     obs_days   = [(d.date.strftime("%b %d"), d.observance) for d in days if d.observance]
     best       = [d for d in days if d.day_score == 5]
     caution    = [d for d in days if d.day_score <= 2]
-    en_day = {"Ravivara":"Sunday","Somavara":"Monday","Mangalavara":"Tuesday",
-              "Budhavara":"Wednesday","Guruvara":"Thursday","Shukravara":"Friday","Shanivara":"Saturday"}
 
     header = [
         "═" * 62,
         "  VEDIC WEEKLY GUIDANCE — Saketh",
         f"  Week of {start.strftime('%b %d')} – {end.strftime('%b %d, %Y')}",
+        f"  Practice Location: {loc.city} ({loc.timezone})",
         f"  Janma Nakshatra: {chart.janma_nakshatra}  |  Rashi: {chart.rashi}",
         f"  Tradition: Golconda Vyapari Niyogi Brahmin (Smarta)",
         "═" * 62,
@@ -408,10 +448,10 @@ def fmt_week_header(days: list[DayResult], chart: BirthChart) -> str:
         header.append("Observances:")
         header += [f"  ✦ {obs} — {date}" for date, obs in obs_days]
     if best:
-        names = ", ".join(f"{en_day[d.panchang.vaara]} {d.date.strftime('%b %d')}" for d in best)
+        names = ", ".join(f"{EN_DAY[d.panchang.vaara]} {d.date.strftime('%b %d')}" for d in best)
         header.append(f"Best days:      {names}")
     if caution:
-        names = ", ".join(f"{en_day[d.panchang.vaara]} {d.date.strftime('%b %d')}" for d in caution)
+        names = ", ".join(f"{EN_DAY[d.panchang.vaara]} {d.date.strftime('%b %d')}" for d in caution)
         header.append(f"Caution days:   {names}")
     header.append("")
     return "\n".join(header)
@@ -431,52 +471,101 @@ def update_history(history: dict, days: list[DayResult], week_key: str) -> None:
     history["last_updated"] = str(dt.date.today())
 
 
+def _build_day_with_memory(date: dt.date, chart: BirthChart, verses: list[dict],
+                           loc: PracticeLocation, history: dict,
+                           weekly_used: list[str]) -> DayResult:
+    day = build_day(date, chart, verses, loc, history, weekly_used)
+    if day.personal_shloka:
+        weekly_used.append(day.personal_shloka["id"])
+    return day
+
+
+def build_week(start: dt.date, write_history: bool = False) -> tuple[list[DayResult], BirthChart, PracticeLocation]:
+    cfg    = load_config()
+    jp     = load_janam_config(CONFIG_PATH)
+    verses = load_verses()
+    loc    = get_practice_location(cfg)
+
+    if not jp:
+        print("Error: janam_patri not configured in config.yaml", file=sys.stderr)
+        sys.exit(1)
+
+    place = jp.get("birth_place", {})
+    chart = compute_birth_chart(jp["birth_date"], jp["birth_time"], place.get("tz_offset", 5.5))
+    chart = BirthChart(
+        janma_nakshatra=jp.get("janma_nakshatra") or chart.janma_nakshatra,
+        rashi=jp.get("rashi") or chart.rashi,
+        nakshatra_num=chart.nakshatra_num,
+        rashi_num=chart.rashi_num,
+    )
+
+    history, weekly_used = load_history(), []
+    days = [
+        _build_day_with_memory(start + dt.timedelta(days=offset), chart, verses, loc, history, weekly_used)
+        for offset in range(7)
+    ]
+
+    if write_history:
+        update_history(history, days, start.strftime("%Y-W%W"))
+        save_history(history)
+    return days, chart, loc
+
+
+def format_week(days: list[DayResult], chart: BirthChart, loc: PracticeLocation,
+                debug: bool = False) -> str:
+    body = [fmt_week_header(days, chart, loc)]
+    body += [fmt_day(day, i, debug=debug) for i, day in enumerate(days, 1)]
+    return "\n".join(body)
+
+
+def week_to_dict(days: list[DayResult], chart: BirthChart, loc: PracticeLocation) -> dict:
+    def verse(v: dict | None) -> dict | None:
+        return {k: v.get(k) for k in ("devanagari", "transliteration", "meaning", "source")} if v else None
+    return {
+        "week_start": str(days[0].date),
+        "week_end": str(days[-1].date),
+        "practice_location": {"city": loc.city, "timezone": loc.timezone},
+        "janma_nakshatra": chart.janma_nakshatra,
+        "rashi": chart.rashi,
+        "panchang_days": [
+            {"date": str(d.date), "vaara": d.panchang.vaara, "tithi": d.panchang.tithi,
+             "paksha": d.panchang.paksha, "nakshatra": d.panchang.nakshatra,
+             "sunrise": d.sunrise, "day_score": d.day_score}
+            for d in days
+        ],
+        "observances": [
+            {"date": str(d.date), "name": d.observance, "deity": d.deity_of_day,
+             "description": d.practice}
+            for d in days if d.observance
+        ],
+        "daily_verses": [
+            {"date": str(d.date), "tithi": d.panchang.tithi, "paksha": d.panchang.paksha,
+             "verse": verse(d.personal_shloka)}
+            for d in days
+        ],
+        "verse_of_week": verse(next((d.personal_shloka for d in days if d.personal_shloka), None)),
+        "lifestyle_recommendations": [d.practice for d in days[:5]],
+    }
+
+
 # ── Main ──────────────────────────────────────────────────────────────
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Vedic weekly guidance for Saketh")
     parser.add_argument("--start-date", help="Week start date YYYY-MM-DD (default: today)")
     parser.add_argument("--debug", action="store_true", help="Show verse scores")
+    parser.add_argument("--write-history", action="store_true", help="Persist shloka memory for this run")
+    parser.add_argument("--no-write-history", action="store_true", help="Do not persist shloka memory")
     args = parser.parse_args()
 
     start = (dt.date.fromisoformat(args.start_date) if args.start_date
              else dt.date.today())
+    write_history = args.write_history or (not args.start_date and not args.no_write_history)
 
-    cfg    = load_config()
-    jp     = load_janam_config(CONFIG_PATH)
-    verses = load_verses()
-
-    if jp:
-        place = jp.get("birth_place", {})
-        chart = compute_birth_chart(jp["birth_date"], jp["birth_time"], place.get("tz_offset", 5.5))
-        chart = BirthChart(
-            janma_nakshatra=jp.get("janma_nakshatra") or chart.janma_nakshatra,
-            rashi=jp.get("rashi") or chart.rashi,
-            nakshatra_num=chart.nakshatra_num,
-            rashi_num=chart.rashi_num,
-        )
-    else:
-        print("Error: janam_patri not configured in config.yaml", file=sys.stderr)
-        sys.exit(1)
-
-    history    = load_history()
-    week_key   = start.strftime("%Y-W%W")
-    weekly_used: list[str] = []
-
-    days = []
-    for offset in range(7):
-        day = build_day(start + dt.timedelta(days=offset), chart, verses, history, weekly_used)
-        if day.personal_shloka:
-            weekly_used.append(day.personal_shloka["id"])
-        days.append(day)
-
-    print(fmt_week_header(days, chart))
-    for i, day in enumerate(days, 1):
-        print(fmt_day(day, i, debug=args.debug))
-
-    update_history(history, days, week_key)
-    save_history(history)
-    print(f"\n[Memory updated: {HISTORY_PATH}]")
+    days, chart, loc = build_week(start, write_history=write_history)
+    print(format_week(days, chart, loc, debug=args.debug))
+    status = "updated" if write_history else "not updated"
+    print(f"\n[Memory {status}: {HISTORY_PATH}]")
 
 
 if __name__ == "__main__":

@@ -3,8 +3,8 @@
 Uses pyswisseph (Swiss Ephemeris) to compute the five limbs of the
 panchangam: Tithi, Nakshatra, Yoga, Karana, and Vaara.
 
-Configured for New Jersey, USA (default) with Amanta month system per
-Golconda Vyapari Niyogi Brahmin tradition.
+Defaults to the local New Jersey practice location. Callers can pass any
+latitude, longitude, and timezone offset while keeping the Indic rule tables.
 """
 from __future__ import annotations
 

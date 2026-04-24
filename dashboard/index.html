@@ -76,10 +76,10 @@
 <body>
   <div class="container">
     <h1>Vedic Wisdom Weekly</h1>
-    <p class="subtitle">Recommendations & insights (tithi-based shlokas, EST)</p>
+    <p class="subtitle">Recommendations & insights (local tithi-based shlokas)</p>
 
     <section id="panchang">
-      <h2>This week's panchang (EST)</h2>
+      <h2>This week's panchang</h2>
       <div id="panchang-content"></div>
     </section>
 
@@ -337,7 +337,7 @@
     function renderHistory(runs) {
       const el = document.getElementById('history-content');
       if (!runs.length) {
-        el.innerHTML = '<p class="loading">No recommendations yet. Run <code>python scripts/weekly_notification.py</code> then <code>python scripts/export_mlflow_runs.py</code>.</p>';
+        el.innerHTML = '<p class="loading">No recommendations yet. Run <code>python scripts/weekly_guidance.py</code> then <code>python scripts/export_mlflow_runs.py</code>.</p>';
         return;
       }
       el.innerHTML = runs.map(r =>
