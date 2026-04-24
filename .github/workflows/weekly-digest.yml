@@ -12,15 +12,12 @@ env:
   DASHBOARD_URL: ${{ secrets.DASHBOARD_URL }}
   VEDIC_CONFIG_YAML: ${{ secrets.VEDIC_CONFIG_YAML }}
   MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 
 jobs:
   notify:
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # so we can push dashboard data back to the repo
+      contents: write   # push shloka_history.json memory back to repo
 
     steps:
       - name: Checkout
@@ -37,22 +34,19 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements-core.txt
 
-      - name: Verify MLflow is reachable
-        run: curl --max-time 5 -sf "$MLFLOW_TRACKING_URI/health" || echo "::warning::MLflow unreachable — runs will not be tracked"
-
-      - name: Generate weekly guidance
+      - name: Generate weekly guidance + write memory
         run: python scripts/weekly_guidance.py --write-history
+
+      - name: Commit shloka history (memory)
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add dashboard/data/shloka_history.json
+          git diff --cached --quiet && echo "No history changes" || \
+            git commit -m "chore: update shloka history [skip ci]" && git push
 
       - name: Send to Slack
         run: python scripts/slack_notify.py
-
-      - name: Export dashboard data
-        run: |
-          python scripts/export_mlflow_runs.py
-          python scripts/export_to_sqlite.py
-
-      - name: Keep dashboard data private
-        run: echo "Dashboard data is generated for the Pages artifact and not committed."
 
   deploy-dashboard:
     if: ${{ vars.ENABLE_GITHUB_PAGES == 'true' }}
@@ -66,23 +60,30 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout
+      - name: Checkout (with updated history from notify)
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref_name }}
+          ref: main
           fetch-depth: 0
 
-      - name: Sync to latest main after notify push
-        run: |
-          git fetch origin main
-          git checkout origin/main
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements-core.txt
+
+      - name: Regenerate current_week.json for Pages (no memory write)
+        run: python scripts/weekly_guidance.py --no-write-history
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
           enablement: true
 
-      - name: Upload dashboard artifact
+      - name: Upload dashboard artifact (includes current_week.json)
         uses: actions/upload-pages-artifact@v3
         with:
           path: dashboard

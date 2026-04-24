@@ -16,3 +16,4 @@ skills/sanskrit-wisdom/data/qdrant_store/
 skills/sanskrit-wisdom/data/gita_normalized.json
 dashboard/data/*
 !dashboard/data/.gitkeep
+!dashboard/data/shloka_history.json
