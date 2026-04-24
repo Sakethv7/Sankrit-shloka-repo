@@ -1,10 +1,10 @@
-"""Weekly Vedic Guidance — personalized 7-day CLI for Saketh.
+"""Weekly Vedic Guidance — personalized 7-day CLI.
 
 Panchangam and muhurta timings are computed for the configured local
 practice location, using Telugu / Smarta Vedic rules. Each day gets:
   - Tithi / nakshatra / yoga / karana
   - Rahu Kalam, Yamagandam, Gulika Kalam, Abhijit Muhurta (local time)
-  - Day score for Punarvasu / Mithuna birth profile
+  - Day score for the configured birth profile
   - Jyotish color + gemstone + vastu tip
   - Devata shloka (keyed to tithi deity)
   - Personal shloka (birth-profile scored, memory-aware, no repeat ≤ 4 weeks)
@@ -23,6 +23,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import os
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -46,6 +47,7 @@ from janam_patri import load_janam_config, compute_birth_chart, BirthChart
 HISTORY_PATH = ROOT / "dashboard" / "data" / "shloka_history.json"
 VERSES_PATH  = ROOT / "skills" / "sanskrit-wisdom" / "data" / "verses.json"
 CONFIG_PATH  = ROOT / "config.yaml"
+EXAMPLE_CONFIG_PATH = ROOT / "config.example.yaml"
 
 # ── Default local practice location ───────────────────────────────────
 
@@ -82,18 +84,18 @@ RAHU_SLOT   = {"Ravivara":7,"Somavara":1,"Mangalavara":6,"Budhavara":4,"Guruvara
 YAMA_SLOT   = {"Ravivara":4,"Somavara":3,"Mangalavara":2,"Budhavara":1,"Guruvara":0,"Shukravara":6,"Shanivara":5}
 GULIKA_SLOT = {"Ravivara":6,"Somavara":5,"Mangalavara":4,"Budhavara":3,"Guruvara":2,"Shukravara":1,"Shanivara":0}
 
-# Day quality for Punarvasu (Jupiter-ruled) + Mithuna (Mercury-ruled)
+# Day quality by weekday planet
 DAY_QUALITY = {
-    "Guruvara":    (5, "Excellent — Jupiter rules Punarvasu. Best day for study, new intentions, and devotion."),
-    "Budhavara":   (4, "Very good — Mercury rules Mithuna. Sharp focus; ideal for learning and communication."),
+    "Guruvara":    (5, "Excellent — strong for study, new intentions, and devotion."),
+    "Budhavara":   (4, "Very good — sharp focus; ideal for learning and communication."),
     "Somavara":    (4, "Good — Moon nurtures renewal. Keep the morning devotional; home and relationships thrive."),
     "Shukravara":  (3, "Moderate — Creative flow is strong. Avoid impulsive financial decisions."),
     "Ravivara":    (3, "Moderate — Surya asks for discipline. Start with Gayatri; keep the day structured."),
-    "Mangalavara": (2, "Caution — Mars creates friction for Mithuna. Avoid arguments and hasty decisions today."),
+    "Mangalavara": (2, "Caution — Mars can create friction. Avoid arguments and hasty decisions today."),
     "Shanivara":   (2, "Caution — Saturn tests patience. Slow down, serve quietly, do not cut corners."),
 }
 
-# Nakshatra compatibility with Punarvasu janma nakshatra
+# Compatibility boosts for the default profile; override by editing the rules.
 NAK_COMPAT = {
     "Punarvasu":5, "Pushya":5,
     "Ashlesha":4, "Vishakha":4, "Swati":4,
@@ -156,6 +158,7 @@ class DayResult:
     personal_shloka: dict | None
     vastu_tip: str
     practice: str
+    birth_nakshatra: str
 
 
 @dataclass
@@ -164,12 +167,17 @@ class PracticeLocation:
     lat: float
     lon: float
     timezone: str
+    user_name: str
+    tradition: str
 
 
 # ── I/O helpers ───────────────────────────────────────────────────────
 
 def load_config() -> dict:
-    return yaml.safe_load(CONFIG_PATH.read_text()) or {}
+    if os.getenv("VEDIC_CONFIG_YAML"):
+        return yaml.safe_load(os.environ["VEDIC_CONFIG_YAML"]) or {}
+    path = CONFIG_PATH if CONFIG_PATH.exists() else EXAMPLE_CONFIG_PATH
+    return yaml.safe_load(path.read_text()) or {}
 
 
 def load_verses() -> list[dict]:
@@ -189,11 +197,14 @@ def save_history(h: dict) -> None:
 def get_practice_location(cfg: dict) -> PracticeLocation:
     loc = cfg.get("practice_location", {}) or {}
     legacy = cfg.get("calendar", {}) or {}
+    user = cfg.get("user", {}) or {}
     return PracticeLocation(
         city=loc.get("city") or legacy.get("location") or "Local",
         lat=float(loc.get("lat", DEFAULT_LAT)),
         lon=float(loc.get("lon", DEFAULT_LON)),
         timezone=loc.get("timezone") or legacy.get("timezone") or DEFAULT_TZ,
+        user_name=user.get("name", ""),
+        tradition=user.get("tradition", "Smarta"),
     )
 
 
@@ -312,7 +323,7 @@ def pick_personal_shloka(p: DailyPanchang, chart: BirthChart, verses: list[dict]
                           exclude: set[str] | None = None) -> dict | None:
     observance = detect_observance(p)
     obs_tags   = DEITY_TAGS.get(TITHI_DEITY[p.tithi_num], []) if observance else []
-    birth_tags = ["punarvasu", "mithuna", "smarta", "vishnu"]
+    birth_tags = [chart.janma_nakshatra.lower(), chart.rashi.lower(), "smarta", "vishnu"]
     # Hard-exclude same-week used + devata — penalize only recent history
     hard_excl  = set(weekly_used) | (exclude or set())
     soft_used  = _recent_ids(history) - hard_excl
@@ -346,6 +357,7 @@ def build_day(date: dt.date, chart: BirthChart, verses: list[dict],
         color=color, deity_of_day=deity,
         devata_shloka=devata_s, personal_shloka=personal_s,
         vastu_tip=VASTU_TIP[p.vaara], practice=practice,
+        birth_nakshatra=chart.janma_nakshatra,
     )
 
 
@@ -392,7 +404,7 @@ def _timings_text(day: DayResult) -> str:
 
 def _quality_text(day: DayResult) -> str:
     return (f"  {_stars(day.day_score)} ({day.day_score}/5)  {day.day_quality}\n"
-            f"  Nakshatra {day.panchang.nakshatra}: {_stars(day.nak_compat)} — {_nak_compat_label(day.nak_compat)} for Punarvasu")
+            f"  Nakshatra {day.panchang.nakshatra}: {_stars(day.nak_compat)} — {_nak_compat_label(day.nak_compat)} for {day.birth_nakshatra}")
 
 
 def _color_text(day: DayResult) -> str:
@@ -434,11 +446,11 @@ def fmt_week_header(days: list[DayResult], chart: BirthChart, loc: PracticeLocat
 
     header = [
         "═" * 62,
-        "  VEDIC WEEKLY GUIDANCE — Saketh",
+        f"  VEDIC WEEKLY GUIDANCE{(' — ' + loc.user_name) if loc.user_name else ''}",
         f"  Week of {start.strftime('%b %d')} – {end.strftime('%b %d, %Y')}",
         f"  Practice Location: {loc.city} ({loc.timezone})",
         f"  Janma Nakshatra: {chart.janma_nakshatra}  |  Rashi: {chart.rashi}",
-        f"  Tradition: Golconda Vyapari Niyogi Brahmin (Smarta)",
+        f"  Tradition: {loc.tradition}",
         "═" * 62,
         "",
         "WEEK OVERVIEW",
@@ -551,7 +563,7 @@ def week_to_dict(days: list[DayResult], chart: BirthChart, loc: PracticeLocation
 # ── Main ──────────────────────────────────────────────────────────────
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Vedic weekly guidance for Saketh")
+    parser = argparse.ArgumentParser(description="Vedic weekly guidance")
     parser.add_argument("--start-date", help="Week start date YYYY-MM-DD (default: today)")
     parser.add_argument("--debug", action="store_true", help="Show verse scores")
     parser.add_argument("--write-history", action="store_true", help="Persist shloka memory for this run")

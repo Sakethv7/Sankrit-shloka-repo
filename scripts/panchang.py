@@ -3,7 +3,7 @@
 Uses pyswisseph (Swiss Ephemeris) to compute the five limbs of the
 panchangam: Tithi, Nakshatra, Yoga, Karana, and Vaara.
 
-Defaults to the local New Jersey practice location. Callers can pass any
+Defaults to a sample local practice location. Callers can pass any
 latitude, longitude, and timezone offset while keeping the Indic rule tables.
 """
 from __future__ import annotations
@@ -15,7 +15,7 @@ import swisseph as swe
 
 # ── Constants ────────────────────────────────────────────────────────
 
-# New Jersey defaults (from config.yaml)
+# Sample local defaults
 DEFAULT_LAT = 40.7128
 DEFAULT_LON = -74.2060
 DEFAULT_TZ = -5.0  # EST

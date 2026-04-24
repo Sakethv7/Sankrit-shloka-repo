@@ -15,7 +15,7 @@ The **Streamlit** app reads from a single SQLite DB (metadata/tables). Use it fo
 
 ## Modern dashboard (Streamlit + SQLite)
 
-All data is written into **one SQLite database** (`dashboard/data/vedic_wisdom.db`) so you can query it, plug in other tools (Metabase, Superset, Evidence), or use the built-in Streamlit UI.
+All data is written into **one local SQLite database** (`dashboard/data/vedic_wisdom.db`) so you can query it, plug in other tools (Metabase, Superset, Evidence), or use the built-in Streamlit UI. Files under `dashboard/data/` are generated and ignored by git.
 
 ### 1. Export to SQLite (metadata/tables)
 
@@ -25,7 +25,7 @@ From the **project root**:
 python scripts/export_to_sqlite.py
 ```
 
-This builds (or updates) `dashboard/data/vedic_wisdom.db` with tables:
+This builds (or updates) local `dashboard/data/vedic_wisdom.db` with tables:
 
 - **runs** — MLflow notification runs (week, verse, observances, latency).
 - **weeks** — Exported week range.
@@ -53,7 +53,7 @@ Opens a local tab with:
 - **History** — Table of past runs.
 - **Insights** — Metrics and a simple bar chart (observance count by week).
 
-You can point **Metabase**, **Apache Superset**, or **Evidence** at `dashboard/data/vedic_wisdom.db` to build your own reports.
+You can point **Metabase**, **Apache Superset**, or **Evidence** at local `dashboard/data/vedic_wisdom.db` to build your own reports.
 
 ---
 
@@ -76,7 +76,9 @@ python scripts/export_mlflow_runs.py
 This writes:
 
 - `dashboard/data/recommendations.json` — weekly digest runs from MLflow.
-- `dashboard/data/janam_patri.json` — birth chart and recommended verses (if janam patri is enabled in `config.yaml`).
+- `dashboard/data/janam_patri.json` — birth chart and recommended verses (if janam patri is enabled in private config).
+
+These files are intentionally untracked so personal dashboard data is not published.
 
 Run this again whenever you generate new weekly guidance or change janam patri settings.
 

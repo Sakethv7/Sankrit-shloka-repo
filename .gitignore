@@ -1,6 +1,8 @@
 __pycache__/
 *.pyc
 .env
+config.yaml
+config.local.yaml
 mlflow.db
 mlruns/
 .venv/
@@ -12,3 +14,5 @@ build/
 skills/sanskrit-wisdom/data/gita/
 skills/sanskrit-wisdom/data/qdrant_store/
 skills/sanskrit-wisdom/data/gita_normalized.json
+dashboard/data/*
+!dashboard/data/.gitkeep

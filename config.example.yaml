@@ -1,0 +1,69 @@
+# Vedic Wisdom Weekly — Example Preferences
+# Copy to config.yaml for local private use, or store the full YAML as the
+# GitHub Actions secret VEDIC_CONFIG_YAML for scheduled Slack messages.
+
+user:
+  name: Sample User
+  tradition: Smarta
+  community: ""
+  sutra: ""
+
+calendar:
+  system: Amanta
+  era: Salivahana Saka
+  tradition_reference: Telugu Panchangam
+
+practice_location:
+  city: New York
+  lat: 40.7128
+  lon: -74.0060
+  timezone: America/New_York
+
+observances:
+  - name: Ekadashi
+    deity: Vishnu
+    priority: high
+  - name: Pradosham
+    deity: Shiva
+    priority: high
+  - name: Amavasya
+    deity: Pitrus
+    priority: high
+  - name: Purnima
+    deity: All
+    priority: medium
+  - name: Sankashti Chaturthi
+    deity: Ganesha
+    priority: medium
+
+panchayatana:
+  - Shiva
+  - Vishnu
+  - Devi
+  - Ganesha
+  - Surya
+
+mantra: Om Namo Bhagavate Vasudevaya
+
+janam_patri:
+  enabled: true
+  birth_date: "2000-01-01"
+  birth_time: "06:00"
+  birth_place:
+    city: New Delhi
+    lat: 28.6139
+    lon: 77.2090
+    tz_offset: 5.5
+  rashi: ""
+  janma_nakshatra: ""
+
+notifications:
+  day: Sunday
+  format: text
+  include_verse: true
+  include_panchang: true
+
+features:
+  supermemory_sync: false
+  qdrant_rag: false
+  mlflow_tracking: false

@@ -1,8 +1,8 @@
 # Vedic Wisdom Weekly
 
-A personal weekly Sanskrit guidance system for **Saketh** — Golconda Vyapari Niyogi Brahmin, Smarta tradition (Apastamba Dharmasutra).
+A configurable weekly Sanskrit guidance system for Hindu practice, with local panchangam timing, Sanskrit verse recommendations, Slack delivery, and a static dashboard.
 
-Given a birth profile (Punarvasu nakshatra, Mithuna rashi) and the upcoming 7-day local panchangam, it answers:
+Given a birth profile and the upcoming 7-day local panchangam, it answers:
 
 > *How does this week affect me personally? Which shlokas should I chant each day, what should I do, what should I avoid, and what are the best timings?*
 
@@ -44,7 +44,7 @@ Running `weekly_guidance.py` prints a 7-day report. For each day:
 - Gulika Kalam — proceed with awareness
 - Abhijit Muhurta — most auspicious window (~solar noon)
 
-**Day Quality** — scored 1–5 for your Punarvasu + Mithuna birth profile, with a plain-English reason
+**Day Quality** — scored 1–5 for the configured birth profile, with a plain-English reason
 
 **Color & Vastu** — Jyotish-keyed color to wear, color to avoid, gemstone, and which direction/corner of your home to activate
 
@@ -58,11 +58,11 @@ Running `weekly_guidance.py` prints a 7-day report. For each day:
 
 ```
 ══════════════════════════════════════════════════════════════
-  VEDIC WEEKLY GUIDANCE — Saketh
+  VEDIC WEEKLY GUIDANCE
   Week of Apr 23 – Apr 29, 2026
-  Practice Location: New Jersey (America/New_York)
-  Janma Nakshatra: Punarvasu  |  Rashi: Mithuna
-  Tradition: Golconda Vyapari Niyogi Brahmin (Smarta)
+  Practice Location: Local City (America/New_York)
+  Janma Nakshatra: configured  |  Rashi: configured
+  Tradition: Smarta
 ══════════════════════════════════════════════════════════════
 
 WEEK OVERVIEW
@@ -78,33 +78,13 @@ Caution days:   Tuesday Apr 28
 
 ## Configuration
 
-Edit `config.yaml` to set your birth details and preferences:
+Copy `config.example.yaml` to private `config.yaml` for local use:
 
-```yaml
-janam_patri:
-  enabled: true
-  birth_date: "2000-04-11"
-  birth_time: "10:30"
-  birth_place:
-    lat: 28.6139        # New Delhi
-    lon: 77.2090
-    tz_offset: 5.5      # IST
-  rashi: Mithuna        # set if known, else computed
-  janma_nakshatra: Punarvasu
-
-practice_location:
-  city: New Jersey
-  lat: 40.7128
-  lon: -74.2060
-  timezone: America/New_York
-
-observances:
-  - { name: Ekadashi,  deity: Vishnu,  priority: high }
-  - { name: Pradosham, deity: Shiva,   priority: high }
-  - { name: Amavasya,  deity: Pitrus,  priority: high }
-  - { name: Purnima,   deity: All,     priority: medium }
-  - { name: Sankashti Chaturthi, deity: Ganesha, priority: medium }
+```bash
+cp config.example.yaml config.yaml
 ```
+
+For GitHub Actions, put the full private YAML content in the repository secret `VEDIC_CONFIG_YAML`. The tracked example config is intentionally generic.
 
 ---
 
@@ -129,7 +109,7 @@ observances:
 ## Project Structure
 
 ```
-config.yaml                              # Birth profile, observances, feature flags
+config.example.yaml                      # Public template; private config.yaml is gitignored
 scripts/
   weekly_guidance.py                     # ★ Primary: 7-day guidance (local timings + memory)
   panchang.py                            # Swiss Ephemeris panchangam engine
@@ -143,10 +123,7 @@ scripts/
 dashboard/
   index.html                             # Static dashboard (GitHub Pages)
   data/
-    shloka_history.json                  # Memory: shlokas used per week (auto-updated)
-    recommendations.json                 # Exported weekly recommendation history
-    janam_patri.json                     # Exported birth chart + verse data
-    vedic_wisdom.db                      # SQLite export (Streamlit / BI)
+    .gitkeep                             # Generated dashboard data is private / untracked
 skills/
   sanskrit-wisdom/
     data/verses.json                     # Curated verse corpus (15 verses, fully tagged)
@@ -171,10 +148,10 @@ Every Sunday at 8 AM Eastern the CI pipeline runs automatically:
 1. Generates weekly guidance (`weekly_guidance.py --write-history`)
 2. Posts to Slack (`slack_notify.py`)
 3. Exports dashboard data (`export_mlflow_runs.py`, `export_to_sqlite.py`)
-4. Commits updated `dashboard/data/` back to `main`
-5. Deploys dashboard to GitHub Pages
+4. Generates dashboard data for the workflow artifact without committing private data
+5. Optionally deploys dashboard to GitHub Pages
 
-Required secrets: `SLACK_WEBHOOK_URL`, `SLACK_MEMBER_ID`. `DASHBOARD_URL` is optional and should only be set after the dashboard is deployed somewhere. `MLFLOW_TRACKING_URI` is optional for historical run export.
+Required secrets: `SLACK_WEBHOOK_URL`, `SLACK_MEMBER_ID`, and `VEDIC_CONFIG_YAML`. `DASHBOARD_URL` is optional and should only be set after the dashboard is deployed somewhere. `MLFLOW_TRACKING_URI` is optional for historical run export.
 
 GitHub Pages deploy is gated by the repository variable `ENABLE_GITHUB_PAGES=true`. Private repositories may require a paid GitHub plan for Pages; leave the variable unset to keep the weekly Slack/data workflow green.
 
@@ -217,4 +194,4 @@ Install only the core CLI dependencies with `pip install -r requirements-core.tx
 
 ## License
 
-Private / personal use.
+MIT or private use, depending on your repository policy.

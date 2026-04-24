@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import re
 import sys
+import os
 import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
@@ -113,9 +114,13 @@ def compute_birth_chart(birth_date: str, birth_time: str, tz_offset: float) -> B
 
 def load_janam_config(config_path: Path) -> dict | None:
     """Load config; return janam_patri section if enabled."""
-    if not config_path.exists():
-        return None
-    cfg = yaml.safe_load(config_path.read_text())
+    if os.getenv("VEDIC_CONFIG_YAML"):
+        cfg = yaml.safe_load(os.environ["VEDIC_CONFIG_YAML"])
+    else:
+        path = config_path if config_path.exists() else config_path.with_name("config.example.yaml")
+        if not path.exists():
+            return None
+        cfg = yaml.safe_load(path.read_text())
     jp = (cfg or {}).get("janam_patri")
     return jp if (jp and jp.get("enabled")) else None
 
@@ -137,7 +142,7 @@ def run_to_dict(config_path: Path | None = None) -> dict | None:
         return None
 
     birth_date = jp.get("birth_date", "1990-01-01")
-    birth_time = jp.get("birth_time", "10:30")
+    birth_time = jp.get("birth_time", "06:00")
     place = jp.get("birth_place", {})
     tz = place.get("tz_offset", -5.0)
 

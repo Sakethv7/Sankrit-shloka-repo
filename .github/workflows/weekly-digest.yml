@@ -10,6 +10,7 @@ env:
   SLACK_MEMBER_ID: ${{ secrets.SLACK_MEMBER_ID }}
   SLACK_MENTION: ${{ secrets.SLACK_MENTION }}
   DASHBOARD_URL: ${{ secrets.DASHBOARD_URL }}
+  VEDIC_CONFIG_YAML: ${{ secrets.VEDIC_CONFIG_YAML }}
   MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -50,12 +51,8 @@ jobs:
           python scripts/export_mlflow_runs.py
           python scripts/export_to_sqlite.py
 
-      - name: Commit and push dashboard data
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add dashboard/data/
-          git diff --staged --quiet || (git commit -m "chore: update dashboard data from weekly digest" && git push)
+      - name: Keep dashboard data private
+        run: echo "Dashboard data is generated for the Pages artifact and not committed."
 
   deploy-dashboard:
     if: ${{ vars.ENABLE_GITHUB_PAGES == 'true' }}

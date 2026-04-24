@@ -14,7 +14,7 @@ This document describes the technical design of the system: data flow, component
                          │ reads
           ┌──────────────┼────────────────────────────┐
           ▼              ▼                            ▼
-   config.yaml     verses.json              shloka_history.json
+   private config  verses.json              shloka_history.json
    (birth profile, (15 curated verses,      (memory: shlokas used
     observances,    fully tagged)            per week — auto-updated)
     feature flags)
@@ -45,7 +45,8 @@ Legend:
 ## Data Flow — `weekly_guidance.py`
 
 ```
-1. Load config.yaml
+1. Load private config
+   → VEDIC_CONFIG_YAML secret, config.yaml if present, else config.example.yaml
         │
         ▼
 2. Compute BirthChart (janam_patri.py)
@@ -108,7 +109,7 @@ Computes the five limbs (pañcāṅga) of the Hindu calendar for any date and lo
 - **Vaara** — weekday from Julian Day Number: `int((jd + 1.5) % 7)`
 - **Sunrise** — `swe.rise_trans(jd, swe.SUN, rsmi=1, geopos)` → JD of sunrise; converted to local HH:MM
 
-**Reference coordinates:** `weekly_guidance.py` passes the configured `practice_location` into this engine. The default is New Jersey with `America/New_York`, so sunrise-based observances and muhurta windows match where the practice happens.
+**Reference coordinates:** `weekly_guidance.py` passes the configured `practice_location` into this engine. The public example uses a sample `America/New_York` location; private deployments should set their real practice location in private config.
 
 **Why local?** The rule base is Indic / Telugu / Smarta, but the civil day, sunrise, sunset, Rahu Kalam, Pradosham, and fasting windows should be local for the person practicing.
 
@@ -126,7 +127,7 @@ Computes janma nakshatra and rashi from birth date/time/location.
 5. Nakshatra: `int(sidereal / (360/27)) % 27`
 6. Rashi: `int(sidereal / 30) % 12`
 
-**Known values from config** (Saketh): Punarvasu (nakshatra 6), Mithuna/Gemini (rashi 2). These are used directly when set in `config.yaml`; the computation runs as a cross-check.
+**Known values from config:** if `janma_nakshatra` or `rashi` are set, they override the computed values. The computation still runs as a cross-check and fallback.
 
 ---
 
@@ -144,7 +145,7 @@ class DayResult:
     observance: str            # "Ekadashi" | "Pradosham" | "" | ...
     day_score: int             # 1–5
     day_quality: str           # human-readable reason
-    nak_compat: int            # 1–5, Punarvasu compatibility
+    nak_compat: int            # 1–5, configured-profile compatibility
     sunrise: str               # "HH:MM TZ"
     sunset: str
     rahu: str                  # "HH:MM – HH:MM TZ"
@@ -191,22 +192,22 @@ All times are converted to the configured local timezone with `zoneinfo`, so DST
 
 ---
 
-### Day Scoring for Punarvasu / Mithuna
+### Day Scoring
 
-Base scores by weekday planet:
+The current scoring tables are tuned for the configured birth profile. Base scores by weekday planet:
 
 | Vaara | Score | Reason |
 |-------|-------|--------|
-| Guruvara (Thu) | 5 | Jupiter rules Punarvasu nakshatra |
-| Budhavara (Wed) | 4 | Mercury rules Mithuna rashi |
-| Somavara (Mon) | 4 | Moon is nurturing; Punarvasu's deity Aditi is lunar |
+| Guruvara (Thu) | 5 | Strong for study, new intentions, and devotion |
+| Budhavara (Wed) | 4 | Sharp focus; ideal for learning and communication |
+| Somavara (Mon) | 4 | Moon is nurturing; home and relationships thrive |
 | Shukravara (Fri) | 3 | Moderate — creative but financially risky |
 | Ravivara (Sun) | 3 | Moderate — disciplined effort works |
-| Mangalavara (Tue) | 2 | Mars creates friction for air-sign Mithuna |
+| Mangalavara (Tue) | 2 | Mars can create friction; patience is favored |
 | Shanivara (Sat) | 2 | Saturn tests patience; slow movement favored |
 
 Boosts applied after base:
-- `+1` if today's nakshatra is highly compatible with Punarvasu (Pushya=5, Ashlesha=4, Vishakha=4, Swati=4)
+- `+1` if today's nakshatra is highly compatible with the configured/default profile
 - `+1` if an observance falls today (Ekadashi, Pradosham, Amavasya, Purnima, Chaturthi)
 - Capped at 5
 
@@ -235,7 +236,7 @@ Where `verse_all_tags = tags + use_cases + observance_tags + birth_tags` (all fo
 
 ### Memory System
 
-File: `dashboard/data/shloka_history.json`
+File: `dashboard/data/shloka_history.json` at runtime. This file is generated and ignored by git so private practice history is not published.
 
 ```json
 {
@@ -300,7 +301,7 @@ Schedule: **every Sunday 13:00 UTC (8 AM Eastern during standard time)**
 checkout
     │
     ▼
-install requirements.txt
+install requirements-core.txt
     │
     ▼
 verify MLflow reachable (warning only — never fails the run)
@@ -316,10 +317,10 @@ export_mlflow_runs.py → dashboard/data/recommendations.json
 export_to_sqlite.py   → dashboard/data/vedic_wisdom.db
     │
     ▼
-git commit + push dashboard/data/  (if changed)
+dashboard/data is generated for the workflow artifact only
     │
     ▼
-deploy-dashboard job: upload dashboard/ → GitHub Pages
+optional deploy-dashboard job: upload dashboard/ → GitHub Pages
 ```
 
 **Note:** `weekly_guidance.py` is the canonical engine. Slack and dashboard exports read from that path; `weekly_notification.py` remains as an older compatibility/MLflow-oriented path.
@@ -357,13 +358,13 @@ The four tag arrays are unioned into one set for scoring. `observance_tags` and 
 Verse selection uses weighted tag matching, not a language model. The output is traceable — you can read the score formula and understand exactly why a verse was chosen. LLM ranking would produce unstable results on a 15-verse corpus and make the memory/rotation system harder to reason about.
 
 ### Local Practice Timing
-The system uses Telugu / Smarta Vedic rules, then computes the actual practice day and timing for the configured local place. This keeps recommendations culturally grounded while making sunrise, sunset, Rahu Kalam, Pradosham, and fasting guidance actionable in New Jersey.
+The system uses Telugu / Smarta Vedic rules, then computes the actual practice day and timing for the configured local place. This keeps recommendations culturally grounded while making sunrise, sunset, Rahu Kalam, Pradosham, and fasting guidance actionable for the practitioner.
 
 ### Flat code structure (Karpathy-inspired)
 Functions stay under 30 lines. No service layer, no repository pattern, no factory classes. The full logic chain from config load to output is readable in one pass. List comprehensions over loops, type hints on signatures only.
 
 ### Memory as a JSON file, not a database
-The history is written to a simple JSON file (`shloka_history.json`) that lives in `dashboard/data/` and is committed to the repo. This makes the memory visible, diffable in git, and requires no infrastructure. Current-week live runs update it by default; backtests require `--write-history`.
+The history is written to a simple JSON file (`shloka_history.json`) under `dashboard/data/`. It is intentionally ignored by git because it may contain private practice history. Current-week live runs update it by default; backtests require `--write-history`.
 
 ### Graceful degradation for optional services
 Both MLflow and Qdrant use availability checks on first access. If either is absent, the respective module silently no-ops. The core CLI — birth chart + panchangam + verse scoring — works with `requirements-core.txt`; dashboard, MLflow, and RAG dependencies are split into optional requirement files.
@@ -390,8 +391,8 @@ weekly_guidance.py
   ├── janam_patri.py
   │     └── swisseph
   ├── verses.json
-  ├── config.yaml  (via yaml)
-  └── shloka_history.json
+  ├── VEDIC_CONFIG_YAML / config.yaml / config.example.yaml
+  └── shloka_history.json  (generated, ignored)
 
 weekly_notification.py
   ├── panchang.py
