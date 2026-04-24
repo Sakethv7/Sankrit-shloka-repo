@@ -357,12 +357,16 @@ const HEX = {
 const hex = n => HEX[(n||"").split("/")[0].trim()] || "#94a3b8";
 
 const VERSE = {
+  // Current curated corpus (15 verses)
   "bg-2.47":"BG 2.47","bg-4.7":"BG 4.7","bg-9.22":"BG 9.22","bg-2.14":"BG 2.14",
   "bg-6.5":"BG 6.5","bg-18.66":"BG 18.66","vs-1":"Vishnu Sahasranama 1",
   "shiva-panchakshari":"Shiva Panchakshari","shiva-mahamrityunjaya":"Mahamrityunjaya",
   "ganesha-shloka":"Ganesha Shloka","gayatri":"Gayatri Mantra",
   "surya-aditya":"Aditya Hridayam","devi-stuti":"Devi Stuti",
   "saraswati-vandana":"Saraswati Vandana","pitru-mantra":"Pitru Stotram",
+  // Legacy Slack digest verses (Qdrant full-Gita search, pre-Apr 2026)
+  "bg-1.1":"BG 1.1","bg-1.16":"BG 1.16","bg-8.25":"BG 8.25",
+  "bg-12.1":"BG 12.1","bg-15.19":"BG 15.19",
 };
 
 function dstars(n) {
