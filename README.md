@@ -174,7 +174,9 @@ Every Sunday at 8 AM Eastern the CI pipeline runs automatically:
 4. Commits updated `dashboard/data/` back to `main`
 5. Deploys dashboard to GitHub Pages
 
-Required secrets: `SLACK_WEBHOOK_URL`, `SLACK_MEMBER_ID`. The Slack dashboard link is inferred in GitHub Actions from the repo name; `DASHBOARD_URL` is only needed if you want to override it. `MLFLOW_TRACKING_URI` is optional for historical run export.
+Required secrets: `SLACK_WEBHOOK_URL`, `SLACK_MEMBER_ID`. `DASHBOARD_URL` is optional and should only be set after the dashboard is deployed somewhere. `MLFLOW_TRACKING_URI` is optional for historical run export.
+
+GitHub Pages deploy is gated by the repository variable `ENABLE_GITHUB_PAGES=true`. Private repositories may require a paid GitHub plan for Pages; leave the variable unset to keep the weekly Slack/data workflow green.
 
 ---
 

@@ -14,13 +14,7 @@ EN_DAY = {"Ravivara":"Sun","Somavara":"Mon","Mangalavara":"Tue","Budhavara":"Wed
 
 
 def _dashboard_url() -> str:
-    if os.getenv("DASHBOARD_URL"):
-        return os.getenv("DASHBOARD_URL", "")
-    repo = os.getenv("GITHUB_REPOSITORY", "")
-    if "/" not in repo:
-        return ""
-    owner, name = repo.split("/", 1)
-    return f"https://{owner.lower()}.github.io/{name}/"
+    return os.getenv("DASHBOARD_URL", "")
 
 
 def _clean_meaning(text: str) -> str:
