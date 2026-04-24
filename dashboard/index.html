@@ -224,6 +224,7 @@
     .trt { display: inline-block; font-size: 0.62rem; font-weight: 600; border-radius: 4px; padding: 0.06rem 0.28rem; margin-left: 0.3rem; }
     .trt.w { background: var(--red-l);   color: var(--red); }
     .trt.g { background: var(--green-l); color: var(--green); }
+    .trt.c { background: #fef3c7;        color: #92400e; }
 
     .color-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; font-size: 0.8rem; }
     .csw { width: 18px; height: 18px; border-radius: 5px; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.08); }
@@ -467,12 +468,12 @@ function pick(i) {
     ["Sunset",          d.sunset,     ""],
     ["Rahu Kalam",      d.rahu,       "w"],
     ["Yamagandam",      d.yamagandam, "w"],
-    ["Gulika Kalam",    d.gulika,     ""],
+    ["Gulika Kalam",    d.gulika,     "c"],
     ["Abhijit Muhurta", d.abhijit,    "g"],
   ].map(([l,v,c])=>`
     <div class="tr">
       <span class="trl">${l}</span>
-      <span class="trv">${v||"—"}${c?`<span class="trt ${c}">${c==="w"?"avoid":"✓ best"}</span>`:""}</span>
+      <span class="trv">${v||"—"}${c?`<span class="trt ${c}">${c==="w"?"avoid":c==="c"?"caution":"✓ best"}</span>`:""}</span>
     </div>`).join("");
 
   const ql = (d.day_quality||"").split(" — ")[0];
