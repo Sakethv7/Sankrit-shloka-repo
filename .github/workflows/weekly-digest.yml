@@ -37,7 +37,7 @@ jobs:
         run: pip install -r requirements-core.txt
 
       - name: Verify MLflow is reachable
-        run: curl -sf "$MLFLOW_TRACKING_URI/health" || echo "::warning::MLflow unreachable — runs will not be tracked"
+        run: curl --max-time 5 -sf "$MLFLOW_TRACKING_URI/health" || echo "::warning::MLflow unreachable — runs will not be tracked"
 
       - name: Generate weekly guidance
         run: python scripts/weekly_guidance.py --write-history
