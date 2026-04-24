@@ -34,7 +34,7 @@ jobs:
           cache: pip
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements-core.txt
 
       - name: Verify MLflow is reachable
         run: curl -sf "$MLFLOW_TRACKING_URI/health" || echo "::warning::MLflow unreachable — runs will not be tracked"
