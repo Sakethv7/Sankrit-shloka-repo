@@ -6,573 +6,561 @@
   <title>Vedic Wisdom Weekly</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,600&family=Noto+Sans+Devanagari:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:         #0f0f0f;
-      --surface:    #181818;
-      --surface2:   #212121;
-      --border:     #2e2e2e;
-      --text:       #e8e4df;
-      --muted:      #7a7570;
-      --muted2:     #5a5550;
-      --accent:     #c4a35a;
-      --accent-dim: #8a7040;
-      --good:       #5a9e6f;
-      --warn:       #b85c40;
-      --obs:        #7b5ea7;
+      --sidebar-w:  220px;
+      --sidebar-bg: #0d1f13;
+      --bg:         #f0f2f5;
+      --white:      #ffffff;
+      --border:     #e2e8f0;
+      --text:       #0f172a;
+      --text2:      #475569;
+      --muted:      #94a3b8;
+      --green:      #16a34a;
+      --green-d:    #14532d;
+      --green-l:    #dcfce7;
+      --green-act:  #22c55e;
+      --gold:       #d97706;
+      --gold-l:     #fef9c3;
+      --obs:        #7c3aed;
+      --obs-l:      #ede9fe;
+      --red:        #dc2626;
+      --red-l:      #fee2e2;
+      --r:          12px;
+      --rs:         8px;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: "DM Sans", system-ui, sans-serif;
-      font-size: 15px;
-      line-height: 1.6;
-      min-height: 100vh;
-    }
-    a { color: var(--accent); text-decoration: none; }
-
-    /* ── Layout ── */
-    .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
-
-    /* ── Header ── */
-    .site-header { margin-bottom: 2.5rem; }
-    .site-header h1 {
-      font-family: Literata, serif;
-      font-size: 1.9rem;
-      font-weight: 600;
-      color: var(--accent);
-      letter-spacing: -0.01em;
-    }
-    .site-header .meta { color: var(--muted); font-size: 0.9rem; margin-top: 0.2rem; }
-    .site-header .meta span { margin-right: 1.2rem; }
-
-    /* ── Section ── */
-    section { margin-bottom: 3rem; }
-    .section-title {
-      font-family: Literata, serif;
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: var(--accent);
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 0.4rem;
-      margin-bottom: 1.25rem;
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Week banner ── */
-    .week-banner {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.1rem 1.4rem;
-      margin-bottom: 1rem;
+    /* ── Sidebar ─────────────────────────────────────────────────────── */
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      width: var(--sidebar-w);
+      background: var(--sidebar-bg);
       display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      align-items: flex-start;
+      flex-direction: column;
+      padding: 1.5rem 1rem 1.25rem;
+      z-index: 100;
+      overflow-y: auto;
     }
-    .week-banner .week-label {
-      font-family: Literata, serif;
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--accent);
-      flex: 1 1 100%;
-    }
-    .obs-badge {
-      background: var(--obs);
-      color: #e0d8f0;
-      border-radius: 4px;
-      padding: 0.18rem 0.55rem;
-      font-size: 0.8rem;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-    .day-badge-good { color: var(--good); font-size: 0.85rem; font-weight: 500; }
-    .day-badge-warn { color: var(--warn); font-size: 0.85rem; font-weight: 500; }
-    .banner-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; width: 100%; }
-    .banner-label { color: var(--muted); font-size: 0.85rem; margin-right: 0.3rem; }
-
-    /* ── Day grid ── */
-    .day-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 0.85rem;
-    }
-    .day-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: border-color 0.15s;
-    }
-    .day-card:hover { border-color: var(--accent-dim); }
-    .day-card.expanded { border-color: var(--accent); }
-
-    .day-card-head {
-      padding: 0.85rem 1rem 0.7rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .day-card-head .day-name {
-      font-weight: 600;
-      font-size: 0.95rem;
+    .sb-logo {
       display: flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.6rem;
+      margin-bottom: 2.25rem;
+      padding: 0 0.25rem;
     }
-    .day-card-head .obs-pill {
-      background: var(--obs);
-      color: #e0d8f0;
-      border-radius: 3px;
-      padding: 0.1rem 0.4rem;
-      font-size: 0.72rem;
-      font-weight: 600;
-    }
-    .day-card-head .tithi { color: var(--muted); font-size: 0.82rem; margin-top: 0.15rem; }
-    .day-card-head .stars { font-size: 0.85rem; margin-top: 0.2rem; }
-    .star-filled { color: var(--accent); }
-    .star-empty  { color: var(--muted2); }
-
-    .day-card-body { padding: 0.75rem 1rem; }
-    .color-row {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.5rem;
-      font-size: 0.83rem;
-      color: var(--muted);
-    }
-    .color-dot {
-      width: 12px; height: 12px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .shloka-line { font-size: 0.83rem; color: var(--muted); margin-bottom: 0.2rem; }
-    .shloka-line strong { color: var(--text); font-weight: 500; }
-
-    /* ── Expanded detail ── */
-    .day-detail {
-      display: none;
-      padding: 0 1rem 1rem;
-      border-top: 1px solid var(--border);
-    }
-    .day-card.expanded .day-detail { display: block; }
-
-    .detail-block { margin-top: 0.85rem; }
-    .detail-block .block-label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--accent-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.35rem;
-    }
-    .timing-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.83rem;
-      color: var(--muted);
-      padding: 0.15rem 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .timing-row:last-child { border-bottom: none; }
-    .timing-row .time-label { flex: 0 0 130px; }
-    .timing-row .time-value { color: var(--text); }
-    .timing-row .time-warn  { color: #c8724a; font-size: 0.75rem; margin-left: 0.3rem; }
-    .timing-row .time-good  { color: var(--good); font-size: 0.75rem; margin-left: 0.3rem; }
-
-    .shloka-card {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      padding: 0.75rem 0.9rem;
-      margin-top: 0.35rem;
-    }
-    .shloka-card .sc-label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--accent-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.4rem;
-    }
-    .shloka-card .sc-source { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.3rem; }
-    .devanagari {
+    .sb-logo .om {
       font-family: "Noto Sans Devanagari", sans-serif;
-      font-size: 1rem;
-      line-height: 1.7;
-      color: var(--text);
-      margin-bottom: 0.3rem;
+      font-size: 1.5rem;
+      color: var(--green-act);
+      line-height: 1;
     }
-    .transliteration { font-size: 0.82rem; color: var(--muted); font-style: italic; margin-bottom: 0.3rem; }
-    .meaning { font-size: 0.85rem; color: var(--text); }
-
-    .practice-block {
-      background: var(--surface2);
-      border-left: 3px solid var(--accent-dim);
-      border-radius: 0 6px 6px 0;
-      padding: 0.6rem 0.8rem;
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin-top: 0.35rem;
+    .sb-logo .brand     { font-size: 0.88rem; font-weight: 600; color: white; line-height: 1.2; }
+    .sb-logo .brand sub { display: block; font-size: 0.68rem; font-weight: 400; color: rgba(255,255,255,0.38); }
+    .sb-sec {
+      font-size: 0.63rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.1em; color: rgba(255,255,255,0.28);
+      padding: 0 0.5rem; margin-bottom: 0.45rem;
     }
-    .practice-block strong { color: var(--text); font-weight: 500; }
-
-    .vastu-row {
-      font-size: 0.83rem;
-      color: var(--muted);
-      margin-top: 0.25rem;
+    .sb-nav { display: flex; flex-direction: column; gap: 0.1rem; margin-bottom: 1.25rem; }
+    .sb-item {
+      display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.5rem 0.7rem; border-radius: 7px;
+      font-size: 0.83rem; font-weight: 500;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer; text-decoration: none;
+      transition: background 0.12s, color 0.12s;
     }
+    .sb-item:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.82); }
+    .sb-item.on    { background: rgba(34,197,94,0.14); color: white; }
+    .sb-item.on .si { color: var(--green-act); }
+    .si { font-size: 0.95rem; width: 17px; text-align: center; flex-shrink: 0; }
+    .sb-spacer { flex: 1; }
+    .sb-profile {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--rs);
+      padding: 0.8rem 0.85rem;
+    }
+    .sbp-nak { font-family: "Noto Sans Devanagari", sans-serif; font-size: 0.72rem; color: var(--green-act); margin-bottom: 0.15rem; }
+    .sbp-trad { font-size: 0.8rem; font-weight: 600; color: white; }
+    .sbp-sub  { font-size: 0.7rem; color: rgba(255,255,255,0.35); margin-top: 0.1rem; }
 
-    /* ── History ── */
-    .history-table { width: 100%; border-collapse: collapse; }
-    .history-table th {
-      text-align: left;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 0 0.75rem 0.6rem;
+    /* ── Main ────────────────────────────────────────────────────────── */
+    .main { margin-left: var(--sidebar-w); min-height: 100vh; padding: 1.75rem 1.75rem 5rem; }
+
+    /* ── Topbar ─────────────────────────────────────────────────────── */
+    .topbar {
+      display: flex; align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 1.75rem; gap: 1rem; flex-wrap: wrap;
+    }
+    .tb-title h1 { font-size: 1.65rem; font-weight: 700; color: var(--text); letter-spacing: -0.025em; }
+    .tb-title p  { font-size: 0.8rem; color: var(--muted); margin-top: 0.1rem; }
+    .tb-tags { display: flex; gap: 0.45rem; flex-wrap: wrap; padding-top: 0.35rem; }
+    .tag {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 20px; padding: 0.22rem 0.7rem;
+      font-size: 0.74rem; font-weight: 500; color: var(--text2);
+    }
+    .tag.g { background: var(--green-l); border-color: rgba(22,163,74,0.2); color: var(--green-d); }
+
+    /* ── KPI row ─────────────────────────────────────────────────────── */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem; margin-bottom: 1.1rem;
+    }
+    .kpi {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 1.2rem 1.25rem;
+      position: relative; overflow: hidden;
+    }
+    .kpi.primary { background: var(--green-d); border-color: transparent; }
+    .kpi-arr {
+      position: absolute; top: 1rem; right: 1rem;
+      width: 26px; height: 26px; border-radius: 50%;
+      border: 1px solid var(--border); display: flex;
+      align-items: center; justify-content: center;
+      font-size: 0.75rem; color: var(--muted);
+    }
+    .kpi.primary .kpi-arr { border-color: rgba(255,255,255,0.2); color: rgba(255,255,255,0.6); }
+    .kpi-label { font-size: 0.76rem; font-weight: 500; color: var(--text2); margin-bottom: 0.3rem; }
+    .kpi.primary .kpi-label { color: rgba(255,255,255,0.6); }
+    .kpi-val { font-size: 2rem; font-weight: 700; color: var(--text); letter-spacing: -0.03em; line-height: 1.1; }
+    .kpi.primary .kpi-val { color: white; }
+    .kpi-sub { font-size: 0.72rem; color: var(--green); font-weight: 500; margin-top: 0.25rem; }
+    .kpi.primary .kpi-sub { color: rgba(255,255,255,0.5); }
+
+    /* ── Two-col mid row ─────────────────────────────────────────────── */
+    .mid { display: grid; grid-template-columns: 1fr 320px; gap: 1rem; margin-bottom: 1rem; }
+    .panel { background: var(--white); border: 1px solid var(--border); border-radius: var(--r); padding: 1.25rem 1.3rem; }
+    .panel-title { font-size: 0.88rem; font-weight: 600; color: var(--text); margin-bottom: 1.1rem; }
+
+    /* ── Bar chart ───────────────────────────────────────────────────── */
+    .chart-wrap { display: flex; align-items: flex-end; gap: 6px; height: 120px; }
+    .bc {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-end;
+      height: 100%; gap: 6px; cursor: pointer;
+    }
+    .bc-bar-wrap { width: 100%; flex: 1; display: flex; align-items: flex-end; position: relative; }
+    .bc-bar {
+      width: 100%; border-radius: 5px 5px 0 0;
+      background: #bbf7d0;
+      transition: background 0.15s;
+      position: relative;
+    }
+    .bc-bar .bc-score {
+      position: absolute; top: -19px; left: 50%; transform: translateX(-50%);
+      font-size: 0.65rem; font-weight: 700;
+      color: var(--green-d); white-space: nowrap; display: none;
+    }
+    .bc.active   .bc-bar         { background: var(--green-d); }
+    .bc.active   .bc-bar .bc-score { display: block; color: var(--green-d); }
+    .bc:not(.active):hover .bc-bar  { background: #86efac; }
+    .bc.obs      .bc-bar          { background: #ddd6fe; }
+    .bc.obs.active .bc-bar        { background: var(--obs); }
+    .bc.obs:not(.active):hover .bc-bar { background: #c4b5fd; }
+    .bc.obs.active .bc-bar .bc-score   { color: var(--obs); }
+    .bc-label { font-size: 0.68rem; font-weight: 500; color: var(--muted); text-align: center; line-height: 1.3; }
+    .bc.active .bc-label { color: var(--green-d); font-weight: 600; }
+    .chart-rule { height: 1px; background: var(--border); margin: 0.75rem 0 0; }
+
+    /* ── Week summary (right panel) ──────────────────────────────────── */
+    .ws-item { display: flex; align-items: flex-start; gap: 0.65rem; padding: 0.7rem 0; border-bottom: 1px solid var(--border); }
+    .ws-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .ws-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+    .ws-dot.p { background: var(--obs); }
+    .ws-dot.g { background: var(--green); }
+    .ws-dot.r { background: var(--red); }
+    .ws-dot.a { background: var(--gold); }
+    .ws-name { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+    .ws-sub  { font-size: 0.74rem; color: var(--muted); margin-top: 0.05rem; }
+
+    /* ── Detail panel (full-width, appears below mid row) ─────────────── */
+    .detail { background: var(--white); border: 1px solid var(--border); border-radius: var(--r); padding: 1.25rem 1.3rem; margin-bottom: 1rem; display: none; animation: up 0.15s ease; }
+    .detail.show { display: block; }
+    @keyframes up { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:none; } }
+    .dh {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; flex-wrap: wrap;
+      gap: 1rem; padding-bottom: 1.1rem; margin-bottom: 1.1rem;
       border-bottom: 1px solid var(--border);
     }
-    .history-table td {
-      padding: 0.55rem 0.75rem;
-      font-size: 0.85rem;
-      color: var(--muted);
-      border-bottom: 1px solid var(--border);
-      vertical-align: top;
+    .dh-title { font-size: 1rem; font-weight: 700; color: var(--text); }
+    .dh-obs {
+      display: inline-flex; background: var(--obs-l);
+      border: 1px solid rgba(124,58,237,0.18); color: var(--obs);
+      border-radius: 20px; padding: 0.16rem 0.6rem;
+      font-size: 0.73rem; font-weight: 600; margin-left: 0.5rem;
     }
-    .history-table td:first-child { color: var(--accent-dim); font-weight: 500; }
-    .history-table .verse-pill {
-      display: inline-block;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 0.1rem 0.4rem;
-      font-size: 0.78rem;
-      color: var(--text);
-      margin: 0.1rem 0.15rem 0.1rem 0;
+    .dh-panchang { font-size: 0.77rem; color: var(--text2); margin-top: 0.2rem; }
+    .dh-score { display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0; }
+    .dstars { display: flex; gap: 3px; }
+    .dstar { width: 12px; height: 12px; clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%); }
+    .dstar.on  { background: var(--gold); }
+    .dstar.off { background: var(--border); }
+    .dh-qlabel { font-size: 0.78rem; color: var(--text2); }
+
+    .dbody { display: grid; grid-template-columns: 240px 1fr 1fr; gap: 1rem; }
+
+    /* left col: timings + color */
+    .ib-title { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); margin-bottom: 0.6rem; }
+    .tr { display: flex; justify-content: space-between; align-items: center; padding: 0.33rem 0; border-bottom: 1px solid var(--border); font-size: 0.79rem; }
+    .tr:last-child { border-bottom: none; }
+    .trl { color: var(--text2); }
+    .trv { color: var(--text); font-weight: 500; font-variant-numeric: tabular-nums; }
+    .trt { display: inline-block; font-size: 0.62rem; font-weight: 600; border-radius: 4px; padding: 0.06rem 0.28rem; margin-left: 0.3rem; }
+    .trt.w { background: var(--red-l);   color: var(--red); }
+    .trt.g { background: var(--green-l); color: var(--green); }
+
+    .color-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; font-size: 0.8rem; }
+    .csw { width: 18px; height: 18px; border-radius: 5px; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.08); }
+    .csw.fad { opacity: 0.4; }
+    .cn  { font-weight: 500; color: var(--text); }
+    .csub { font-size: 0.69rem; color: var(--muted); }
+    .vastu-box { background: #f8fafc; border-radius: 6px; padding: 0.5rem 0.65rem; font-size: 0.77rem; color: var(--text2); margin-top: 0.45rem; }
+    .gem-row { font-size: 0.72rem; color: var(--muted); margin-top: 0.35rem; }
+
+    /* shloka boxes */
+    .sbox { background: #f8fafc; border: 1px solid var(--border); border-radius: var(--rs); padding: 0.9rem; }
+    .sbox + .sbox { margin-top: 0.75rem; }
+    .sbh { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem; }
+    .sbt { font-size: 0.64rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); }
+    .sbs { font-size: 0.75rem; color: var(--green-d); font-weight: 600; }
+    .sbd { font-size: 0.73rem; color: var(--text2); margin-bottom: 0.45rem; }
+    .dev { font-family: "Noto Sans Devanagari", sans-serif; font-size: 1rem; line-height: 1.85; color: var(--text); margin-bottom: 0.4rem; }
+    .trl2 { font-size: 0.77rem; color: var(--text2); font-style: italic; line-height: 1.5; margin-bottom: 0.4rem; }
+    .mng  { font-size: 0.79rem; color: var(--text); line-height: 1.55; }
+    .pbox { background: #fffbeb; border: 1px solid rgba(217,119,6,0.14); border-radius: var(--rs); padding: 0.9rem; margin-top: 0.75rem; }
+    .pt   { font-size: 0.64rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.09em; color: var(--gold); margin-bottom: 0.4rem; }
+    .pt-text { font-size: 0.79rem; color: var(--text2); line-height: 1.65; }
+
+    /* ── History ──────────────────────────────────────────────────────── */
+    .ht { width: 100%; border-collapse: collapse; }
+    .ht th { text-align: left; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 0 1rem 0.55rem 0; border-bottom: 2px solid var(--border); }
+    .ht td { padding: 0.55rem 1rem 0.55rem 0; border-bottom: 1px solid var(--border); font-size: 0.79rem; vertical-align: middle; }
+    .ht td:first-child { font-weight: 500; color: var(--text2); white-space: nowrap; width: 90px; font-variant-numeric: tabular-nums; }
+    .vtag { display: inline-block; background: white; border: 1px solid var(--border); border-radius: 5px; padding: 0.09rem 0.38rem; font-size: 0.71rem; color: var(--text2); margin: 0.08rem 0.12rem 0.08rem 0; }
+
+    /* ── Empty state ──────────────────────────────────────────────────── */
+    .empty { background: var(--white); border: 1px solid var(--border); border-radius: var(--r); padding: 3rem 2rem; text-align: center; color: var(--muted); }
+    .empty .eom { font-family: "Noto Sans Devanagari", sans-serif; font-size: 2.5rem; color: var(--green); opacity: 0.35; margin-bottom: 0.75rem; }
+    .empty p { font-size: 0.84rem; line-height: 1.7; }
+    .empty code { background: #f1f5f9; border: 1px solid var(--border); border-radius: 4px; padding: 0.1rem 0.38rem; font-size: 0.77rem; color: var(--green-d); }
+
+    /* ── Responsive ───────────────────────────────────────────────────── */
+    @media (max-width: 1100px) {
+      .dbody { grid-template-columns: 230px 1fr; }
+      .dbody > :nth-child(3) { grid-column: 2; }
     }
-
-    /* ── Stats ── */
-    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.85rem; }
-    .kpi-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1rem;
-      text-align: center;
+    @media (max-width: 900px) {
+      .kpi-row { grid-template-columns: repeat(2, 1fr); }
+      .mid     { grid-template-columns: 1fr; }
+      .dbody   { grid-template-columns: 1fr; }
     }
-    .kpi-box .kpi-val { font-size: 1.6rem; font-weight: 600; color: var(--accent); }
-    .kpi-box .kpi-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; }
-
-    /* ── Loading / empty ── */
-    .loading { color: var(--muted); font-size: 0.9rem; }
-    .empty-msg {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.5rem;
-      color: var(--muted);
-      font-size: 0.9rem;
-      text-align: center;
-    }
-    .empty-msg code { color: var(--accent-dim); }
-
-    /* ── Score colors ── */
-    .score-5 .stars { color: var(--good); }
-    .score-2 .stars { color: var(--warn); }
-    .score-1 .stars { color: var(--warn); }
-
-    @media (max-width: 600px) {
-      .day-grid { grid-template-columns: 1fr; }
-      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-      .site-header h1 { font-size: 1.5rem; }
+    @media (max-width: 640px) {
+      :root { --sidebar-w: 0px; }
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 1rem 1rem 4rem; }
+      .kpi-row { grid-template-columns: repeat(2, 1fr); }
+      .tb-title h1 { font-size: 1.25rem; }
     }
   </style>
 </head>
 <body>
-<div class="container">
 
-  <!-- Header -->
-  <header class="site-header">
-    <h1>Vedic Wisdom Weekly</h1>
-    <div class="meta" id="header-meta">
-      <span id="meta-location">—</span>
-      <span id="meta-profile">—</span>
-      <span id="meta-tradition">Smarta</span>
+<!-- ── Sidebar ── -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <span class="om">ॐ</span>
+    <div class="brand">Vedic Wisdom<sub>Weekly</sub></div>
+  </div>
+
+  <div class="sb-sec">Menu</div>
+  <nav class="sb-nav">
+    <a class="sb-item on"  href="#"><span class="si">⊞</span> Dashboard</a>
+    <a class="sb-item"     href="#"><span class="si">☀</span> This Week</a>
+    <a class="sb-item"     href="#"><span class="si">◈</span> Shlokas</a>
+    <a class="sb-item"     href="#"><span class="si">◷</span> History</a>
+  </nav>
+
+  <div class="sb-sec">General</div>
+  <nav class="sb-nav">
+    <a class="sb-item" href="https://github.com/Sakethv7/Sankrit-shloka-repo" target="_blank"><span class="si">⤷</span> GitHub</a>
+  </nav>
+
+  <div class="sb-spacer"></div>
+  <div class="sb-profile" id="sb-profile">
+    <div class="sbp-nak">—</div>
+    <div class="sbp-trad">Smarta Tradition</div>
+    <div class="sbp-sub">Golconda Vyapari Niyogi</div>
+  </div>
+</aside>
+
+<!-- ── Main ── -->
+<main class="main">
+
+  <div class="topbar">
+    <div class="tb-title">
+      <h1>Dashboard</h1>
+      <p id="tb-sub">Vedic Wisdom Weekly</p>
     </div>
-  </header>
+    <div class="tb-tags" id="tb-tags"></div>
+  </div>
 
-  <!-- This Week -->
-  <section id="section-week">
-    <div class="section-title">This week</div>
-    <div id="week-banner" class="loading">Loading…</div>
-  </section>
+  <div class="kpi-row" id="kpi-row"></div>
 
-  <!-- 7-Day Guidance -->
-  <section id="section-days">
-    <div class="section-title">7-day guidance</div>
-    <div id="day-grid" class="day-grid"></div>
-  </section>
+  <div class="mid">
+    <div class="panel">
+      <div class="panel-title">Week Quality</div>
+      <div class="chart-wrap" id="bar-chart"></div>
+      <div class="chart-rule"></div>
+    </div>
+    <div class="panel" id="ws-panel">
+      <div class="panel-title" id="ws-title">This Week</div>
+      <div id="ws-content"></div>
+    </div>
+  </div>
 
-  <!-- History -->
-  <section id="section-history">
-    <div class="section-title">Shloka history</div>
-    <div id="history-content"></div>
-  </section>
+  <div class="detail" id="detail"></div>
 
-  <!-- Stats -->
-  <section id="section-stats">
-    <div class="section-title">Overview</div>
-    <div id="stats-content" class="kpi-grid"></div>
-  </section>
+  <div class="panel" id="hist-panel">
+    <div class="panel-title">Shloka History</div>
+    <div id="hist-content"></div>
+  </div>
 
-</div>
+</main>
 
 <script>
-// ── Colour helpers ──────────────────────────────────────────────────────
+// ── Helpers ──────────────────────────────────────────────────────────────
 
-const COLOR_MAP = {
-  "Red":     "#c0504d", "Saffron":  "#e07030", "White":   "#e0ddd8",
-  "Cream":   "#d8d4c0", "Coral":    "#c05848", "Green":   "#4a8a5a",
-  "Emerald": "#3a7a5a", "Yellow":   "#c8a030", "Gold":    "#c4a030",
-  "Pink":    "#c07890", "Black":    "#303030", "Navy":    "#2a3a5a",
-  "Blue":    "#3a5080", "Purple":   "#6a4a8a", "Dark":    "#404040",
+const HEX = {
+  Red:"#dc2626",Saffron:"#ea580c",White:"#e8e6e0",Cream:"#f0eddc",
+  Coral:"#e05c4a",Green:"#16a34a",Emerald:"#059669",Yellow:"#eab308",
+  Gold:"#d97706",Pink:"#db2777",Black:"#1e1e1e",Navy:"#1e3a5f",
+  Blue:"#2563eb",Purple:"#7c3aed",Dark:"#374151",Orange:"#ea580c",
+  Silver:"#94a3b8",Brown:"#78350f",Maroon:"#7f1d1d",
 };
-function colorDot(wear) {
-  const key = (wear || "").split("/")[0].trim();
-  const bg  = COLOR_MAP[key] || "#666";
-  return `<span class="color-dot" style="background:${bg}"></span>`;
+const hex = n => HEX[(n||"").split("/")[0].trim()] || "#94a3b8";
+
+const VERSE = {
+  "bg-2.47":"BG 2.47","bg-4.7":"BG 4.7","bg-9.22":"BG 9.22","bg-2.14":"BG 2.14",
+  "bg-6.5":"BG 6.5","bg-18.66":"BG 18.66","vs-1":"Vishnu Sahasranama 1",
+  "shiva-panchakshari":"Shiva Panchakshari","shiva-mahamrityunjaya":"Mahamrityunjaya",
+  "ganesha-shloka":"Ganesha Shloka","gayatri":"Gayatri Mantra",
+  "surya-aditya":"Aditya Hridayam","devi-stuti":"Devi Stuti",
+  "saraswati-vandana":"Saraswati Vandana","pitru-mantra":"Pitru Stotram",
+};
+
+function dstars(n) {
+  return Array.from({length:5},(_,i)=>
+    `<div class="dstar ${i<n?'on':'off'}"></div>`).join("");
 }
-
-// ── Stars ───────────────────────────────────────────────────────────────
-
-function stars(n) {
-  return "★".repeat(n) + "☆".repeat(5 - n);
-}
-
-// ── Verse card HTML ─────────────────────────────────────────────────────
-
-function verseCard(label, v) {
+function shloka(label, v) {
   if (!v) return "";
   return `
-    <div class="shloka-card">
-      <div class="sc-label">${label}</div>
-      <div class="sc-source">${v.source || ""} ${v.deity ? "· " + v.deity : ""}</div>
-      <div class="devanagari">${v.devanagari || ""}</div>
-      <div class="transliteration">${v.transliteration || ""}</div>
-      <div class="meaning">${v.meaning || ""}</div>
+    <div class="sbox">
+      <div class="sbh"><span class="sbt">${label}</span><span class="sbs">${v.source||""}</span></div>
+      ${v.deity?`<div class="sbd">${v.deity}</div>`:""}
+      <div class="dev">${v.devanagari||""}</div>
+      <div class="trl2">${v.transliteration||""}</div>
+      <div class="mng">${v.meaning||""}</div>
     </div>`;
 }
 
-// ── Build day card ──────────────────────────────────────────────────────
+// ── Sidebar ──────────────────────────────────────────────────────────────
+function renderSidebar(w) {
+  document.getElementById("sb-profile").innerHTML = `
+    <div class="sbp-nak">${w.nakshatra||""} · ${w.rashi||""}</div>
+    <div class="sbp-trad">Smarta Tradition</div>
+    <div class="sbp-sub">${w.location||""}</div>`;
+}
 
-function buildDayCard(d, idx) {
-  const hasObs   = Boolean(d.observance);
-  const obsPill  = hasObs ? `<span class="obs-pill">${d.observance}</span>` : "";
-  const scoreClass = d.day_score >= 5 ? "score-5" : d.day_score <= 2 ? "score-2" : "";
+// ── Topbar ───────────────────────────────────────────────────────────────
+function renderTopbar(w) {
+  document.getElementById("tb-sub").textContent =
+    `Week of ${w.week_label||""} · ${w.location||""}`;
+  document.getElementById("tb-tags").innerHTML =
+    `<span class="tag g">${w.nakshatra||""} · ${w.rashi||""}</span>
+     <span class="tag">${w.timezone||"IST"}</span>`;
+}
+
+// ── KPIs ─────────────────────────────────────────────────────────────────
+function renderKPIs(w, hist) {
+  const allIds   = Object.values(hist.weekly||{}).flatMap(k=>k.ids||[]);
+  const fiveS    = (w.days||[]).filter(d=>d.day_score>=5).length;
+  const obsCount = (w.observances||[]).length;
+  const bestScr  = Math.max(...(w.days||[1]).map(d=>d.day_score||0));
+  document.getElementById("kpi-row").innerHTML = [
+    { primary:true,  label:"Best Day Score", val:`${bestScr}/5`,   sub:"This week"  },
+    { primary:false, label:"Observances",    val: obsCount,        sub:"This week"  },
+    { primary:false, label:"5-Star Days",    val: fiveS,           sub:"This week"  },
+    { primary:false, label:"Shlokas Given",  val: allIds.length,   sub:"All time"   },
+  ].map(c=>`
+    <div class="kpi${c.primary?" primary":""}">
+      <div class="kpi-arr">↗</div>
+      <div class="kpi-label">${c.label}</div>
+      <div class="kpi-val">${c.val}</div>
+      <div class="kpi-sub">${c.sub}</div>
+    </div>`).join("");
+}
+
+// ── Bar chart ─────────────────────────────────────────────────────────────
+let DAYS = [];
+function renderChart(ds) {
+  DAYS = ds;
+  const MAX = 110;
+  document.getElementById("bar-chart").innerHTML = ds.map((d,i)=>{
+    const h     = Math.round((d.day_score/5)*MAX);
+    const vaara = (d.vaara_en||d.vaara||"").slice(0,3);
+    const dn    = (d.date_label||"").split(" ").slice(-1)[0];
+    return `
+      <div class="bc${d.observance?" obs":""}${i===0?" active":""}" id="bc${i}" onclick="pick(${i})" style="height:${MAX+26}px;">
+        <div class="bc-bar-wrap" style="height:${MAX}px;">
+          <div class="bc-bar" style="height:${h}px;">
+            <span class="bc-score">${d.day_score}/5</span>
+          </div>
+        </div>
+        <div class="bc-label">${vaara}<br><b>${dn}</b></div>
+      </div>`;
+  }).join("");
+  pick(0);
+}
+
+// ── Week summary ──────────────────────────────────────────────────────────
+function renderWeekSum(w) {
+  const items = [];
+  (w.observances||[]).forEach(o => items.push({c:"p", name:o.name, sub:o.date}));
+  (w.best_days||[]).forEach(d   => items.push({c:"g", name:"Best day",  sub:d}));
+  (w.caution_days||[]).forEach(d=> items.push({c:"r", name:"Use care",  sub:d}));
+  if (!items.length) items.push({c:"a", name:"Regular week", sub:"No special observances"});
+  document.getElementById("ws-title").textContent =
+    "Week of " + (w.week_label||"").split("–")[0].trim();
+  document.getElementById("ws-content").innerHTML = items.map(it=>`
+    <div class="ws-item">
+      <div class="ws-dot ${it.c}"></div>
+      <div><div class="ws-name">${it.name}</div><div class="ws-sub">${it.sub}</div></div>
+    </div>`).join("");
+}
+
+// ── Day detail ────────────────────────────────────────────────────────────
+function pick(i) {
+  document.querySelectorAll(".bc").forEach((el,j)=>el.classList.toggle("active",j===i));
+  const d = DAYS[i];
+  const p = document.getElementById("detail");
+  p.classList.add("show");
 
   const timings = [
-    ["Sunrise / Sunset", `${d.sunrise} &nbsp;·&nbsp; ${d.sunset}`, ""],
-    ["Rahu Kalam",    d.rahu,       "⚠ avoid"],
-    ["Yamagandam",    d.yamagandam, "⚠ avoid"],
-    ["Gulika Kalam",  d.gulika,     ""],
-    ["Abhijit Muhurta", d.abhijit,  "✓ auspicious"],
-  ].map(([label, val, note]) => `
-    <div class="timing-row">
-      <span class="time-label">${label}</span>
-      <span class="time-value">${val}
-        ${note.startsWith("⚠") ? `<span class="time-warn">${note}</span>` : ""}
-        ${note.startsWith("✓") ? `<span class="time-good">${note}</span>` : ""}
-      </span>
+    ["Sunrise",         d.sunrise,    ""],
+    ["Sunset",          d.sunset,     ""],
+    ["Rahu Kalam",      d.rahu,       "w"],
+    ["Yamagandam",      d.yamagandam, "w"],
+    ["Gulika Kalam",    d.gulika,     ""],
+    ["Abhijit Muhurta", d.abhijit,    "g"],
+  ].map(([l,v,c])=>`
+    <div class="tr">
+      <span class="trl">${l}</span>
+      <span class="trv">${v||"—"}${c?`<span class="trt ${c}">${c==="w"?"avoid":"✓ best"}</span>`:""}</span>
     </div>`).join("");
 
-  return `
-  <div class="day-card ${scoreClass}" id="day-${idx}" onclick="toggleDay(${idx})">
-    <div class="day-card-head">
-      <div class="day-name">${d.date_label} ${obsPill}</div>
-      <div class="tithi">${d.tithi} · ${d.nakshatra} · ${d.yoga}</div>
-      <div class="stars">${stars(d.day_score)} <span style="font-size:0.8rem;color:var(--muted);margin-left:0.3rem;">${d.day_quality.split(" — ")[0]}</span></div>
+  const ql = (d.day_quality||"").split(" — ")[0];
+  p.innerHTML = `
+    <div class="dh">
+      <div>
+        <div class="dh-title">${d.date_label||""}${d.observance?`<span class="dh-obs">◉ ${d.observance}</span>`:""}</div>
+        <div class="dh-panchang">${d.tithi||""} · ${d.nakshatra||""} · ${d.yoga||""} · ${d.karana||""}</div>
+      </div>
+      <div class="dh-score">
+        <div class="dstars">${dstars(d.day_score)}</div>
+        <span class="dh-qlabel">${ql}</span>
+      </div>
     </div>
-    <div class="day-card-body">
-      <div class="color-row">${colorDot(d.color_wear)} Wear ${d.color_wear} &nbsp;·&nbsp; Avoid ${d.color_avoid}</div>
-      <div class="shloka-line">🕉 <strong>${d.devata_shloka ? d.devata_shloka.source : "—"}</strong></div>
-      <div class="shloka-line">✦ <strong>${d.personal_shloka ? d.personal_shloka.source : "—"}</strong></div>
-    </div>
-    <div class="day-detail">
-      <div class="detail-block">
-        <div class="block-label">Timings</div>
+    <div class="dbody">
+      <div>
+        <div class="ib-title">Muhurta Timings</div>
         ${timings}
-      </div>
-      <div class="detail-block">
-        <div class="block-label">Day quality</div>
-        <div style="font-size:0.85rem;color:var(--muted);margin-bottom:0.25rem;">${d.day_quality}</div>
-        <div style="font-size:0.82rem;color:var(--muted);">Nakshatra ${d.nakshatra} compatibility: ${stars(d.nak_compat)}</div>
-      </div>
-      <div class="detail-block">
-        <div class="block-label">Color &amp; Vastu</div>
-        <div style="font-size:0.83rem;color:var(--muted);">
-          Wear: <strong style="color:var(--text)">${d.color_wear}</strong> &nbsp;·&nbsp;
-          Avoid: <strong style="color:var(--text)">${d.color_avoid}</strong><br>
-          Planet: ${d.planet} &nbsp;·&nbsp; Gem: ${d.gem}
+        <div style="margin-top:1rem;">
+          <div class="ib-title">Color &amp; Vastu</div>
+          <div class="color-row">
+            <div class="csw" style="background:${hex(d.color_wear)}"></div>
+            <div><div class="cn">${d.color_wear}</div><div class="csub">Wear today</div></div>
+          </div>
+          <div class="color-row">
+            <div class="csw fad" style="background:${hex(d.color_avoid)}"></div>
+            <div><div class="cn">${d.color_avoid}</div><div class="csub">Avoid</div></div>
+          </div>
+          <div class="vastu-box">${d.vastu_tip||""}</div>
+          <div class="gem-row">Planet: ${d.planet||"—"} · Gem: ${d.gem||"—"}</div>
         </div>
-        <div class="vastu-row">${d.vastu_tip}</div>
       </div>
-      <div class="detail-block">
-        <div class="block-label">Devata shloka — ${d.deity_of_day}</div>
-        ${verseCard("", d.devata_shloka)}
+      <div>
+        ${shloka("Devata · "+(d.deity_of_day||""), d.devata_shloka)}
+        <div class="pbox">
+          <div class="pt">Practice${d.observance?" — "+d.observance:""}</div>
+          <div class="pt-text">${d.practice||""}</div>
+        </div>
       </div>
-      <div class="detail-block">
-        <div class="block-label">Personal shloka</div>
-        ${verseCard("", d.personal_shloka)}
+      <div>
+        ${shloka("Personal Shloka", d.personal_shloka)}
       </div>
-      <div class="detail-block">
-        <div class="block-label">Practice${d.observance ? " — " + d.observance : ""}</div>
-        <div class="practice-block">${d.practice}</div>
-      </div>
-    </div>
-  </div>`;
-}
-
-function toggleDay(idx) {
-  const card = document.getElementById("day-" + idx);
-  card.classList.toggle("expanded");
-}
-
-// ── Verse lookup (for history section) ─────────────────────────────────
-
-const VERSE_SOURCES = {
-  "bg-2.47":              "BG 2.47",
-  "bg-4.7":               "BG 4.7",
-  "bg-9.22":              "BG 9.22",
-  "bg-2.14":              "BG 2.14",
-  "bg-6.5":               "BG 6.5",
-  "bg-18.66":             "BG 18.66",
-  "vs-1":                 "Vishnu Sahasranama 1",
-  "shiva-panchakshari":   "Shiva Panchakshari",
-  "shiva-mahamrityunjaya":"Mahamrityunjaya",
-  "ganesha-shloka":       "Ganesha Shloka",
-  "gayatri":              "Gayatri Mantra",
-  "surya-aditya":         "Aditya Hridayam",
-  "devi-stuti":           "Devi Stuti",
-  "saraswati-vandana":    "Saraswati Vandana",
-  "pitru-mantra":         "Pitru Stotram",
-};
-function versePill(id) {
-  const label = VERSE_SOURCES[id] || id;
-  return `<span class="verse-pill">${label}</span>`;
-}
-
-// ── Render functions ────────────────────────────────────────────────────
-
-function renderWeekBanner(week) {
-  const obs = (week.observances || []).map(o =>
-    `<span class="obs-badge">${o.name} — ${o.date}</span>`).join(" ");
-  const best = (week.best_days || []).map(d =>
-    `<span class="day-badge-good">★ ${d}</span>`).join(" &nbsp; ");
-  const caution = (week.caution_days || []).map(d =>
-    `<span class="day-badge-warn">△ ${d}</span>`).join(" &nbsp; ");
-
-  document.getElementById("week-banner").innerHTML = `
-    <div class="week-banner">
-      <div class="week-label">Week of ${week.week_label}</div>
-      ${obs ? `<div class="banner-row"><span class="banner-label">Observances</span>${obs}</div>` : ""}
-      ${best ? `<div class="banner-row"><span class="banner-label">Best days</span>${best}</div>` : ""}
-      ${caution ? `<div class="banner-row"><span class="banner-label">Use care</span>${caution}</div>` : ""}
     </div>`;
 }
 
-function renderDays(week) {
-  document.getElementById("day-grid").innerHTML =
-    (week.days || []).map((d, i) => buildDayCard(d, i)).join("");
-}
-
-function renderHistory(history) {
-  const el = document.getElementById("history-content");
-  const weekly = history.weekly || {};
-  const keys   = Object.keys(weekly).sort().reverse();
+// ── History ───────────────────────────────────────────────────────────────
+function renderHistory(hist) {
+  const el   = document.getElementById("hist-content");
+  const keys = Object.keys(hist.weekly||{}).sort().reverse();
   if (!keys.length) {
-    el.innerHTML = `<div class="empty-msg">No history yet. Runs accumulate here each week.</div>`;
+    el.innerHTML = `<p style="font-size:0.82rem;color:var(--muted);">No history yet. Shlokas accumulate here each week.</p>`;
     return;
   }
-  const rows = keys.map(k => {
-    const ids = (weekly[k].ids || []).map(versePill).join("");
-    return `<tr><td>${k}</td><td>${ids}</td></tr>`;
-  }).join("");
-  el.innerHTML = `
-    <table class="history-table">
-      <thead><tr><th>Week</th><th>Shlokas used</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>`;
+  el.innerHTML = `<table class="ht">
+    <thead><tr><th>Week</th><th>Shlokas given</th></tr></thead>
+    <tbody>${keys.map(k=>`
+      <tr>
+        <td>${k}</td>
+        <td>${(hist.weekly[k].ids||[]).map(id=>`<span class="vtag">${VERSE[id]||id}</span>`).join("")}</td>
+      </tr>`).join("")}
+    </tbody></table>`;
 }
 
-function renderStats(week, history) {
-  const weekly     = history.weekly || {};
-  const weeksCount = Object.keys(weekly).length;
-  const allIds     = Object.values(weekly).flatMap(w => w.ids || []);
-  const uniqueIds  = new Set(allIds).size;
-  const totalIds   = allIds.length;
-  const coverage   = Math.round(uniqueIds / 15 * 100);
-
-  const topId      = allIds.reduce((acc, id) => { acc[id] = (acc[id]||0)+1; return acc; }, {});
-  const topVerse   = Object.entries(topId).sort((a,b)=>b[1]-a[1])[0];
-  const bestDay    = (week.best_days || [])[0] || "—";
-  const obsCount   = (week.observances || []).length;
-
-  document.getElementById("stats-content").innerHTML = [
-    { val: weeksCount,   label: "Weeks tracked"      },
-    { val: uniqueIds,    label: "Distinct verses used"},
-    { val: coverage+"%", label: "Corpus coverage"    },
-    { val: obsCount,     label: "Observances this week"},
-    { val: (week.days||[]).filter(d=>d.day_score>=5).length, label: "★★★★★ days this week"},
-    { val: topVerse ? VERSE_SOURCES[topVerse[0]] || topVerse[0] : "—", label: "Most used shloka"},
-  ].map(({val, label}) =>
-    `<div class="kpi-box"><div class="kpi-val">${val}</div><div class="kpi-label">${label}</div></div>`
-  ).join("");
+// ── Boot ──────────────────────────────────────────────────────────────────
+async function load(url) {
+  try { const r=await fetch(url); return r.ok?r.json():null; } catch { return null; }
 }
-
-function renderHeader(week) {
-  document.getElementById("meta-location").textContent = week.location || "—";
-  document.getElementById("meta-profile").textContent  =
-    `${week.nakshatra} · ${week.rashi}`;
-}
-
-// ── Load & render ───────────────────────────────────────────────────────
-
-async function loadJson(url) {
-  try {
-    const r = await fetch(url);
-    return r.ok ? r.json() : null;
-  } catch { return null; }
-}
-
 async function init() {
-  const [week, history] = await Promise.all([
-    loadJson("data/current_week.json"),
-    loadJson("data/shloka_history.json"),
-  ]);
-
-  if (!week) {
-    document.getElementById("week-banner").innerHTML =
-      `<div class="empty-msg">No data yet.<br>Run <code>python scripts/weekly_guidance.py</code> locally, or trigger the GitHub Actions workflow.</div>`;
-    document.getElementById("day-grid").innerHTML = "";
-    document.getElementById("history-content").innerHTML =
-      `<div class="empty-msg">No history yet.</div>`;
-    document.getElementById("stats-content").innerHTML = "";
+  const [w, hist] = await Promise.all([load("data/current_week.json"), load("data/shloka_history.json")]);
+  if (!w) {
+    document.querySelector(".main").innerHTML = `
+      <div class="topbar"><div class="tb-title"><h1>Dashboard</h1><p>Vedic Wisdom Weekly</p></div></div>
+      <div class="empty">
+        <div class="eom">ॐ</div>
+        <p>No data yet.<br>
+        Run <code>python scripts/weekly_guidance.py</code> locally,<br>
+        or trigger the GitHub Actions workflow to populate the dashboard.</p>
+      </div>`;
     return;
   }
-
-  const hist = history || { weekly: {}, daily_devata: {} };
-  renderHeader(week);
-  renderWeekBanner(week);
-  renderDays(week);
-  renderHistory(hist);
-  renderStats(week, hist);
+  const h = hist||{weekly:{},daily_devata:{}};
+  renderSidebar(w);
+  renderTopbar(w);
+  renderKPIs(w, h);
+  renderWeekSum(w);
+  renderChart(w.days||[]);
+  renderHistory(h);
 }
-
 init();
 </script>
 </body>
