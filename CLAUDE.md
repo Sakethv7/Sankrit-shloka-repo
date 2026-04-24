@@ -11,7 +11,9 @@ Python 3.11+ | httpx | MLflow | Qdrant (optional) | Supermemory (optional)
 
 ## Commands
 ```bash
-python scripts/weekly_notification.py                              # Tithi-aware weekly digest (EST) + shlokas
+python scripts/weekly_guidance.py                                  # ★ PRIMARY: personalized 7-day guidance (IST timings, color, vastu, shlokas)
+python scripts/weekly_guidance.py --start-date 2026-05-01         # Backtest any week
+python scripts/weekly_notification.py                              # Legacy weekly digest (EST) + shlokas
 python scripts/janam_patri.py                                      # Birth chart shloka recommendations
 python scripts/export_mlflow_runs.py                               # Export data for dashboard
 python scripts/serve_dashboard.py                                  # Serve dashboard at http://localhost:8080

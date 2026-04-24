@@ -9,7 +9,10 @@
     "sampradaya": "Vedanta/Gita",
     "deity": "Krishna",
     "script": "Devanagari",
-    "category": "Karma Yoga"
+    "category": "Karma Yoga",
+    "use_cases": ["equanimity", "focus", "duty", "daily"],
+    "observance_tags": [],
+    "birth_tags": ["punarvasu", "mithuna", "karma"]
   },
   {
     "id": "bg-4.7",
@@ -21,7 +24,10 @@
     "sampradaya": "Vedanta/Gita",
     "deity": "Krishna",
     "script": "Devanagari",
-    "category": "Dharma"
+    "category": "Dharma",
+    "use_cases": ["protection", "dharma", "faith"],
+    "observance_tags": ["ekadashi"],
+    "birth_tags": ["vishnu", "mithuna"]
   },
   {
     "id": "bg-9.22",
@@ -33,19 +39,25 @@
     "sampradaya": "Vedanta/Gita",
     "deity": "Krishna",
     "script": "Devanagari",
-    "category": "Bhakti Yoga"
+    "category": "Bhakti Yoga",
+    "use_cases": ["protection", "devotion", "surrender", "faith"],
+    "observance_tags": ["ekadashi", "purnima"],
+    "birth_tags": ["vishnu", "punarvasu", "smarta"]
   },
   {
     "id": "bg-2.14",
     "devanagari": "मात्रास्पर्शास्तु कौन्तेय शीतोष्णसुखदुःखदाः। आगमापायिनोऽनित्यास्तांस्तितिक्षस्व भारत॥",
     "transliteration": "mātrā-sparśās tu kaunteya śītoṣṇa-sukha-duḥkha-dāḥ | āgamāpāyino 'nityās tāṃs titikṣasva bhārata ||",
-    "meaning": "The contact of the senses with their objects, O son of Kunti, gives rise to cold and heat, pleasure and pain. They are transient — endure them bravely.",
+    "meaning": "The contact of the senses with their objects gives rise to cold and heat, pleasure and pain. They are transient — endure them bravely.",
     "source": "Bhagavad Gita 2.14",
     "tags": ["endurance", "equanimity", "senses", "detachment", "stoicism"],
     "sampradaya": "Vedanta/Gita",
     "deity": "Krishna",
     "script": "Devanagari",
-    "category": "Equanimity"
+    "category": "Equanimity",
+    "use_cases": ["equanimity", "endurance", "mental_balance"],
+    "observance_tags": [],
+    "birth_tags": ["mithuna", "karma"]
   },
   {
     "id": "bg-6.5",
@@ -57,7 +69,25 @@
     "sampradaya": "Vedanta/Gita",
     "deity": "Krishna",
     "script": "Devanagari",
-    "category": "Dhyana Yoga"
+    "category": "Dhyana Yoga",
+    "use_cases": ["focus", "self-discipline", "meditation", "mental_balance"],
+    "observance_tags": [],
+    "birth_tags": ["punarvasu", "mithuna"]
+  },
+  {
+    "id": "bg-18.66",
+    "devanagari": "सर्वधर्मान्परित्यज्य मामेकं शरणं व्रज। अहं त्वा सर्वपापेभ्यो मोक्षयिष्यामि मा शुचः॥",
+    "transliteration": "sarvadharmān parityajya mām ekaṃ śaraṇaṃ vraja | ahaṃ tvā sarvapāpebhyo mokṣayiṣyāmi mā śucaḥ ||",
+    "meaning": "Abandon all varieties of dharma and simply surrender unto Me alone. I shall deliver you from all sinful reactions — do not fear.",
+    "source": "Bhagavad Gita 18.66",
+    "tags": ["surrender", "moksha", "protection", "vishnu", "liberation"],
+    "sampradaya": "Vedanta/Gita",
+    "deity": "Krishna",
+    "script": "Devanagari",
+    "category": "Bhakti Yoga",
+    "use_cases": ["surrender", "protection", "liberation", "faith"],
+    "observance_tags": ["ekadashi", "purnima"],
+    "birth_tags": ["vishnu", "punarvasu", "smarta"]
   },
   {
     "id": "vs-1",
@@ -69,7 +99,10 @@
     "sampradaya": "Vaishnava",
     "deity": "Vishnu",
     "script": "Devanagari",
-    "category": "Stotra"
+    "category": "Stotra",
+    "use_cases": ["devotion", "surrender", "daily", "protection"],
+    "observance_tags": ["ekadashi", "purnima", "dwadashi"],
+    "birth_tags": ["vishnu", "punarvasu", "smarta"]
   },
   {
     "id": "shiva-panchakshari",
@@ -81,7 +114,25 @@
     "sampradaya": "Shaiva",
     "deity": "Shiva",
     "script": "Devanagari",
-    "category": "Mantra"
+    "category": "Mantra",
+    "use_cases": ["protection", "devotion", "release", "purification"],
+    "observance_tags": ["pradosham", "chaturdashi", "saptami", "shivaratri"],
+    "birth_tags": ["shiva", "smarta"]
+  },
+  {
+    "id": "shiva-mahamrityunjaya",
+    "devanagari": "ॐ त्र्यम्बकं यजामहे सुगन्धिं पुष्टिवर्धनम्। उर्वारुकमिव बन्धनान्मृत्योर्मुक्षीय माऽमृतात्॥",
+    "transliteration": "oṃ tryambakaṃ yajāmahe sugandhiṃ puṣṭivardhanam | urvārukam iva bandhanān mṛtyor mukṣīya mā'mṛtāt ||",
+    "meaning": "We worship the three-eyed Lord (Shiva) who is fragrant and who nourishes all beings. May He release us from death as a ripe cucumber falls from its vine, and may we never be separated from immortality.",
+    "source": "Rig Veda 7.59.12 (Mahamrityunjaya Mantra)",
+    "tags": ["shiva", "healing", "protection", "pradosham", "liberation", "mantra"],
+    "sampradaya": "Shaiva",
+    "deity": "Shiva",
+    "script": "Devanagari",
+    "category": "Mantra",
+    "use_cases": ["healing", "protection", "release", "longevity"],
+    "observance_tags": ["pradosham", "chaturdashi", "shivaratri", "ashtami"],
+    "birth_tags": ["shiva", "smarta"]
   },
   {
     "id": "ganesha-shloka",
@@ -93,30 +144,84 @@
     "sampradaya": "Ganapatya",
     "deity": "Ganesha",
     "script": "Devanagari",
-    "category": "Stotra"
+    "category": "Stotra",
+    "use_cases": ["obstacle_removal", "beginning", "focus", "protection"],
+    "observance_tags": ["chaturthi", "sankashti"],
+    "birth_tags": ["ganesha", "smarta"]
   },
   {
     "id": "gayatri",
     "devanagari": "ॐ भूर्भुवः स्वः तत्सवितुर्वरेण्यं भर्गो देवस्य धीमहि। धियो यो नः प्रचोदयात्॥",
     "transliteration": "oṃ bhūr bhuvaḥ svaḥ tat savitur vareṇyaṃ bhargo devasya dhīmahi | dhiyo yo naḥ pracodayāt ||",
-    "meaning": "We meditate on the glorious splendor of the divine Sun (Savitri). May that supreme light illuminate our intellect.",
+    "meaning": "We meditate on the glorious splendor of the divine Savitri (Sun). May that supreme light illuminate our intellect.",
     "source": "Rig Veda 3.62.10 (Gayatri Mantra)",
     "tags": ["surya", "gayatri", "mantra", "sandhyavandana", "daily", "brahmin"],
     "sampradaya": "Smarta",
     "deity": "Surya",
     "script": "Devanagari",
-    "category": "Mantra"
+    "category": "Mantra",
+    "use_cases": ["daily", "focus", "purification", "clarity"],
+    "observance_tags": ["purnima", "daily", "panchami"],
+    "birth_tags": ["brahmin", "smarta", "surya", "punarvasu"]
+  },
+  {
+    "id": "surya-aditya",
+    "devanagari": "जपाकुसुमसंकाशं काश्यपेयं महाद्युतिम्। तमोऽरिं सर्वपापघ्नं प्रणतोऽस्मि दिवाकरम्॥",
+    "transliteration": "japākusumasaṃkāśaṃ kāśyapeyaṃ mahādyutim | tamo'riṃ sarvapāpagnam praṇato'smi divākaram ||",
+    "meaning": "I prostrate before Divakara (the Sun), who shines like the hibiscus flower, who is the son of Kashyapa, of immense radiance, the destroyer of darkness and all sins.",
+    "source": "Aditya Hridayam 9 (Valmiki Ramayana)",
+    "tags": ["surya", "aditya", "hridayam", "light", "purification", "strength"],
+    "sampradaya": "Smarta",
+    "deity": "Surya",
+    "script": "Devanagari",
+    "category": "Stotra",
+    "use_cases": ["purification", "protection", "strength", "daily"],
+    "observance_tags": ["panchami", "saptami", "ratha_saptami"],
+    "birth_tags": ["surya", "smarta", "brahmin"]
+  },
+  {
+    "id": "devi-stuti",
+    "devanagari": "या देवी सर्वभूतेषु शक्तिरूपेण संस्थिता। नमस्तस्यै नमस्तस्यै नमस्तस्यै नमो नमः॥",
+    "transliteration": "yā devī sarvabhūteṣu śaktirūpeṇa saṃsthitā | namastasyai namastasyai namastasyai namo namaḥ ||",
+    "meaning": "To that Goddess who abides in all beings as Shakti (power and energy) — salutations, salutations, salutations again and again.",
+    "source": "Durga Saptashati 5.15",
+    "tags": ["devi", "durga", "shakti", "ashtami", "navami", "protection"],
+    "sampradaya": "Shakta",
+    "deity": "Durga",
+    "script": "Devanagari",
+    "category": "Stotra",
+    "use_cases": ["protection", "strength", "empowerment", "courage"],
+    "observance_tags": ["ashtami", "navami", "navratri", "chaturdashi"],
+    "birth_tags": ["devi", "smarta"]
+  },
+  {
+    "id": "saraswati-vandana",
+    "devanagari": "या कुन्देन्दुतुषारहारधवला या शुभ्रवस्त्रावृता। या वीणावरदण्डमण्डितकरा या श्वेतपद्मासना॥ सा मां पातु सरस्वती भगवती निःशेषजाड्यापहा॥",
+    "transliteration": "yā kundendu tuṣārahāra dhavalā yā śubhravstrāvṛtā | yā vīṇāvaradaṇḍa maṇḍitakarā yā śvetapadmāsanā || sā māṃ pātu sarasvatī bhagavatī niḥśeṣajāḍyāpahā ||",
+    "meaning": "She who is white as jasmine, the moon, and a garland of snow; clad in pure white garments; whose hands are adorned with the veena and the boon-gesture; seated on a white lotus — may that blessed Saraswati protect me and remove all inertia.",
+    "source": "Saraswati Vandana (Saraswati Stotram)",
+    "tags": ["saraswati", "knowledge", "learning", "clarity", "vedic"],
+    "sampradaya": "Smarta",
+    "deity": "Saraswati",
+    "script": "Devanagari",
+    "category": "Stotra",
+    "use_cases": ["knowledge", "focus", "learning", "clarity", "communication"],
+    "observance_tags": ["basant_panchami", "navratri"],
+    "birth_tags": ["saraswati", "mithuna", "budha", "smarta"]
   },
   {
     "id": "pitru-mantra",
     "devanagari": "देवताभ्यः पितृभ्यश्च महायोगिभ्य एव च। नमः स्वधायै स्वाहायै नित्यमेव नमो नमः॥",
     "transliteration": "devatābhyaḥ pitṛbhyaś ca mahāyogibhya eva ca | namaḥ svadhāyai svāhāyai nityam eva namo namaḥ ||",
-    "meaning": "Salutations to the gods, to the ancestors, and to the great yogis. Obeisance to Svadha and Svaha, eternal salutations again and again.",
+    "meaning": "Salutations to the gods, to the ancestors, and to the great yogis. Obeisance to Svadha and Svaha — eternal salutations again and again.",
     "source": "Pitru Stotram",
     "tags": ["pitru", "ancestors", "amavasya", "tarpanam", "shraddha"],
     "sampradaya": "Smarta/Pitru",
     "deity": "Pitrus",
     "script": "Devanagari",
-    "category": "Stotra"
+    "category": "Stotra",
+    "use_cases": ["ancestral", "shraddha", "gratitude", "protection"],
+    "observance_tags": ["amavasya", "mahalaya"],
+    "birth_tags": ["pitru", "smarta"]
   }
 ]
