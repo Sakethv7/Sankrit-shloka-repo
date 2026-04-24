@@ -3,15 +3,14 @@
   "weekly": {
     "2026-W16": {
       "ids": [
-        "bg-2.14",
-        "pitru-mantra",
-        "shiva-mahamrityunjaya",
-        "gayatri",
         "bg-18.66",
-        "vs-1",
         "bg-9.22",
+        "bg-4.7",
+        "shiva-mahamrityunjaya",
+        "vs-1",
         "devi-stuti",
-        "saraswati-vandana",
+        "bg-2.47",
+        "bg-6.5",
         "shiva-panchakshari"
       ]
     }
@@ -19,10 +18,10 @@
   "daily_devata": {
     "2026-04-24": "devi-stuti",
     "2026-04-25": "devi-stuti",
-    "2026-04-26": "pitru-mantra",
-    "2026-04-27": "vs-1",
-    "2026-04-28": "vs-1",
-    "2026-04-29": "shiva-mahamrityunjaya",
-    "2026-04-30": "shiva-mahamrityunjaya"
+    "2026-04-26": "bg-4.7",
+    "2026-04-27": "bg-9.22",
+    "2026-04-28": "bg-9.22",
+    "2026-04-29": "shiva-panchakshari",
+    "2026-04-30": "shiva-panchakshari"
   }
 }
