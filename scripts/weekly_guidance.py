@@ -652,10 +652,10 @@ def main() -> None:
 
     days, chart, loc = build_week(start, write_history=write_history)
     print(format_week(days, chart, loc, debug=args.debug))
+    write_dashboard_json(days, chart, loc)          # always write — needed for Pages deploy
+    print(f"[Dashboard JSON: {CURRENT_WEEK_PATH}]")
     if write_history:
-        write_dashboard_json(days, chart, loc)
         print(f"[Memory updated: {HISTORY_PATH}]")
-        print(f"[Dashboard JSON: {CURRENT_WEEK_PATH}]")
     else:
         print("[Memory not updated (backtest mode)]")
 
