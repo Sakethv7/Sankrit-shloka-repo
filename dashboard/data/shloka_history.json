@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-04-24",
+  "last_updated": "2026-04-26",
   "weekly": {
     "2026-W04": {
       "ids": [
@@ -29,17 +29,15 @@
     },
     "2026-W16": {
       "ids": [
+        "bg-9.22",
+        "bg-6.5",
+        "bg-2.47",
+        "gayatri",
+        "shiva-mahamrityunjaya",
+        "bg-18.66",
         "shiva-panchakshari",
         "vs-1",
-        "gayatri",
-        "bg-9.22",
-        "bg-2.14",
-        "shiva-mahamrityunjaya",
-        "pitru-mantra",
-        "devi-stuti",
-        "ganesha-shloka",
-        "bg-18.66",
-        "saraswati-vandana"
+        "bg-4.7"
       ]
     }
   },
@@ -47,10 +45,12 @@
     "2026-04-23": "shiva-panchakshari",
     "2026-04-24": "devi-stuti",
     "2026-04-25": "devi-stuti",
-    "2026-04-26": "pitru-mantra",
-    "2026-04-27": "vs-1",
-    "2026-04-28": "vs-1",
-    "2026-04-29": "shiva-mahamrityunjaya",
-    "2026-04-30": "shiva-mahamrityunjaya"
+    "2026-04-26": "bg-4.7",
+    "2026-04-27": "bg-9.22",
+    "2026-04-28": "bg-9.22",
+    "2026-04-29": "shiva-panchakshari",
+    "2026-04-30": "shiva-panchakshari",
+    "2026-05-01": "bg-9.22",
+    "2026-05-02": "gayatri"
   }
 }
