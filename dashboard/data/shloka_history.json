@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-04",
+  "last_updated": "2026-10-11",
   "weekly": {
     "2026-W04": {
       "ids": [
@@ -375,6 +375,22 @@
         "bg-6.5",
         "vs-1"
       ]
+    },
+    "2026-W40": {
+      "ids": [
+        "bg-9.22",
+        "bg-6.5",
+        "surya-aditya",
+        "gayatri",
+        "bg-4.7",
+        "ganesha-shloka",
+        "shiva-panchakshari",
+        "vs-1",
+        "bg-18.66",
+        "devi-stuti",
+        "saraswati-vandana",
+        "bg-2.47"
+      ]
     }
   },
   "daily_devata": {
@@ -548,6 +564,13 @@
     "2026-10-07": "bg-9.22",
     "2026-10-08": "shiva-panchakshari",
     "2026-10-09": "shiva-panchakshari",
-    "2026-10-10": "pitru-mantra"
+    "2026-10-10": "pitru-mantra",
+    "2026-10-11": "gayatri",
+    "2026-10-12": "saraswati-vandana",
+    "2026-10-13": "devi-stuti",
+    "2026-10-14": "ganesha-shloka",
+    "2026-10-15": "gayatri",
+    "2026-10-16": "surya-aditya",
+    "2026-10-17": "shiva-panchakshari"
   }
 }
